@@ -1,7 +1,7 @@
 module DNA (toRNA) where
 
 toRNA :: String -> Maybe String
-toRNA = mapM dna2RNA
+toRNA = traverse dna2RNA
 
 dna2RNA :: Char -> Maybe Char
 dna2RNA 'G' = Just 'C'
