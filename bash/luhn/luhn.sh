@@ -4,21 +4,19 @@ set -o errexit
 set -o nounset
 
 main() {
-    local str="$1"
+    local str="${1//[[:space:]]/}"
 
     local sum=0
     local pos=0
 
+    if [[ "$str" =~ [^[:digit:]] ]]; then
+        echo false
+        exit
+    fi
+
     for ((i=${#str} - 1; i >= 0; i--)); do
         local digit="${str:$i:1}"
 
-        if [[ "$digit" =~ [[:space:]] ]]; then
-            continue
-        fi
-        if ! [[ "$digit" =~ [[:digit:]] ]]; then
-            echo false
-            exit
-        fi
         if [ $((pos % 2)) -ne 0 ]; then
             local double=$((digit * 2))
             if [ "$double" -gt 9 ]; then
