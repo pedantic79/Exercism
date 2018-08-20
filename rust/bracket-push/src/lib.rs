@@ -1,30 +1,23 @@
-pub struct Brackets {
-    brackets: Vec<char>,
+pub struct Brackets<'a> {
+    input_str: &'a str,
 }
 
-impl<'a> From<&'a str> for Brackets {
-    fn from(input: &str) -> Self {
-        let valid = vec!['(', ')', '[', ']', '{', '}'];
-        Brackets::new(input.chars().filter(|x| valid.contains(x)).collect())
+impl<'a> From<&'a str> for Brackets<'a> {
+    fn from(input: &'a str) -> Self {
+        Brackets { input_str: input }
     }
 }
 
-impl Brackets {
-    pub fn new(bracket_chars: Vec<char>) -> Self {
-        Brackets { brackets: bracket_chars }
-    }
-
+impl<'a> Brackets<'a> {
     pub fn are_balanced(&self) -> bool {
+        const VALID: [char; 6] = ['(', ')', '[', ']', '{', '}'];
         let mut stack: Vec<char> = Vec::new();
 
-        for bracket in &self.brackets {
-            if let Some(last) = stack.pop() {
-                if get_match(last) != Some(*bracket) {
-                    stack.push(last);
-                    stack.push(*bracket);
-                }
-            } else {
-                stack.push(*bracket);
+        for bracket in self.input_str.chars().filter(|x| VALID.contains(x)) {
+            if let Some(right) = get_match(bracket) {
+                stack.push(right);
+            } else if stack.pop() != Some(bracket) {
+                return false;
             }
         }
 

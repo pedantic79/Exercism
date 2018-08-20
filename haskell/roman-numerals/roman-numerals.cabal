@@ -1,0 +1,35 @@
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 71ab3303449f08e47a683c343b462ad3714af8abe8d2ae82495799da84719b4b
+
+name:           roman-numerals
+version:        1.2.0.5
+build-type:     Simple
+cabal-version:  >= 1.10
+
+library
+  exposed-modules:
+      Roman
+  other-modules:
+      Paths_roman_numerals
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+    , containers
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: Tests.hs
+  other-modules:
+      Paths_roman_numerals
+  hs-source-dirs:
+      test
+  build-depends:
+      base
+    , hspec
+    , roman-numerals
+  default-language: Haskell2010

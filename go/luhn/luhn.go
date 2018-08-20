@@ -29,8 +29,5 @@ func Valid(luhnStr string) bool {
 		pos++
 	}
 
-	if pos < 2 {
-		return false
-	}
-	return sum%10 == 0
+	return pos > 1 && sum%10 == 0
 }
