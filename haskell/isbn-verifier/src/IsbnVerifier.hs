@@ -7,14 +7,13 @@ isbn :: String -> Bool
 isbn = isValid . foldr isbnCalc (Just 0, 0) . filter (/='-')
     where
         isValid (Just v, 10) = v `mod` 11 == 0
-        isValid (Just _,  _) = False
-        isValid (Nothing, _) = False
+        isValid _            = False
 
 isbnCalc :: Char -> (Maybe Int, Int) -> (Maybe Int, Int)
-isbnCalc c (acc, pos) = ((+) <$> acc <*> ((* next) <$> digit), next)
-        where
-            digit = convertChar pos c
-            next  = pos + 1
+isbnCalc c (acc, pos) = ((+) <$> acc <*> ((*next) <$> digit), next)
+    where
+        digit = convertChar pos c
+        next  = pos + 1
 
 convertChar :: Int -> Char -> Maybe Int
 convertChar pos c

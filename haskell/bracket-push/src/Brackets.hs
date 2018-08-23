@@ -1,23 +1,24 @@
 {-# LANGUAGE LambdaCase #-}
 module Brackets (arePaired) where
 
-arePaired :: String -> Bool
-arePaired = null . foldl processPairs []
+import Data.Maybe (isJust)
 
-processPairs :: String -> Char -> String
-processPairs rest c
-    | h == Just c          = tail rest
-    | Just p <- getMatch c = p:rest
-    | c `elem` "])}"       = c:rest
+arePaired :: String -> Bool
+arePaired = isJust . foldr processPairs (Just [])
+
+processPairs :: Char -> Maybe String -> Maybe String
+processPairs c rest
+    | h == Just c          = fmap tail rest
+    | c `elem` "[{("       = Nothing
+    | Just p <- getMatch c = (:) p <$> rest
     | otherwise            = rest
     where
-        h = safeHead rest
+        h = rest >>= safeHead
 
-getMatch :: Char -> Maybe Char
 getMatch = \case
-            '[' -> Just ']'
-            '(' -> Just ')'
-            '{' -> Just '}'
+            ')' -> Just '('
+            ']' -> Just '['
+            '}' -> Just '{'
             _   -> Nothing
 
 safeHead :: [a] -> Maybe a
