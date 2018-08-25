@@ -1,21 +1,21 @@
 object HandshakeCalculator {
     val signals = arrayOf(Signal.WINK, Signal.DOUBLE_BLINK, Signal.CLOSE_YOUR_EYES, Signal.JUMP)
 
-    fun calculateHandshake(num: Int): List<Signal> {
-        var ret = mutableListOf<Signal>()
-        var n = num
+    fun calculateHandshake(secretMessage: Int): List<Signal> {
+        var signalList = mutableListOf<Signal>()
+        var binaryMessage = secretMessage
 
         for (s in signals) {
-            if (n and 1 == 1)  {
-                ret.add(s)
+            if (binaryMessage and 1 == 1)  {
+                signalList.add(s)
             }
-            n = n shr 1
+            binaryMessage = binaryMessage shr 1
         }
 
-        if (n == 1) {
-            ret.reverse()
+        if (binaryMessage == 1) {
+            signalList.reverse()
         }
 
-        return ret
+        return signalList
     }
 }
