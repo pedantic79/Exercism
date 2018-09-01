@@ -3,8 +3,11 @@ module IsbnVerifier (isbn) where
 import Data.Char (digitToInt, isDigit)
 import Data.Maybe (maybe)
 
+isbnNum :: String -> (Maybe Int, Int)
+isbnNum =  foldr isbnCalc (Just 0, 0) . filter (/='-')
+
 isbn :: String -> Bool
-isbn = isValid . foldr isbnCalc (Just 0, 0) . filter (/='-')
+isbn = isValid . isbnNum
     where
         isValid (Just v, 10) = v `mod` 11 == 0
         isValid _            = False
