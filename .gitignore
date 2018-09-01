@@ -1,5 +1,5 @@
 haskell/*/.stack-work/
-haskell/*/*.cabal/
+haskell/*/*.cabal
 kotlin/*/.gradle/
 kotlin/*/build/
 kotlin/*/.idea/
