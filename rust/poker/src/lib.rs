@@ -141,14 +141,10 @@ impl<'a> Hand<'a> {
         c.sort();
         let cards = [c[0], c[1], c[2], c[3], c[4]];
 
-        if cards.len() == 5 {
-            Some(Hand {
-                source: src,
-                pokerhand: PokerHand::process(&cards),
-            })
-        } else {
-            None
-        }
+        Some(Hand {
+            source: src,
+            pokerhand: PokerHand::process(&cards),
+        })
     }
 
     pub fn try_from(s: &'a str) -> Option<Hand> {
