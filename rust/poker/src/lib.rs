@@ -1,20 +1,16 @@
-#[macro_use]
-extern crate try_opt;
 extern crate counter;
 
 use counter::Counter;
 use std::cmp::Ordering;
 
 pub fn winning_hands<'a>(hands: &[&'a str]) -> Option<Vec<&'a str>> {
-    let mut h = try_opt!(
-        hands
-            .iter()
-            .map(|h| Hand::try_from(h))
-            .collect::<Option<Vec<Hand>>>()
-    );
+    let mut h = hands
+        .iter()
+        .map(|h| Hand::try_from(h))
+        .collect::<Option<Vec<Hand>>>()?;
     h.sort();
 
-    let winner = try_opt!(h.last());
+    let winner = h.last()?;
     let f = h
         .iter()
         .filter(|x| x.pokerhand == winner.pokerhand)
@@ -109,8 +105,8 @@ impl Card {
 
         if l == 2 || l == 3 {
             let split = (l + 1) / 2;
-            let r = try_opt!(Rank::try_from(&s[..split]));
-            let t = try_opt!(Suit::try_from(&s[split..]));
+            let r = Rank::try_from(&s[..split])?;
+            let t = Suit::try_from(&s[split..])?;
 
             Some(Card::new(r, t))
         } else {
@@ -148,11 +144,10 @@ impl<'a> Hand<'a> {
     }
 
     pub fn try_from(s: &'a str) -> Option<Hand> {
-        let cards = try_opt!(
-            s.split_whitespace()
-                .map(|card| Card::try_from(card))
-                .collect::<Option<Vec<Card>>>()
-        );
+        let cards = s
+            .split_whitespace()
+            .map(|card| Card::try_from(card))
+            .collect::<Option<Vec<Card>>>()?;
 
         Hand::try_new(s, &cards)
     }
