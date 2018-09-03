@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-fn sort_string(s: &String) -> String {
+fn sort_string(s: &str) -> String {
     let mut v = s.chars().collect::<Vec<char>>();
     v.sort();
     v.iter().collect()
 }
 
-fn get_frequency(s: &String) -> HashMap<char, usize> {
+fn get_frequency(s: &str) -> HashMap<char, usize> {
     let mut m = HashMap::new();
     for c in s.chars() {
         *m.entry(c).or_insert(1) += 1;
@@ -34,7 +34,7 @@ pub fn anagrams_map<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'
 pub fn anagrams_fn<'a, T: Eq>(
     word: &str,
     possible_anagrams: &[&'a str],
-    f: fn(&String) -> T,
+    f: fn(&str) -> T,
 ) -> HashSet<&'a str> {
     let lower = word.to_lowercase();
     let fnstr = f(&lower);
