@@ -1,27 +1,31 @@
-module School (School, add, empty, grade, sorted) where
+module School
+  ( School
+  , add
+  , empty
+  , grade
+  , sorted
+  ) where
 
-import Control.Lens ((%~))
-import Control.Lens.At (at)
-import Data.List (sort)
-import Data.Maybe (fromMaybe)
-import Data.Monoid (getSum, Sum(..))
+import           Control.Lens       ((%~))
+import           Control.Lens.Each  (each)
+import           Control.Lens.Tuple (_2)
+import           Data.List          (sort)
 
-import qualified Data.IntMap as M
+import qualified Data.MultiMap      as M
 
-type School = M.IntMap [String]
+type School = M.MultiMap Int String
 
 add :: Int -> String -> School -> School
-add g name = at g %~ Just . sort . (name:) . fromMaybe []
--- add g name = M.insertWith ((sort .) . (++)) g [name]
+add = M.insert
 
 empty :: School
 empty = M.empty
 
 grade :: Int -> School -> [String]
-grade = M.findWithDefault []
+grade = (sort .) . M.lookup
 
 sorted :: School -> [(Int, [String])]
-sorted = M.toAscList
+sorted = (each . _2 %~ sort) . M.assocs
 
 numberOfStudents :: School -> Int
-numberOfStudents = getSum . foldMap (Sum . length)
+numberOfStudents = M.size

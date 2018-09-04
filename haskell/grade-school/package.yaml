@@ -8,10 +8,8 @@ library:
   exposed-modules: School
   source-dirs: src
   dependencies:
-    - containers
     - lens
-  # - foo       # List here the packages you
-  # - bar       # want to use in your solution.
+    - multimap
 
 tests:
   test:
