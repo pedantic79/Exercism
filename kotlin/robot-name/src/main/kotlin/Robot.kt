@@ -11,7 +11,7 @@ class Robot {
     private fun generateName(): String {
         val a = random.nextInt(26)
         val b = random.nextInt(26)
-        val n = random.nextInt(999)
+        val n = random.nextInt(1000)
 
         return "%c%c%03d".format('A' + a, 'A' + b, n)
     }
