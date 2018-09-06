@@ -3,8 +3,6 @@
 set -o errexit
 set -o nounset
 
-ALPHA=()
-
 ord() {
     local ch
     ch=$(printf "%d" "'$1")
@@ -16,15 +14,6 @@ chr() {
     local ch=$(($1 + 97))
     printf -v ascii "%o" "$ch"
     echo -e "\\0$ascii"
-}
-
-strindex() {
-    x="${1%%$2*}"
-    if [[ "$x" = "$1" ]]; then
-        echo -1
-    else
-        echo "${#x}"
-    fi
 }
 
 is_coprime () {
@@ -43,18 +32,10 @@ is_coprime () {
     return "$?"
 }
 
-init() {
+encode() {
     local a=$1
     local b=$2
-    local i
-    for ((i=0; i<26; i++)); do
-        local ch=$(((a * i + b) % 26))
-        ALPHA+=("$(chr "$ch")")
-    done
-}
-
-encode() {
-    local str=$1
+    local str=$3
     str=${str,,}
     str=${str//[^a-z0-9]/}
 
@@ -64,7 +45,8 @@ encode() {
         local x="${str:$i:1}"
         if [[ $x =~ [a-z] ]]; then
             x=$(ord "$x")
-            output+="${ALPHA[$x]}"
+            encoded=$(( (a * x + b) % 26 ))
+            output+=$(chr $encoded)
         else
             output+="$x"
         fi
@@ -79,25 +61,30 @@ encode() {
 }
 
 decode() {
-    local str=${1// /}
-    local output=""
+    local a=$1
+    local b=$2
+    local str=${3// /}
     local i
-    local OLDIFS=$IFS
-    IFS=''
     for ((i=0; i<${#str}; i++)); do
         local ch="${str:$i:1}"
 
-        if [[ $ch =~ [a-z] ]]; then
-            local pos
-            pos=$(strindex "${ALPHA[*]}" "$ch")
-            output+="$(chr "$pos")"
+        if [[ $ch =~ [[:alpha:]] ]]; then
+            local x
+            x="$(ord "$ch")"
+
+            # Subtract b, then add 26 (undoes mod 26) until we divide evenly
+            # and are a positive number
+            ((x -= b)) || true
+            while [ $((x % a)) != 0 ] || [ "$x" -lt 0 ]; do
+                ((x += 26)) || true
+            done
+            local unmod=$((x / a))
+            echo -n "$(chr $unmod)"
         else
-            output+="$ch"
+            echo -n "$ch"
         fi
     done
-
-    IFS="$OLDIFS"
-    echo "$output"
+    echo ""
 }
 
 check_input() {
@@ -112,8 +99,6 @@ main() {
     shift
 
     check_input "$1"
-    init "$@"
-    shift 2
     if [ "$op" = "encode" ]; then
         encode "$@"
     else
