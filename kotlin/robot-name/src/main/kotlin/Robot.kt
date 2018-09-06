@@ -1,11 +1,13 @@
 import java.util.*
+import kotlin.collections.HashSet
 
 class Robot {
     companion object {
         private val random = Random()
+        private val nameCache = HashSet<String>()
     }
 
-    var name = generateName()
+    var name = generateUniqueName()
         private set
 
     private fun generateName(): String {
@@ -16,8 +18,19 @@ class Robot {
         return "%c%c%03d".format('A' + a, 'A' + b, n)
     }
 
+    private fun generateUniqueName(): String {
+        var name = generateName()
+        while (nameCache.contains(name)) {
+            name = generateName()
+        }
+
+        nameCache.add(name)
+        return name
+    }
+
     fun reset() {
-        name = generateName()
+        nameCache.remove(name)
+        name = generateUniqueName()
     }
 
 }
