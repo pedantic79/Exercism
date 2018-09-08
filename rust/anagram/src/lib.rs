@@ -1,41 +1,50 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-fn sort_string(s: &str) -> String {
-    let mut v = s.chars().collect::<Vec<char>>();
-    v.sort();
-    v.iter().collect()
-}
-
-fn get_frequency(s: &str) -> HashMap<char, usize> {
-    let mut m = HashMap::new();
-    for c in s.chars() {
-        *m.entry(c).or_insert(1) += 1;
-    }
-    m
-}
-
 #[inline]
 pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    // Sort is faster
-    anagrams_sort(word, possible_anagrams)
+    // Vec is fastest
+    anagrams_vec(word, possible_anagrams)
 }
 
 #[inline]
 pub fn anagrams_sort<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    anagrams_fn(word, possible_anagrams, sort_string)
+    anagrams_fn(word, possible_anagrams, |s| {
+        let mut v = s.chars().collect::<Vec<char>>();
+        v.sort();
+        v.iter().collect::<String>()
+    })
 }
 
 #[inline]
 pub fn anagrams_map<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    anagrams_fn(word, possible_anagrams, get_frequency)
+    anagrams_fn(word, possible_anagrams, |s| {
+        let mut m = HashMap::new();
+        for c in s.chars() {
+            *m.entry(c).or_insert(1) += 1;
+        }
+        m
+    })
 }
 
-pub fn anagrams_fn<'a, T: Eq>(
+#[inline]
+pub fn anagrams_vec<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
+    anagrams_fn(word, possible_anagrams, |s| {
+        let mut v = s.chars().collect::<Vec<char>>();
+        v.sort();
+        v
+    })
+}
+
+pub fn anagrams_fn<'a, T, F>(
     word: &str,
     possible_anagrams: &[&'a str],
-    f: fn(&str) -> T,
-) -> HashSet<&'a str> {
+    mut f: F,
+) -> HashSet<&'a str>
+where
+    T: Eq,
+    F: FnMut(&str) -> T,
+{
     let lower = word.to_lowercase();
     let fnstr = f(&lower);
 
