@@ -10,7 +10,7 @@ data class RotationalCipher(val displacement: Int) {
             } else {
                 'A'
             }
-            (((this - a + displacement) % 26) + a.toInt()).toChar()
+            a + (this - a + displacement) % 26
         } else {
             this
         }
