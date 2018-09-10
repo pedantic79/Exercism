@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes      #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Person
@@ -11,7 +12,8 @@ module Person
   , setCurrentStreet
   ) where
 
-import           Control.Lens       (Lens', makeLenses, over, set, view)
+import           Control.Lens       (Lens', Traversal', makeLenses, over, set,
+                                     view)
 import           Data.Time.Calendar (Day)
 import           Data.Time.Lens     (months)
 
@@ -55,9 +57,11 @@ setCurrentStreet = set (address . street)
 setBirthMonth :: Int -> Person -> Person
 setBirthMonth = set (born . bornOn . months)
 
-renameStreets :: (String -> String) -> Person -> Person
-renameStreets = over (address . street ~.~ born . bornAt . street)
+-- renameStreets :: (String -> String) -> Person -> Person
+renameStreets = over $ combine (address . street) (born . bornAt . street)
 
-infixr 8 ~.~
-(~.~) :: Monad f => (c -> d -> f a) -> (c -> a -> f b) -> c -> d -> f b
-(~.~) a b f = (b f =<<) . a f
+-- Based on zhenengxie's solution
+-- https://exercism.io/tracks/haskell/exercises/lens-person/solutions/9a9c5003e2014c2cab6574eb31500c18
+combine :: Lens' s a -> Lens' s a -> Traversal' s a
+combine one two f x =
+  (\a b -> set two b . set one a $ x) <$> f (view one x) <*> f (view two x)
