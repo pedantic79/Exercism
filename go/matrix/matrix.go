@@ -8,18 +8,17 @@ import (
 
 type Matrix [][]int
 
-func (m *Matrix) Rows() [][]int {
-	matrix := make([][]int, len(*m))
+func (m Matrix) Rows() [][]int {
+	matrix := make([][]int, len(m))
 
-	for r, row := range *m {
-		matrix[r] = append([]int{}, row...)
+	for r, row := range m {
+		matrix[r] = make([]int, len(row))
+		copy(matrix[r], row)
 	}
 	return matrix
 }
 
-func (m *Matrix) Cols() [][]int {
-	matrix := *m
-
+func (matrix Matrix) Cols() [][]int {
 	col := make([][]int, len(matrix[0]))
 	for c := range col {
 		col[c] = make([]int, len(matrix))
@@ -31,8 +30,7 @@ func (m *Matrix) Cols() [][]int {
 	return col
 }
 
-func (m *Matrix) Set(r, c, value int) bool {
-	matrix := *m
+func (matrix Matrix) Set(r, c, value int) bool {
 	if r < 0 || r >= len(matrix) || c < 0 || c >= len(matrix[0]) {
 		return false
 	}
