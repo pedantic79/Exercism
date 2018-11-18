@@ -1,4 +1,4 @@
-build: *.h *.cpp
+build: *.cpp *.h
 	mkdir -p build
 	cd build && cmake ..
 	cd build && cmake --build .
