@@ -1,4 +1,5 @@
 #include "hamming.h"
+#include <algorithm>
 
 namespace hamming {
     // const std::string& instead of std::string_view for C++11 and 14
@@ -7,14 +8,10 @@ namespace hamming {
             throw std::domain_error("size mismatch");
         }
 
-        int count = 0;
+        using ch = decltype(right)::value_type;
         auto itr = std::begin(right);
-        for (const auto& c : left) {
-            if (*itr != c) {
-                count++;
-            }
-            itr++;
-        }
-        return count;
+        return std::count_if(std::begin(left), std::end(left),
+            [&itr](const ch& c) { return c != *itr++; }
+        );
     }
 }
