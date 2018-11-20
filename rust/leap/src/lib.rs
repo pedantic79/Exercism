@@ -1,3 +1,3 @@
 pub fn is_leap_year(year: i32) -> bool {
-    unimplemented!("true if {} is a leap year", year)
+    return (year % 400 == 0 || year % 100 != 0) && year % 4 == 0;
 }
