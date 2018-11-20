@@ -1,11 +1,14 @@
-#[macro_use]
-extern crate indexmap;
+use std::collections::BTreeMap;
+
 
 pub fn raindrops(n: usize) -> String {
-    let divisible = indexmap!{
-        3 => "Pling",
-        5 => "Plang",
-        7 => "Plong",
+
+    let divisible = {
+        let mut btm = BTreeMap::new();
+        btm.insert(3, "Pling");
+        btm.insert(5, "Plang");
+        btm.insert(7, "Plong");
+        btm
     };
 
     let v: String = divisible
