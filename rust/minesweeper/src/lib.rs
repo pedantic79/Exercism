@@ -6,20 +6,14 @@ struct Board {
 
 impl<'a> From<&'a [&'a str]> for Board {
     fn from(input: &[&str]) -> Board {
-        let v = input
-            .iter()
-            .map(|&r| r.chars().collect())
-            .collect();
+        let v = input.iter().map(|&r| r.chars().collect()).collect();
         Board { places: v }
     }
 }
 
 impl Into<Vec<String>> for Board {
     fn into(self) -> Vec<String> {
-        self.places
-            .iter()
-            .map(|r| r.iter().collect())
-            .collect()
+        self.places.iter().map(|r| r.iter().collect()).collect()
     }
 }
 
@@ -63,7 +57,12 @@ impl Board {
         let max_c = if c == col_max { col_max } else { c + 1 };
 
         let mut v = Vec::new();
-        (min_r..=max_r).for_each(|row| (min_c..=max_c).for_each(|col| v.push((row, col))));
+
+        for row in min_r..=max_r {
+            for col in min_c..=max_c {
+                v.push((row, col));
+            }
+        }
 
         v
     }
