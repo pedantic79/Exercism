@@ -1,11 +1,13 @@
-// Package gigasecond should have a package comment that summarizes what it's about.
-// https://golang.org/doc/effective_go.html#commentary
+// Package gigasecond contains AddGigasecond for the exercism/go/gigasecond
+// problem.
 package gigasecond
 
-import "time"
+import (
+	"time"
+)
 
-// AddGigasecond should have a comment documenting it.
+// AddGigasecond adds 1,000,000,000 to the time
 func AddGigasecond(t time.Time) time.Time {
-	giga := time.Second * 1E9
-	return t.Add(giga)
+	gigasec, _ := time.ParseDuration("1000000000s")
+	return t.Add(gigasec)
 }
