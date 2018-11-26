@@ -1,19 +1,11 @@
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 pub fn check(candidate: &str) -> bool {
-    build_freq(&filt(candidate)).values().all(|&x| x == 1)
-}
+    let mut hs = HashSet::new();
 
-fn filt(s: &str) -> String {
-    s.to_lowercase()
+    candidate
+        .to_lowercase()
         .chars()
         .filter(|c| c.is_alphabetic())
-        .collect()
-}
-
-fn build_freq(s: &str) -> HashMap<char, usize> {
-    s.chars().fold(HashMap::new(), |mut acc, c| {
-        *acc.entry(c).or_insert(0) += 1;
-        acc
-    })
+        .all(|c| hs.insert(c))
 }
