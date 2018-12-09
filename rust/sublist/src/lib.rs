@@ -19,7 +19,7 @@ pub fn sublist<T: PartialEq>(a: &[T], b: &[T]) -> Comparison {
 }
 
 fn contains<T: PartialEq>(a: &[T], b: &[T]) -> bool {
-    if b.len() == 0 {
+    if b.is_empty() {
         true
     } else if a.len() < b.len() {
         false
