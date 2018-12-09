@@ -7,5 +7,5 @@ pub fn find() -> Option<u32> {
             }
         }
     }
-    return None;
+    None
 }
