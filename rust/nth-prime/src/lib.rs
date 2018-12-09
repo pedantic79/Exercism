@@ -1,10 +1,13 @@
 pub fn nth(n: u32) -> Option<u32> {
-    if n < 1 { return None }
-    let mut primes = vec![2,3];
+    if n < 1 {
+        return None;
+    }
+
+    let mut primes = vec![2, 3];
 
     for k in 0.. {
         if primes.len() >= n as usize {
-            break
+            break;
         }
 
         // Use Pritchard's Prime Wheel Sieve with 2, 3 spokes
@@ -22,9 +25,11 @@ pub fn nth(n: u32) -> Option<u32> {
         //
         // Also, we need to remove k=0, r=1, which is the case where the
         // candidate is 1, which we don't consider a prime
-        for r in vec![1, 5] {
-            if k == 0 && r == 1 { continue }
-            let cand = 6*k + r;
+        for &r in &[1, 5] {
+            if k == 0 && r == 1 {
+                continue;
+            }
+            let cand = 6 * k + r;
 
             if is_prime(cand, &primes) {
                 primes.push(cand);
@@ -36,13 +41,11 @@ pub fn nth(n: u32) -> Option<u32> {
     Some(primes[(n - 1) as usize])
 }
 
-fn is_prime(n: u32, primes: &Vec<u32>) -> bool {
+fn is_prime(n: u32, primes: &[u32]) -> bool {
     for p in primes.iter().take_while(|x| *x * *x <= n) {
         if n % p == 0 {
-            return false
+            return false;
         }
     }
-    return true
+    true
 }
-
-
