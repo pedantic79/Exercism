@@ -67,19 +67,19 @@ pub struct Neptune;
 
 impl Planet for Mercury {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(0.2408467)
+        OrbitalFactor::from(0.240_846_7)
     }
 }
 
 impl Planet for Venus {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(0.61519726)
+        OrbitalFactor::from(0.615_197_26)
     }
 }
 
 impl Planet for Earth {
     fn orbital_duration() -> Duration {
-        Duration::from(31557600)
+        Duration::from(31_557_600)
     }
 
     fn orbital_factor() -> OrbitalFactor {
@@ -89,30 +89,30 @@ impl Planet for Earth {
 
 impl Planet for Mars {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(1.8808158)
+        OrbitalFactor::from(1.880_815_8)
     }
 }
 
 impl Planet for Jupiter {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(11.862615)
+        OrbitalFactor::from(11.862_615)
     }
 }
 
 impl Planet for Saturn {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(29.447498)
+        OrbitalFactor::from(29.447_498)
     }
 }
 
 impl Planet for Uranus {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(84.016846)
+        OrbitalFactor::from(84.016_846)
     }
 }
 
 impl Planet for Neptune {
     fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(164.79132)
+        OrbitalFactor::from(164.791_32)
     }
 }
