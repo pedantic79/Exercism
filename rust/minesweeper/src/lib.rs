@@ -5,9 +5,9 @@ struct Board {
 }
 
 impl<'a> From<&'a [&'a str]> for Board {
-    fn from(input: &[&str]) -> Board {
+    fn from(input: &[&str]) -> Self {
         let v = input.iter().map(|&r| r.chars().collect()).collect();
-        Board { places: v }
+        Self { places: v }
     }
 }
 
@@ -18,7 +18,7 @@ impl Into<Vec<String>> for Board {
 }
 
 impl Board {
-    fn annotate(&self) -> Board {
+    fn annotate(&self) -> Self {
         let v = self
             .places
             .iter()
@@ -28,9 +28,10 @@ impl Board {
                     .enumerate()
                     .map(|(y, _)| self.count_mines(x, y))
                     .collect()
-            }).collect();
+            })
+            .collect();
 
-        Board { places: v }
+        Self { places: v }
     }
 
     fn count_mines(&self, r: usize, c: usize) -> char {
