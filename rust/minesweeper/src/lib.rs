@@ -1,10 +1,12 @@
+#![feature(exclusive_range_pattern)]
 use std::char;
+use std::iter::FromIterator;
 
 struct Board {
     places: Vec<Vec<char>>,
 }
 
-impl<'a> From<&'a [&'a str]> for Board {
+impl From<&[&str]> for Board {
     fn from(input: &[&str]) -> Self {
         let v = input.iter().map(|&r| r.chars().collect()).collect();
         Self { places: v }
@@ -13,12 +15,12 @@ impl<'a> From<&'a [&'a str]> for Board {
 
 impl Into<Vec<String>> for Board {
     fn into(self) -> Vec<String> {
-        self.places.iter().map(|r| r.iter().collect()).collect()
+        self.places.into_iter().map(String::from_iter).collect()
     }
 }
 
 impl Board {
-    fn annotate(&self) -> Self {
+    fn annotate(self) -> Self {
         let v = self
             .places
             .iter()
@@ -35,12 +37,13 @@ impl Board {
     }
 
     fn count_mines(&self, r: usize, c: usize) -> char {
-        match self.places[r][c] {
-            '*' => '*',
-            _ => {
+        let p = self.places[r][c];
+        match p {
+            '0'..'9' | '*' | '?' => p,
+            ' ' => {
                 let mine_count = self
                     .neighbors(r, c)
-                    .iter()
+                    .into_iter()
                     .filter(|(row, col)| self.places[*row][*col] == '*')
                     .count();
 
@@ -50,6 +53,7 @@ impl Board {
                     char::from_digit(mine_count as u32, 10).unwrap_or('?')
                 }
             }
+            _ => unreachable!(),
         }
     }
 
