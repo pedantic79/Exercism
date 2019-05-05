@@ -1,51 +1,42 @@
+use rayon::iter::ParallelIterator;
+use rayon::slice::ParallelSlice;
 use std::collections::HashMap;
-use std::sync::mpsc::channel;
-use std::thread;
 
 pub fn frequency(input: &[&str], worker_count: usize) -> HashMap<char, usize> {
-    let worker_inputs = split_input(&input, worker_count);
-    let (tx, rx) = channel();
-
-    for worker_input in worker_inputs {
-        let tx = tx.clone();
-        thread::spawn(move || tx.send(count(&worker_input)).unwrap());
+    if input.is_empty() || worker_count == 0 {
+        return HashMap::new();
     }
 
-    let mut results = HashMap::new();
-    for _ in 0..worker_count {
-        let worker_result = rx.recv().unwrap();
-        for (character, count) in worker_result {
-            *results.entry(character).or_insert(0) += count;
-        }
-    }
-    results
+    // Create a custom sized thread pool for each run
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(worker_count)
+        .build()
+        .unwrap();
+
+    let size = (input.len() + worker_count - 1) / worker_count;
+
+    // override usage of global pool
+    pool.install(|| {
+        input
+            .par_chunks(size)
+            .map(count)
+            .reduce(HashMap::new, |mut acc, value| {
+                for (ch, count) in value {
+                    acc.entry(ch).and_modify(|n| *n += count).or_insert(count);
+                }
+                acc
+            })
+    })
 }
 
-fn split_input(input: &[&str], count: usize) -> Vec<Vec<String>> {
-    let mut result: Vec<Vec<String>> = Vec::with_capacity(count);
-
-    // Ceil with only integral math
-    let size = (input.len() + count - 1) / count;
-    for _ in 0..count {
-        result.push(Vec::with_capacity(size));
-    }
-
-    for (i, line) in input.iter().enumerate() {
-        let index = i % count;
-        result[index].push(line.to_string());
-    }
-
-    result
-}
-
-fn count(lines: &[String]) -> HashMap<char, usize> {
+fn count(lines: &[&str]) -> HashMap<char, usize> {
     let mut results = HashMap::new();
 
-    for line in lines {
-        for c in line.chars().filter(|x| x.is_alphabetic()) {
-            *results.entry(c.to_lowercase().next().unwrap()).or_insert(0) += 1;
-        }
-    }
+    lines.iter().for_each(|line| {
+        line.chars()
+            .filter(|x| x.is_alphabetic())
+            .for_each(|c| *results.entry(c.to_lowercase().next().unwrap()).or_insert(0) += 1)
+    });
 
     results
 }
