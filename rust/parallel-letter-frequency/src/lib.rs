@@ -30,13 +30,12 @@ pub fn frequency(input: &[&str], worker_count: usize) -> HashMap<char, usize> {
 }
 
 fn count(lines: &[&str]) -> HashMap<char, usize> {
-    let mut results = HashMap::new();
-
-    lines.iter().for_each(|line| {
-        line.chars()
-            .filter(|x| x.is_alphabetic())
-            .for_each(|c| *results.entry(c.to_lowercase().next().unwrap()).or_insert(0) += 1)
-    });
-
-    results
+    lines
+        .iter()
+        .flat_map(|line| line.chars())
+        .filter(|c| c.is_alphabetic())
+        .fold(HashMap::new(), |mut acc, c| {
+            *acc.entry(c.to_lowercase().next().unwrap()).or_insert(0) += 1;
+            acc
+        })
 }
