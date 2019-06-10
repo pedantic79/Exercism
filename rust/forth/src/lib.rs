@@ -65,30 +65,25 @@ impl Forth {
     }
 
     fn operation(&mut self, operator: &str) -> ForthResult {
-        let mut operations;
+        let mut operations = Vec::new();
         if let Some(ops) = self.symbol.get(operator) {
-            operations = ops.clone();
-        } else {
-            return Err(Error::UnknownWord);
-        }
-
-        operations = operations
-            .into_iter()
-            .flat_map(|o| match o {
-                FnOps::Func(n) => {
-                    if let Some(ops) = self.symbol.get(&n) {
-                        ops.clone()
-                    } else {
-                        Vec::new()
+            for o in ops {
+                match o {
+                    FnOps::Func(n) => {
+                        if self.symbol.contains_key(n) {
+                            operations.extend(self.symbol.get(n).unwrap())
+                        } else {
+                            operations.push(o)
+                        }
                     }
+                    _ => operations.push(o),
                 }
-                _ => vec![o],
-            })
-            .collect::<Vec<FnOps>>();
+            }
+        }
 
         for o in operations {
             match o {
-                FnOps::Func(n) => unimplemented!(),
+                FnOps::Func(_) => return Err(Error::UnknownWord)?,
                 FnOps::Mul => self.stack.op_mul()?,
                 FnOps::Add => self.stack.op_add()?,
                 FnOps::Sub => self.stack.op_sub()?,

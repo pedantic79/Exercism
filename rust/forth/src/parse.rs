@@ -8,7 +8,7 @@ use nom::{
     IResult,
 };
 
-use super::common::{Error, Value, Token};
+use super::common::{Error, Token, Value};
 
 fn integer(input: &str) -> IResult<&str, Token> {
     map_res(digit1, |i: &str| {
@@ -17,17 +17,9 @@ fn integer(input: &str) -> IResult<&str, Token> {
 }
 
 fn operator(input: &str) -> IResult<&str, Token> {
-    map_res(is_a("*/+-"), |i: &str| match i {
-        "+" => Ok(Token::Identifier(String::from("+"))),
-        "-" => Ok(Token::Identifier(String::from("-"))),
-        "/" => Ok(Token::Identifier(String::from("/"))),
-        "*" => Ok(Token::Identifier(String::from("*"))),
-        _ => Err(Error::UnknownWord),
+    map_res(is_a("*/+-"), |i: &str| -> Result<Token, Error> {
+        Ok(Token::Identifier(i.to_string()))
     })(input)
-}
-
-fn to_identifier(i: String) -> Result<Token, Error> {
-    Ok(Token::Identifier(i.to_lowercase()))
 }
 
 fn identifier(input: &str) -> IResult<&str, Token> {
@@ -37,7 +29,7 @@ fn identifier(input: &str) -> IResult<&str, Token> {
             String::from(""),
             |acc, x| acc + x,
         ),
-        to_identifier,
+        |i: String| -> Result<Token, Error> { Ok(Token::Identifier(i.to_lowercase())) },
     )(input)
 }
 
