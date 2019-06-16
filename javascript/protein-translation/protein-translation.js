@@ -2,14 +2,14 @@ export const translate = (rna) => {
   let proteinSequence = [];
 
   if (rna) {
-    let codonSequence = rna.match(/[GUAC]{1,3}/g);
+    const codonSequence = rna.match(/[GUAC]{1,3}/g);
 
     if (!codonSequence) {
       throw Error('Invalid codon');
     }
 
-    for (let codon of codonSequence) {
-      let protein = PROTEINS[codon];
+    for (const codon of codonSequence) {
+      const protein = PROTEINS[codon];
       if (protein === 'STOP') {
         break
       } else {
