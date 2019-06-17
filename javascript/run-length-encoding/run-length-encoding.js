@@ -1,37 +1,8 @@
-export const encode = (plain) => {
-  const chars = plain.split('');
-  let encoding = '';
+// Based on a solution found here:
+// https://exercism.io/tracks/typescript/exercises/run-length-encoding/solutions/801f5c767a424829b679be170f4223f4
 
-  let last = '';
-  let count = 0;
-  for (const c of chars) {
-    if (last === c) {
-      count++;
-    } else {
-      encoding += (count > 1) ? count + last : last;
+export const encode = (plain) =>
+    plain.replace(/(.)\1{1,}/g, (match, c) => match.length + c)
 
-      last = c;
-      count = 1;
-    }
-  }
-  encoding += (count > 1) ? count + last : last;
-
-  return encoding;
-};
-
-export const decode = (encoding) => {
-  const chars = encoding.split('');
-  let plain = '';
-
-  let number = '';
-  for (const c of chars) {
-    if (parseInt(c)) {
-      number += c;
-    } else {
-      plain += (number === '') ? c : c.repeat(number);
-      number = '';
-    }
-  }
-
-  return plain;
-};
+export const decode = (encoding) => encoding.replace(
+    /(\d*)(.)/g, (_, length, c) => c.repeat(parseInt(length) || 1))
