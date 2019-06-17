@@ -1,13 +1,6 @@
 use forth::{Error, Forth, Value};
 
 #[test]
-fn foo() {
-    let mut f = Forth::new();
-    f.eval("1 2 3 4 5 + dup");
-    assert!(false);
-}
-
-#[test]
 fn no_input_no_stack() {
     assert_eq!(Vec::<Value>::new(), Forth::new().stack());
 }
