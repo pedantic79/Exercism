@@ -23,6 +23,14 @@ impl Stack {
         self.stack.pop().ok_or(Error::StackUnderflow)
     }
 
+    fn stack_peek(&self, place: usize) -> ValueResult {
+        if self.stack.len() > (place - 1) {
+            Ok(self.stack[self.stack.len() - place])
+        } else {
+            Err(Error::StackUnderflow)
+        }
+    }
+
     fn binary_op<F>(&mut self, f: F) -> ForthResult
     where
         F: (Fn(Value, Value) -> ValueResult),
@@ -52,8 +60,7 @@ impl Stack {
     }
 
     pub fn op_dup(&mut self) -> ForthResult {
-        let a = self.stack_pop()?;
-        self.stack.push(a);
+        let a = self.stack_peek(1)?;
         self.stack.push(a);
         Ok(())
     }
@@ -74,12 +81,9 @@ impl Stack {
     }
 
     pub fn op_over(&mut self) -> ForthResult {
-        let a = self.stack_pop()?;
-        let b = self.stack_pop()?;
+        let a = self.stack_peek(2)?;
 
-        self.stack.push(b);
         self.stack.push(a);
-        self.stack.push(b);
         Ok(())
     }
 }
