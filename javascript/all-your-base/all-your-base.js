@@ -17,10 +17,7 @@ export const convert = (digits, baseIn, baseOut) => {
 };
 
 const toInt = (digits, base) =>
-  digits
-    .reverse()
-    .map((digit, power) => digit * (base ** power))
-    .reduce((total, v) => total + v);
+  digits.reduce((total, digit) => total * base + digit);
 
 const fromInt = (num, base) => {
   let outputDigits = new Array();
