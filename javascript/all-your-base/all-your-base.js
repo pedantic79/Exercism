@@ -1,36 +1,28 @@
 export const convert = (digits, baseIn, baseOut) => {
   const len = digits.length;
 
-  if (baseIn === undefined || baseIn < 2 || Math.floor(baseIn) != baseIn) {
+  if (baseIn < 2 || !Number.isInteger(baseIn)) {
     throw new Error('Wrong input base');
   }
 
-  if (baseOut === undefined || baseOut < 2 || Math.floor(baseOut) != baseOut) {
+  if (baseOut < 2 || !Number.isInteger(baseOut)) {
     throw new Error('Wrong output base');
   }
 
-  if (digits === undefined || len == 0 ||
-    digits.some((n) => n < 0 || n >= baseIn ||
-      (len > 1 && digits[0] == 0))) {
+  if (len == 0 || len > 1 && digits[0] == 0 || digits.some((n) => n < 0 || n >= baseIn)) {
     throw new Error('Input has wrong format');
   }
 
-  return fromBase10(toBase10(digits, baseIn), baseOut);
+  return fromInt(toInt(digits, baseIn), baseOut);
 };
 
-const toBase10 = (digits, base) => {
-  const len = digits.length;
+const toInt = (digits, base) =>
+  digits
+    .reverse()
+    .map((digit, power) => digit * (base ** power))
+    .reduce((total, v) => total + v);
 
-  let num = 0;
-
-  for (let power = 0; power < len; power++) {
-    num += digits[len - power - 1] * (base ** power);
-  }
-
-  return num;
-}
-
-const fromBase10 = (num, base) => {
+const fromInt = (num, base) => {
   let outputDigits = new Array();
 
   if (num == 0) {
