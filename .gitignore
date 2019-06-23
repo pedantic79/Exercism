@@ -1,6 +1,0 @@
-haskell/*/.stack-work/
-haskell/*/*.cabal
-kotlin/*/.gradle/
-kotlin/*/build/
-kotlin/*/.idea/
-kotlin/*/*.iml
