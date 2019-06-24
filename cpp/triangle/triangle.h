@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include <array>
-#include <set>
+#include <unordered_set>
 
 namespace triangle {
 enum flavor { equilateral, isosceles, scalene };
@@ -18,7 +18,7 @@ template <class T> flavor kind(const T &a, const T &b, const T &c) {
         throw std::domain_error("Invalid triangle");
     }
 
-    std::set<T> uniq_sides = {a, b, c};
+    std::unordered_set<T> uniq_sides = {a, b, c};
     if (uniq_sides.size() == 1) {
         return flavor::equilateral;
     } else if (uniq_sides.size() == 2) {
