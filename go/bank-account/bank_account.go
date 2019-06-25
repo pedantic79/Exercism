@@ -7,7 +7,7 @@ import (
 type Account struct {
 	open    bool
 	balance int
-	lock    sync.RWMutex
+	sync.RWMutex
 }
 
 func Open(starting int) *Account {
@@ -22,8 +22,8 @@ func Open(starting int) *Account {
 }
 
 func (acct *Account) Balance() (int, bool) {
-	acct.lock.RLock()
-	defer acct.lock.RUnlock()
+	acct.RLock()
+	defer acct.RUnlock()
 
 	if !acct.open {
 		return 0, false
@@ -33,8 +33,8 @@ func (acct *Account) Balance() (int, bool) {
 }
 
 func (acct *Account) Close() (int, bool) {
-	acct.lock.Lock()
-	defer acct.lock.Unlock()
+	acct.Lock()
+	defer acct.Unlock()
 
 	if !acct.open {
 		return 0, false
@@ -45,8 +45,8 @@ func (acct *Account) Close() (int, bool) {
 }
 
 func (acct *Account) Deposit(amount int) (int, bool) {
-	acct.lock.Lock()
-	defer acct.lock.Unlock()
+	acct.Lock()
+	defer acct.Unlock()
 
 	if !acct.open || (amount < 0 && acct.balance+amount < 0) {
 		return 0, false
