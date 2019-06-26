@@ -1,12 +1,8 @@
-pub fn nth(n: u32) -> Option<u32> {
-    if n < 1 {
-        return None;
-    }
-
+pub fn nth(n: u32) -> u32 {
     let mut primes = vec![2, 3];
 
     for k in 0.. {
-        if primes.len() >= n as usize {
+        if primes.len() > n as usize {
             break;
         }
 
@@ -26,26 +22,18 @@ pub fn nth(n: u32) -> Option<u32> {
         // Also, we need to remove k=0, r=1, which is the case where the
         // candidate is 1, which we don't consider a prime
         for &r in &[1, 5] {
-            if k == 0 && r == 1 {
-                continue;
-            }
             let cand = 6 * k + r;
 
-            if is_prime(cand, &primes) {
+            if cand > 1
+                && !primes
+                    .iter()
+                    .take_while(|&x| x * x <= cand)
+                    .any(|&p| cand % p == 0)
+            {
                 primes.push(cand);
-                println!("{} {} {:?}", k, r, primes);
             }
         }
     }
 
-    Some(primes[(n - 1) as usize])
-}
-
-fn is_prime(n: u32, primes: &[u32]) -> bool {
-    for p in primes.iter().take_while(|x| *x * *x <= n) {
-        if n % p == 0 {
-            return false;
-        }
-    }
-    true
+    primes[n as usize]
 }
