@@ -45,9 +45,9 @@ fn to_u32(number: &[u32], base: u32) -> Result<u32, Error> {
     if base < 2 {
         Err(Error::InvalidInputBase)
     } else {
-        number.iter().fold(Ok(0), |total, digit| {
+        number.iter().try_fold(0, |total, digit| {
             if *digit < base {
-                total.map(|i| i * base + *digit)
+                Ok(total * base + *digit)
             } else {
                 Err(Error::InvalidDigit(*digit))
             }
