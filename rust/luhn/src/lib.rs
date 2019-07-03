@@ -5,7 +5,7 @@ pub fn is_valid(code: &str) -> bool {
             .rev()
             .filter(|c| !c.is_whitespace())
             .try_fold((0, 0), |(s, idx), letter| {
-                let dgt = char::to_digit(letter, 10).map(|x| double_if_second(x, idx))?;
+                let dgt = letter.to_digit(10).map(|x| double_if_second(x, idx))?;
 
                 Some((s + dgt, idx + 1))
             });
