@@ -1,10 +1,11 @@
 # Gigasecond
 
-Calculate the moment when someone has lived for 10^9 seconds.
+Given a moment, determine the moment that would be after a gigasecond
+has passed.
 
 A gigasecond is 10^9 (1,000,000,000) seconds.
 
-If you're unsure what operations you can perform on `DateTime<Utc>` take a look at the [chrono crate](https://docs.rs/chrono/0.4.0/chrono/) which is listed as a dependency in the `Cargo.toml` file for this exercise.
+If you're unsure what operations you can perform on `DateTime<Utc>` take a look at the [chrono crate](https://docs.rs/chrono) which is listed as a dependency in the `Cargo.toml` file for this exercise.
 
 
 ## Rust Installation
@@ -24,7 +25,7 @@ All but the first test have been ignored. After you get the first test to
 pass, open the tests source file which is located in the `tests` directory
 and remove the `#[ignore]` flag from the next test and get the tests to pass
 again. Each separate test is a function with `#[test]` flag above it.
-Continue, until you pass every test. 
+Continue, until you pass every test.
 
 If you wish to run all tests without editing the tests source file, use:
 
@@ -46,8 +47,28 @@ $ cargo test some_test -- --ignored
 
 To learn more about Rust tests refer to the [online test documentation][rust-tests]
 
-Make sure to read the [Modules](https://doc.rust-lang.org/book/second-edition/ch07-00-modules.html) chapter if you
+Make sure to read the [Modules][modules] chapter if you
 haven't already, it will help you with organizing your files.
+
+## Further improvements
+
+After you have solved the exercise, please consider using the additional utilities, described in the [installation guide](https://exercism.io/tracks/rust/installation), to further refine your final solution.
+
+To format your solution, inside the solution directory use
+
+```bash
+cargo fmt
+```
+
+To see, if your solution contains some common ineffective use cases, inside the solution directory use
+
+```bash
+cargo clippy --all-targets
+```
+
+## Submitting the solution
+
+Generally you should submit all files in which you implemented your solution (`src/lib.rs` in most cases). If you are using any external crates, please consider submitting the `Cargo.toml` file. This will make the review process faster and clearer.
 
 ## Feedback, Issues, Pull Requests
 
@@ -55,10 +76,10 @@ The [exercism/rust](https://github.com/exercism/rust) repository on GitHub is th
 
 If you want to know more about Exercism, take a look at the [contribution guide](https://github.com/exercism/docs/blob/master/contributing-to-language-tracks/README.md).
 
-[help-page]: http://exercism.io/languages/rust
-[modules]: https://doc.rust-lang.org/book/second-edition/ch07-00-modules.html
-[cargo]: https://doc.rust-lang.org/book/second-edition/ch14-00-more-about-cargo.html
-[rust-tests]: https://doc.rust-lang.org/book/second-edition/ch11-02-running-tests.html
+[help-page]: https://exercism.io/tracks/rust/learning
+[modules]: https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html
+[cargo]: https://doc.rust-lang.org/book/ch14-00-more-about-cargo.html
+[rust-tests]: https://doc.rust-lang.org/book/ch11-02-running-tests.html
 
 ## Source
 
