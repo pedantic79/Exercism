@@ -1,16 +1,23 @@
 pub fn reply(message: &str) -> &str {
-    match message.trim() {
-        "" => "Fine. Be that way!",
-        m if is_yell(m) && m.ends_with('?') => "Calm down, I know what I'm doing!",
-        m if is_yell(m) => "Whoa, chill out!",
-        m if m.ends_with('?') => "Sure.",
-        _ => "Whatever.",
+    let message = message.trim();
+
+    if message == "" {
+        "Fine. Be that way!"
+    } else {
+        let yell = is_yell(message);
+        let question = message.ends_with('?');
+
+        match (yell, question) {
+            (true, true) => "Calm down, I know what I'm doing!",
+            (true, _) => "Whoa, chill out!",
+            (_, true) => "Sure.",
+            _ => "Whatever.",
+        }
     }
 }
 
+/// is_yell checks to see if the message is all uppercase. If it happens to also
+/// be the same as it is all lowercase, then it returns false
 fn is_yell(message: &str) -> bool {
-    let uc = message.to_uppercase();
-    let lc = message.to_lowercase();
-
-    uc == message && uc != lc
+    message == message.to_uppercase() && message != message.to_lowercase()
 }
