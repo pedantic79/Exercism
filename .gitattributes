@@ -1,0 +1,5 @@
+**/test/* linguist-vendored
+**/tests/* linguist-vendored
+**/*_test.* linguist-vendored
+**/*.spec.js linguist-vendored
+**/*.test.ts linguist-vendored
