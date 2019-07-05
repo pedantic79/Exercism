@@ -1,9 +1,5 @@
-#[macro_use]
-extern crate criterion;
-extern crate anagram;
-
 use anagram::*;
-use criterion::Criterion;
+use criterion::{criterion_group, criterion_main, Criterion};
 
 fn criterion_benchmark(c: &mut Criterion) {
     let word = "allergy";

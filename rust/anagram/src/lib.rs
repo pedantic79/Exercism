@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 #[inline]
 pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    // Vec is fastest
+    // Vec is faster
     anagrams_vec(word, possible_anagrams)
 }
 
@@ -36,11 +36,7 @@ pub fn anagrams_vec<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'
     })
 }
 
-pub fn anagrams_fn<'a, T, F>(
-    word: &str,
-    possible_anagrams: &[&'a str],
-    mut f: F,
-) -> HashSet<&'a str>
+fn anagrams_fn<'a, T, F>(word: &str, possible_anagrams: &[&'a str], mut f: F) -> HashSet<&'a str>
 where
     T: Eq,
     F: FnMut(&str) -> T,
