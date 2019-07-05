@@ -1,23 +1,13 @@
-use std::collections::BTreeMap;
-
-
 pub fn raindrops(n: usize) -> String {
-
-    let divisible = {
-        let mut btm = BTreeMap::new();
-        btm.insert(3, "Pling");
-        btm.insert(5, "Plang");
-        btm.insert(7, "Plong");
-        btm
-    };
+    let divisible = [(3, "Pling"), (5, "Plang"), (7, "Plong")];
 
     let v: String = divisible
         .iter()
-        .filter(|(&d, _)| n % d == 0)
-        .map(|(_, &value)| value)
+        .filter(|&(d, _)| n % d == 0)
+        .map(|&(_, value)| value)
         .collect();
 
-    if v == "" {
+    if v.is_empty() {
         n.to_string()
     } else {
         v
