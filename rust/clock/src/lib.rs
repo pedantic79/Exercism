@@ -15,18 +15,21 @@ impl fmt::Display for Clock {
 
 impl Clock {
     pub fn new(hours: i32, minutes: i32) -> Self {
-        let mnts = hours * 60 + minutes;
-        Clock {
-            minutes: if mnts < 0 {
-                let magnitute = mnts.abs() / 1440 + 1;
-                mnts + 1440 * magnitute
-            } else {
-                mnts
-            } % 1440,
-        }
+        let minutes = Self::adjust(hours * 60 + minutes);
+        Clock { minutes }
     }
 
     pub fn add_minutes(self, minutes: i32) -> Self {
         Clock::new(0, self.minutes + minutes)
+    }
+
+    fn adjust(minutes: i32) -> i32 {
+        if minutes < 0 {
+            // Determine how many times we need to add 1440 to make `minutes` positive
+            let magnitute = minutes.abs() / 1440 + 1;
+            minutes + 1440 * magnitute
+        } else {
+            minutes % 1440
+        }
     }
 }
