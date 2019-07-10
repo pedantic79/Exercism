@@ -1,8 +1,5 @@
-#[macro_use]
-extern crate maplit;
-extern crate poker;
-
-use poker::*;
+use maplit::hashmap;
+use poker::{Card, Hand, PokerHand, Rank, Suit};
 use std::collections::HashMap;
 
 fn suit_map<'a>() -> HashMap<&'a str, Suit> {
@@ -76,9 +73,10 @@ fn test_parse_hand() {
         Card::try_from("3C"),
         Card::try_from("3H"),
         Card::try_from("4H"),
-    ].iter()
-        .map(|x| x.unwrap())
-        .collect::<Vec<Card>>();
+    ]
+    .iter()
+    .map(|x| x.unwrap())
+    .collect::<Vec<Card>>();
 
     let h = Hand::try_new("3S 3D 3C 3H 4H", &v);
 
