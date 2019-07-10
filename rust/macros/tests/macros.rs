@@ -1,17 +1,15 @@
-#[macro_use]
-extern crate macros;
-
+use macros::hashmap;
 use std::collections::HashMap;
 
 #[test]
 fn test_empty() {
-    let expected: HashMap<usize, usize> = HashMap::new();
-    let computed: HashMap<usize, usize> = hashmap!();
+    let expected: HashMap<u32, u32> = HashMap::new();
+    let computed: HashMap<u32, u32> = hashmap!();
     assert_eq!(computed, expected);
 }
 
 #[test]
-// #[ignore]
+#[ignore]
 fn test_no_trailing_comma() {
     let mut expected = HashMap::new();
     expected.insert(1, "one");
@@ -20,7 +18,7 @@ fn test_no_trailing_comma() {
 }
 
 #[test]
-// #[ignore]
+#[ignore]
 fn test_trailing_comma() {
     let mut expected = HashMap::new();
     expected.insert('h', 89);
@@ -39,7 +37,7 @@ fn test_trailing_comma() {
 }
 
 #[test]
-// #[ignore]
+#[ignore]
 fn test_nested() {
     let mut expected = HashMap::new();
     expected.insert("non-empty", {
@@ -59,4 +57,13 @@ fn test_nested() {
         ),
         expected
     );
+}
+
+mod test {
+    use macros::hashmap;
+    #[test]
+    #[ignore]
+    fn type_not_in_scope() {
+        let _expected: ::std::collections::HashMap<(), ()> = hashmap!();
+    }
 }
