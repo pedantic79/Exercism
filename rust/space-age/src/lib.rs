@@ -7,14 +7,16 @@ pub struct Duration {
 }
 
 impl From<u64> for Duration {
-    fn from(s: u64) -> Self {
-        Duration { seconds: s as f64 }
+    fn from(seconds: u64) -> Self {
+        Duration {
+            seconds: seconds as f64,
+        }
     }
 }
 
 impl From<f64> for Duration {
-    fn from(f: f64) -> Self {
-        Duration { seconds: f }
+    fn from(seconds: f64) -> Self {
+        Duration { seconds }
     }
 }
 
@@ -50,69 +52,42 @@ pub trait Planet {
     fn orbital_duration() -> Duration {
         Self::orbital_factor() * Earth::orbital_duration()
     }
-
     fn years_during(d: &Duration) -> f64 {
         d / Self::orbital_duration()
     }
 }
 
-pub struct Mercury;
-pub struct Venus;
-pub struct Earth;
-pub struct Mars;
-pub struct Jupiter;
-pub struct Saturn;
-pub struct Uranus;
-pub struct Neptune;
+#[macro_export]
+macro_rules! planet {
+    ($name:tt, $factor:literal) => {
+        pub struct $name;
 
-impl Planet for Mercury {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(0.240_846_7)
-    }
+        impl Planet for $name {
+            fn orbital_factor() -> OrbitalFactor {
+                OrbitalFactor::from($factor)
+            }
+        }
+    };
+
+    ($name:tt, $factor:literal, $duration:literal) => {
+        pub struct $name;
+
+        impl Planet for $name {
+            fn orbital_factor() -> OrbitalFactor {
+                OrbitalFactor::from($factor)
+            }
+            fn orbital_duration() -> Duration {
+                Duration::from($duration)
+            }
+        }
+    };
 }
 
-impl Planet for Venus {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(0.615_197_26)
-    }
-}
-
-impl Planet for Earth {
-    fn orbital_duration() -> Duration {
-        Duration::from(31_557_600)
-    }
-
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(1.0)
-    }
-}
-
-impl Planet for Mars {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(1.880_815_8)
-    }
-}
-
-impl Planet for Jupiter {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(11.862_615)
-    }
-}
-
-impl Planet for Saturn {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(29.447_498)
-    }
-}
-
-impl Planet for Uranus {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(84.016_846)
-    }
-}
-
-impl Planet for Neptune {
-    fn orbital_factor() -> OrbitalFactor {
-        OrbitalFactor::from(164.791_32)
-    }
-}
+planet!(Mercury, 0.240_846_7);
+planet!(Venus, 0.615_197_26);
+planet!(Earth, 1.0, 31_557_600);
+planet!(Mars, 1.880_815_8);
+planet!(Jupiter, 11.862_615);
+planet!(Saturn, 29.447_498);
+planet!(Uranus, 84.016_846);
+planet!(Neptune, 164.791_320);
