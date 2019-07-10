@@ -4,6 +4,7 @@ pub fn reverse(input: &str) -> String {
     input.graphemes(true).rev().collect()
 }
 
+#[cfg(test)]
 mod tests {
     #[test]
     fn rosetta() {
