@@ -1,5 +1,3 @@
-extern crate counter;
-
 use counter::Counter;
 use std::cmp::Ordering;
 
@@ -29,7 +27,7 @@ pub enum Suit {
 }
 
 impl Suit {
-    pub fn try_from(s: &str) -> Option<Suit> {
+    pub fn try_from(s: &str) -> Option<Self> {
         use Suit::*;
         match s {
             "S" => Some(Spades),
@@ -51,7 +49,7 @@ pub enum Rank {
 }
 
 impl Rank {
-    pub fn try_from(s: &str) -> Option<Rank> {
+    pub fn try_from(s: &str) -> Option<Self> {
         use Rank::*;
         match s {
             "A" => Some(Ace),
@@ -84,7 +82,7 @@ impl Rank {
 }
 
 impl PartialOrd for Rank {
-    fn partial_cmp(&self, other: &Rank) -> Option<Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.value().cmp(&other.value()))
     }
 }
@@ -97,7 +95,7 @@ pub struct Card {
 
 impl Card {
     pub fn new(r: Rank, s: Suit) -> Self {
-        Card { rank: r, suit: s }
+        Self { rank: r, suit: s }
     }
 
     pub fn try_from(s: &str) -> Option<Self> {
@@ -108,7 +106,7 @@ impl Card {
             let r = Rank::try_from(&s[..split])?;
             let t = Suit::try_from(&s[split..])?;
 
-            Some(Card::new(r, t))
+            Some(Self::new(r, t))
         } else {
             None
         }
@@ -116,7 +114,7 @@ impl Card {
 }
 
 impl Ord for Card {
-    fn cmp(&self, other: &Card) -> Ordering {
+    fn cmp(&self, other: &Self) -> Ordering {
         self.partial_cmp(other).unwrap_or(Ordering::Less)
     }
 }
@@ -137,30 +135,30 @@ impl<'a> Hand<'a> {
         c.sort();
         let cards = [c[0], c[1], c[2], c[3], c[4]];
 
-        Some(Hand {
+        Some(Self {
             source: src,
             pokerhand: PokerHand::process(&cards),
         })
     }
 
-    pub fn try_from(s: &'a str) -> Option<Hand> {
+    pub fn try_from(s: &'a str) -> Option<Self> {
         let cards = s
             .split_whitespace()
             .map(|card| Card::try_from(card))
             .collect::<Option<Vec<Card>>>()?;
 
-        Hand::try_new(s, &cards)
+        Self::try_new(s, &cards)
     }
 }
 
 impl<'a> Ord for Hand<'a> {
-    fn cmp(&self, other: &Hand) -> Ordering {
+    fn cmp(&self, other: &Self) -> Ordering {
         self.pokerhand.cmp(&other.pokerhand)
     }
 }
 
 impl<'a> PartialOrd for Hand<'a> {
-    fn partial_cmp(&self, other: &Hand) -> Option<Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.pokerhand.partial_cmp(&other.pokerhand)
     }
 }
@@ -179,8 +177,8 @@ pub enum PokerHand {
 }
 
 impl PokerHand {
-    fn try_straight(cards: &[Card]) -> Option<PokerHand> {
-        let values = cards.iter().map(|c| c.rank.value()).collect::<Vec<u8>>();
+    fn try_straight(cards: &[Card]) -> Option<Self> {
+        let values = cards.iter().map(|c| c.rank.value()).collect::<Vec<_>>();
 
         let (max, sz, high) = if values[4] == Rank::Ace.value() {
             match values[0] {
@@ -193,28 +191,30 @@ impl PokerHand {
         };
 
         let asc = values[0]..=max;
-        if asc.len() == sz && values.iter().zip(values[0]..max).all(|(a, b)| *a == b) {
+        if asc.len() == sz && values.iter().zip(asc).all(|(a, b)| *a == b) {
             Some(PokerHand::Straight(high))
         } else {
             None
         }
     }
 
-    fn try_flush(cards: &[Card]) -> Option<PokerHand> {
+    fn try_flush(cards: &[Card]) -> Option<Self> {
         if cards.iter().all(|c| c.suit == cards[0].suit) {
-            Some(PokerHand::Flush(PokerHand::mk_value_array(cards)))
+            Some(PokerHand::Flush(Self::mk_value_array(cards)))
         } else {
             None
         }
     }
 
     // Checks for StraighFlush, Straight and Flush
-    fn try_straight_flush(cards: &[Card]) -> Option<PokerHand> {
+    fn try_straight_flush(cards: &[Card]) -> Option<Self> {
         use PokerHand::*;
 
-        let straight = PokerHand::try_straight(cards);
-        let flush = PokerHand::try_flush(cards);
+        let straight = Self::try_straight(cards);
+        let flush = Self::try_flush(cards);
 
+        // if straight and flush, then unwrap and place into StraightFlush enum.
+        // else return the appropriate true value.
         match straight {
             Some(Straight(m)) => match flush {
                 Some(Flush(_)) => Some(StraightFlush(m)),
@@ -225,7 +225,7 @@ impl PokerHand {
     }
 
     // Checks for 4-kind, fullhouse, 3-kind, etc.
-    fn try_mult_cards(sorted: &[(u8, usize)]) -> Option<PokerHand> {
+    fn try_mult_cards(sorted: &[(u8, usize)]) -> Option<Self> {
         use PokerHand::*;
         let sizes = sorted.iter().map(|x| x.1).collect::<Vec<_>>();
         let val = sorted.iter().map(|x| x.0).collect::<Vec<_>>();
@@ -268,18 +268,15 @@ impl PokerHand {
         cards
             .iter()
             .map(|c| c.rank.value())
-            .collect::<Vec<u8>>()
-            .iter()
-            .cloned()
             .collect::<Counter<_>>()
             .most_common_ordered()
     }
 
     // Evaluates all possible PokerHands
-    pub fn process(cards: &[Card]) -> PokerHand {
-        PokerHand::try_straight_flush(cards)
-            .or_else(|| PokerHand::try_mult_cards(&PokerHand::mk_grouped(cards)))
-            .or_else(|| Some(PokerHand::HighCard(PokerHand::mk_value_array(cards))))
+    pub fn process(cards: &[Card]) -> Self {
+        Self::try_straight_flush(cards)
+            .or_else(|| Self::try_mult_cards(&Self::mk_grouped(cards)))
+            .or_else(|| Some(PokerHand::HighCard(Self::mk_value_array(cards))))
             .unwrap()
     }
 }
