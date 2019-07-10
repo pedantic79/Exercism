@@ -9,9 +9,9 @@ pub fn reply(message: &str) -> &str {
 
         match (yell, question) {
             (true, true) => "Calm down, I know what I'm doing!",
-            (true, _) => "Whoa, chill out!",
-            (_, true) => "Sure.",
-            _ => "Whatever.",
+            (true, false) => "Whoa, chill out!",
+            (false, true) => "Sure.",
+            (false, false) => "Whatever.",
         }
     }
 }
