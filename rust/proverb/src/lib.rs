@@ -7,7 +7,8 @@ pub fn build_proverb(list: &[&str]) -> String {
             .chain(std::iter::once(format!(
                 "And all for the want of a {}.",
                 list[0]
-            ))).collect::<Vec<_>>()
+            )))
+            .collect::<Vec<_>>()
             .join("\n")
     }
 }
