@@ -4,8 +4,8 @@ pub fn check(candidate: &str) -> bool {
     let mut hs = HashSet::new();
 
     candidate
-        .to_lowercase()
         .chars()
+        .map(|c| c.to_ascii_lowercase())
         .filter(|c| c.is_alphabetic())
         .all(|c| hs.insert(c))
 }
