@@ -1,10 +1,20 @@
+/// Checks if brackets are balanced. The previous version of this problem was
+/// known as bracket_push and involved learning about structs and lifetimes.
+/// This new version is greatly simplified.
+///
+/// Rather than rewriting everything, I am just calling the previous code.
+///
+pub fn brackets_are_balanced(s: &str) -> bool {
+    Brackets::from(s).are_balanced()
+}
+
 pub struct Brackets<'a> {
-    input_str: &'a str,
+    data: &'a str,
 }
 
 impl<'a> From<&'a str> for Brackets<'a> {
-    fn from(input: &'a str) -> Self {
-        Brackets { input_str: input }
+    fn from(data: &'a str) -> Self {
+        Brackets { data }
     }
 }
 
@@ -13,10 +23,10 @@ impl<'a> Brackets<'a> {
         const VALID: [char; 6] = ['(', ')', '[', ']', '{', '}'];
         let mut stack: Vec<char> = Vec::new();
 
-        for bracket in self.input_str.chars().filter(|x| VALID.contains(x)) {
+        for bracket in self.data.chars().filter(|x| VALID.contains(x)) {
             if let Some(right) = get_match(bracket) {
                 stack.push(right);
-            } else if stack.pop() != Some(bracket) {
+            } else if Some(bracket) != stack.pop() {
                 return false;
             }
         }
