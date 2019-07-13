@@ -5,6 +5,8 @@ pub struct Clock {
     minutes: i32,
 }
 
+const MINUTES_PER_DAY: i32 = 60 * 24;
+
 impl fmt::Display for Clock {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let hrs = self.minutes / 60;
@@ -26,10 +28,10 @@ impl Clock {
     fn adjust(minutes: i32) -> i32 {
         if minutes < 0 {
             // Determine how many times we need to add 1440 to make `minutes` positive
-            let magnitute = minutes.abs() / 1440 + 1;
-            minutes + 1440 * magnitute
+            let magnitute = minutes.abs() / MINUTES_PER_DAY + 1;
+            minutes + MINUTES_PER_DAY * magnitute
         } else {
-            minutes % 1440
+            minutes % MINUTES_PER_DAY
         }
     }
 }
