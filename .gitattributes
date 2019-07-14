@@ -3,3 +3,6 @@
 **/*_test.* linguist-vendored
 **/*.spec.js linguist-vendored
 **/*.test.ts linguist-vendored
+**/babel.config.js linguist-vendored
+CMakeLists.txt linguist-vendored
+Makefile linguist-vendored
