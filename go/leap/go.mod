@@ -1,3 +1,3 @@
-module github.com/pedantic79/Exercism/go/leap
+module leap
 
 go 1.12

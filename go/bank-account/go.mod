@@ -1,3 +1,3 @@
-module github.com/pedantic79/Exercism/go/account
+module account
 
 go 1.12

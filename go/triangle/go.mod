@@ -1,3 +1,3 @@
-module github.com/pedantic79/Exercism/go/triangle
+module triangle
 
 go 1.12
