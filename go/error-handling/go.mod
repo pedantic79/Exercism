@@ -1,3 +1,3 @@
-module github.com/pedantic79/Exercism/go/erratum
+module erratum
 
 go 1.12
