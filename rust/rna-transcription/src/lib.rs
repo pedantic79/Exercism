@@ -1,4 +1,3 @@
-#![allow(clippy::new_ret_no_self)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Nucleotide {
     Adenosine,
@@ -52,37 +51,25 @@ impl Nucleotide {
 
 impl DNA {
     pub fn new(dna: &str) -> Result<Self, usize> {
-        let v = dna
-            .chars()
+        dna.chars()
             .enumerate()
-            .map(|(i, c)| {
-                if let Some(nucleotide) = Nucleotide::try_new_dna(c) {
-                    Ok(nucleotide)
-                } else {
-                    Err(i)
-                }
-            })
-            .collect::<Result<_, _>>()?;
-        Ok(Self { sequence: v })
+            .map(|(i, c)| Nucleotide::try_new_dna(c).ok_or_else(|| i))
+            .collect::<Result<_, _>>()
+            .map(|sequence| Self { sequence })
     }
 
-    pub fn to_rna(&self) -> RNA {
-        let rna = self.sequence.iter().map(|&r| r.transpose()).collect();
+    pub fn into_rna(self) -> RNA {
+        let rna = self.sequence.into_iter().map(|r| r.transpose()).collect();
         RNA { sequence: rna }
     }
 }
 
 impl RNA {
     pub fn new(rna: &str) -> Result<Self, usize> {
-        let mut v = Vec::new();
-
-        for (i, c) in rna.chars().enumerate() {
-            if let Some(nucleotide) = Nucleotide::try_new_rna(c) {
-                v.push(nucleotide);
-            } else {
-                return Err(i);
-            }
-        }
-        Ok(Self { sequence: v })
+        rna.chars()
+            .enumerate()
+            .map(|(i, c)| Nucleotide::try_new_rna(c).ok_or_else(|| i))
+            .collect::<Result<_, _>>()
+            .map(|sequence| Self { sequence })
     }
 }
