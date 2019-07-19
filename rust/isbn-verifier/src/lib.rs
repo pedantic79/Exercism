@@ -13,13 +13,10 @@ fn isbn_checksum(isbn: &str) -> Option<u32> {
     if v.len() != 10 {
         None
     } else {
-        let calculation = v
-            .into_iter()
+        v.into_iter()
             .zip((1..11).rev())
             .map(mult)
-            .collect::<Option<Vec<_>>>()?;
-
-        Some(calculation.iter().sum())
+            .try_fold(0, |acc, x_opt| x_opt.map(|x| acc + x))
     }
 }
 
