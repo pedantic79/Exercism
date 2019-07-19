@@ -14,7 +14,8 @@ pub fn lsp(string_digits: &str, span: usize) -> Result<u64, Error> {
                 c.to_digit(10)
                     .map(u64::from)
                     .ok_or_else(|| Error::InvalidDigit(c))
-            }).collect::<Result<Vec<_>, _>>()?
+            })
+            .collect::<Result<Vec<_>, _>>()?
             .windows(span)
             .map(|w| w.iter().product())
             .max()
