@@ -1,3 +1,5 @@
+use std::cmp::{Ord, Ordering};
+
 #[derive(Debug, PartialEq)]
 pub enum Comparison {
     Equal,
@@ -7,23 +9,14 @@ pub enum Comparison {
 }
 
 pub fn sublist<T: PartialEq>(a: &[T], b: &[T]) -> Comparison {
-    if a == b {
-        Comparison::Equal
-    } else if contains(a, b) {
-        Comparison::Superlist
-    } else if contains(b, a) {
-        Comparison::Sublist
-    } else {
-        Comparison::Unequal
+    match a.len().cmp(&b.len()) {
+        Ordering::Equal if a == b => Comparison::Equal,
+        Ordering::Less if contains(b, a) => Comparison::Sublist,
+        Ordering::Greater if contains(a, b) => Comparison::Superlist,
+        _ => Comparison::Unequal,
     }
 }
 
 fn contains<T: PartialEq>(a: &[T], b: &[T]) -> bool {
-    if b.is_empty() {
-        true
-    } else if a.len() < b.len() {
-        false
-    } else {
-        a.windows(b.len()).any(|s| s == b)
-    }
+    b.is_empty() || a.windows(b.len()).any(|s| s == b)
 }
