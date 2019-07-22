@@ -1,13 +1,10 @@
-export const toRna = (sequence) => {
-  return sequence.toUpperCase().split('').map(
-    (rna) => {
-      switch (rna) {
-        case 'G': return 'C';
-        case 'C': return 'G';
-        case 'T': return 'A';
-        case 'A': return 'U';
-        default: throw new Error('Invalid input DNA.');
-      }
-    }
-  ).join('');
-}
+const rnaMapping = {
+  'G': 'C',
+  'C': 'G',
+  'T': 'A',
+  'A': 'U'
+};
+
+export const toRna = (sequence) =>
+  sequence.split('').map(letter => rnaMapping[letter]).join('');
+
