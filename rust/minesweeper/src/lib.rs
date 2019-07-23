@@ -1,4 +1,3 @@
-#![feature(exclusive_range_pattern)]
 use std::char;
 use std::iter::FromIterator;
 
@@ -8,8 +7,8 @@ struct Board {
 
 impl From<&[&str]> for Board {
     fn from(input: &[&str]) -> Self {
-        let v = input.iter().map(|&r| r.chars().collect()).collect();
-        Self { places: v }
+        let places = input.iter().map(|&r| r.chars().collect()).collect();
+        Self { places }
     }
 }
 
@@ -21,7 +20,7 @@ impl Into<Vec<String>> for Board {
 
 impl Board {
     fn annotate(self) -> Self {
-        let v = self
+        let places = self
             .places
             .iter()
             .enumerate()
@@ -33,13 +32,13 @@ impl Board {
             })
             .collect();
 
-        Self { places: v }
+        Self { places }
     }
 
     fn count_mines(&self, r: usize, c: usize) -> char {
         let p = self.places[r][c];
         match p {
-            '0'..'9' | '*' | '?' => p,
+            '0'..='9' | '*' | '?' => p,
             ' ' => {
                 let mine_count = self
                     .neighbors(r, c)
