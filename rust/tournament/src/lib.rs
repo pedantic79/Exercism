@@ -44,10 +44,9 @@ impl Record {
 
 impl Ord for Record {
     fn cmp(&self, other: &Self) -> Ordering {
-        match self.points.cmp(&other.points) {
-            Ordering::Equal => other.name.cmp(&self.name),
-            order => order,
-        }
+        self.points
+            .cmp(&other.points)
+            .then_with(|| other.name.cmp(&self.name))
     }
 }
 
