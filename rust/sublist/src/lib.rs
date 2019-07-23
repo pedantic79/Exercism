@@ -1,4 +1,4 @@
-use std::cmp::{Ord, Ordering};
+use std::cmp::Ordering;
 
 #[derive(Debug, PartialEq)]
 pub enum Comparison {
