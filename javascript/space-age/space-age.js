@@ -1,6 +1,6 @@
 const EARTH_YEAR = 31557600;
 
-const orbitalPeriods = {
+const ORBITAL_PERIODS = {
   "earth": 1.00000000,
   "mercury": 0.24084670,
   "venus": 0.61519726,
@@ -12,7 +12,7 @@ const orbitalPeriods = {
 };
 
 export const age = (planet, seconds) => {
-  return nearestHundredths(seconds / EARTH_YEAR / orbitalPeriods[planet]);
+  return nearestHundredths(seconds / EARTH_YEAR / ORBITAL_PERIODS[planet]);
 };
 
 const nearestHundredths = (num) => Math.round(100 * num) / 100;
