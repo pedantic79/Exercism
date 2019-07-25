@@ -2,3 +2,7 @@
 edition = "2018"
 name = "pangram"
 version = "0.0.0"
+
+[dependencies]
+bit-set = "0.5.1"
+easybench = "0.1.4"
