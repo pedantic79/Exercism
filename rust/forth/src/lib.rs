@@ -39,17 +39,17 @@ impl Forth {
         self.stack.get()
     }
 
-    fn resolve(&self, tokens: &[Token]) -> Vec<Token> {
-        let mut mapped = Vec::new();
-        for t in tokens.iter() {
-            if self.words.contains_key(t) {
-                mapped.extend(self.words.get(t).unwrap().to_vec());
-            } else {
-                mapped.push(t.clone());
-            }
-        }
+    pub fn eval(&mut self, input: &str) -> ForthResult {
+        let tokens: Vec<Token> = input
+            .split_whitespace()
+            .map(|s| s.to_uppercase().parse::<Token>().unwrap())
+            .collect();
 
-        mapped
+        if tokens.len() > 1 && tokens[0] == Token::WordStart {
+            self.add_func(tokens)
+        } else {
+            self.execute_tokens(tokens)
+        }
     }
 
     fn add_func(&mut self, tokens: Vec<Token>) -> ForthResult {
@@ -90,16 +90,16 @@ impl Forth {
         Ok(())
     }
 
-    pub fn eval(&mut self, input: &str) -> ForthResult {
-        let tokens: Vec<Token> = input
-            .split_whitespace()
-            .map(|s| s.to_uppercase().parse::<Token>().unwrap())
-            .collect();
-
-        if tokens.len() > 1 && tokens[0] == Token::WordStart {
-            self.add_func(tokens)
-        } else {
-            self.execute_tokens(tokens)
+    fn resolve(&self, tokens: &[Token]) -> Vec<Token> {
+        let mut mapped = Vec::new();
+        for t in tokens.iter() {
+            if self.words.contains_key(t) {
+                mapped.extend(self.words.get(t).unwrap().to_vec());
+            } else {
+                mapped.push(t.clone());
+            }
         }
+
+        mapped
     }
 }
