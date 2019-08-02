@@ -1,5 +1,6 @@
-pub fn factors(mut n: u64) -> Vec<u64> {
+pub fn factors(n: u64) -> Vec<u64> {
     let mut v = Vec::new();
+    let mut n = n;
     let mut divisor = 2;
 
     while n > 1 {
@@ -7,7 +8,7 @@ pub fn factors(mut n: u64) -> Vec<u64> {
             v.push(divisor);
             n /= divisor
         } else {
-            divisor  += 1
+            divisor += 1
         }
     }
 
