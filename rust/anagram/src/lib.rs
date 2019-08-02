@@ -50,6 +50,6 @@ where
             let l = anagram.to_lowercase();
             lower != l && fnstr == f(&l)
         })
-        .cloned()
+        .copied()
         .collect()
 }
