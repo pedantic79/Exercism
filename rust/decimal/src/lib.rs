@@ -53,7 +53,6 @@ impl Decimal {
 
             Self { number, offset }
         }
-
     }
 
     pub fn try_from(input: &str) -> Option<Self> {
@@ -75,7 +74,6 @@ impl Decimal {
             None
         }
     }
-
 }
 
 impl Add for Decimal {
