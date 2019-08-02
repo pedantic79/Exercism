@@ -17,7 +17,7 @@ impl School {
     }
 
     pub fn grades(&self) -> Vec<u32> {
-        let mut grades = self.roster.keys().cloned().collect::<Vec<_>>();
+        let mut grades = self.roster.keys().copied().collect::<Vec<_>>();
         grades.sort();
         grades
     }
