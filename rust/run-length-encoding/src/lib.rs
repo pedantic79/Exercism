@@ -15,7 +15,8 @@ pub fn encode(source: &str) -> String {
             } else {
                 format!("{}", key)
             }
-        }).collect()
+        })
+        .collect()
 }
 
 pub fn decode(source: &str) -> String {
@@ -28,5 +29,6 @@ pub fn decode(source: &str) -> String {
                 output.push_str(&x.to_string().repeat(cmp::max(count, 1)));
                 (output, 0)
             }
-        }).0
+        })
+        .0
 }

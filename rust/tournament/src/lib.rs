@@ -22,7 +22,9 @@ pub fn tally(match_results: &str) -> String {
                 }
             })
             .fold(HashMap::new(), |mut hm, (name, outcome)| {
-                hm.entry(name).or_insert_with(|| Record::new(name)).outcome(outcome);
+                hm.entry(name)
+                    .or_insert_with(|| Record::new(name))
+                    .outcome(outcome);
                 hm
             })
             .values()
