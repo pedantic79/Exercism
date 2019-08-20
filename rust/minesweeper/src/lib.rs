@@ -52,31 +52,22 @@ impl Board {
                     char::from_digit(mine_count as u32, 10).unwrap_or('?')
                 }
             }
-            _ => unreachable!(),
+            _ => unreachable!("Unexpected character '{}'", p),
         }
     }
 
     fn neighbors(&self, r: usize, c: usize) -> Vec<(usize, usize)> {
-        let (min_r, max_r) = get_range(r, self.places.len());
-        let (min_c, max_c) = get_range(c, self.places[r].len());
-        let mut v = Vec::new();
-
-        for row in min_r..=max_r {
-            for col in min_c..=max_c {
-                v.push((row, col));
-            }
-        }
-
-        v
+        get_range(r, self.places.len())
+            .flat_map(|row| get_range(c, self.places[r].len()).map(move |col| (row, col)))
+            .collect()
     }
 }
 
 pub fn annotate(minefield: &[&str]) -> Vec<String> {
-    Board::from(minefield).annotate().into()
+    let b: Board = minefield.into();
+    b.annotate().into()
 }
 
-fn get_range(n: usize, n_max: usize) -> (usize, usize) {
-    let min = if n == 0 { 0 } else { n - 1 };
-    let max = if n == n_max - 1 { n_max - 1 } else { n + 1 };
-    (min, max)
+fn get_range(n: usize, n_max: usize) -> impl Iterator<Item = usize> {
+    n.saturating_sub(1)..(n + 2).min(n_max)
 }
