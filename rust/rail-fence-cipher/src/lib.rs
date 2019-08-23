@@ -1,11 +1,3 @@
-use std::collections::BTreeMap;
-use std::iter::from_fn;
-
-enum Direction {
-    Up,
-    Down,
-}
-
 pub struct RailFence(usize);
 
 impl RailFence {
@@ -28,17 +20,17 @@ impl RailFence {
     }
 
     pub fn decode(&self, cipher: &str) -> String {
-        let indices_map: BTreeMap<usize, usize> =
+        let indices_freq: Vec<usize> =
             self.indices()
                 .take(cipher.len())
-                .fold(BTreeMap::new(), |mut btm, idx| {
-                    *btm.entry(idx).or_insert(0) += 1;
-                    btm
+                .fold(vec![0; self.0], |mut freq, idx| {
+                    freq[idx] += 1;
+                    freq
                 });
 
         let mut fence = self.mk_fence();
         let mut pos = 0;
-        for (rail, frequency) in fence.iter_mut().zip(indices_map.values()) {
+        for (rail, frequency) in fence.iter_mut().zip(indices_freq) {
             rail.extend(cipher[pos..pos + frequency].chars().rev());
             pos += frequency;
         }
@@ -52,25 +44,7 @@ impl RailFence {
     }
 
     fn indices(&self) -> impl Iterator<Item = usize> + '_ {
-        let mut n = 1;
-        let mut direction = Direction::Down;
-
-        from_fn(move || {
-            n = match direction {
-                Direction::Up if n + 1 == self.0 => {
-                    direction = Direction::Down;
-                    n - 1
-                }
-                Direction::Up => n + 1,
-
-                Direction::Down if n == 0 => {
-                    direction = Direction::Up;
-                    n + 1
-                }
-                Direction::Down => n - 1,
-            };
-
-            Some(n)
-        })
+        let l = self.0.saturating_sub(1);
+        (0..=l).chain((1..l).rev()).cycle()
     }
 }
