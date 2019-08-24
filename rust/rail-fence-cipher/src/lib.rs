@@ -20,9 +20,10 @@ impl RailFence {
     }
 
     pub fn decode(&self, cipher: &str) -> String {
+        let len = cipher.len();
         let indices_freq: Vec<usize> =
             self.indices()
-                .take(cipher.len())
+                .take(len)
                 .fold(vec![0; self.0], |mut freq, idx| {
                     freq[idx] += 1;
                     freq
@@ -36,8 +37,8 @@ impl RailFence {
         }
 
         self.indices()
-            .take(cipher.len())
-            .fold(String::new(), |mut s, idx| {
+            .take(len)
+            .fold(String::with_capacity(len), |mut s, idx| {
                 s.push(fence[idx].pop().unwrap());
                 s
             })
