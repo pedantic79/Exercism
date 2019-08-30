@@ -4,9 +4,9 @@ export class GradeSchool {
   }
 
   roster() {
-    return Object.keys(this.roll).reduce((acc, gradeNum) => {
-      return { ...acc, [gradeNum]: this.grade(gradeNum) }
-    }, {})
+    return Object.keys(this.roll).reduce((acc, gradeNum) => (
+      { ...acc, [gradeNum]: this.grade(gradeNum) }
+    ), {})
   }
 
   add(name, gradeNum) {
