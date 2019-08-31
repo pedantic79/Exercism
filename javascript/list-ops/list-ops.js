@@ -1,36 +1,33 @@
 export class List {
   constructor(list = []) {
-    this.head = list.reduceRight(LinkedList.cons, null)
+    this.head = list.reduceRight(ListImpl.cons, null)
   }
 
-  // Turns a LinkedList to a List
-  static wrap(linkedList) {
+  // Turns a ListImpl to a List
+  static wrap(ListImpl) {
     let l = new List()
-    l.head = linkedList
+    l.head = ListImpl
     return l
   }
 
   get values() {
-    return this.foldl((acc, v) => {
-      acc.push(v)
-      return acc
-    }, [])
+    return this.foldl((acc, v) => acc.concat(v), [])
   }
 
   append(list) {
-    return List.wrap(LinkedList.append(this.head, list.head))
+    return List.wrap(ListImpl.append(this.head, list.head))
   }
 
   concat(list) {
-    return List.wrap(list.foldl((acc, v) => LinkedList.append(acc, v.head), this.head))
+    return List.wrap(list.foldl((acc, v) => ListImpl.append(acc, v.head), this.head))
   }
 
   filter(pred) {
-    return List.wrap(this.foldr((acc, v) => pred(v) ? LinkedList.cons(acc, v) : acc, null))
+    return List.wrap(this.foldr((acc, v) => pred(v) ? ListImpl.cons(acc, v) : acc, null))
   }
 
   map(fn) {
-    return List.wrap(this.foldr((acc, v) => LinkedList.cons(acc, fn(v)), null))
+    return List.wrap(this.foldr((acc, v) => ListImpl.cons(acc, fn(v)), null))
   }
 
   length() {
@@ -38,38 +35,38 @@ export class List {
   }
 
   foldl(fn, init) {
-    return LinkedList.foldl(fn, init, this.head)
+    return ListImpl.foldl(fn, init, this.head)
   }
 
   foldr(fn, init) {
-    return LinkedList.foldr(fn, init, this.head)
+    return ListImpl.foldr(fn, init, this.head)
   }
 
   reverse() {
-    return List.wrap(this.foldl(LinkedList.cons, null))
+    return List.wrap(this.foldl(ListImpl.cons, null))
   }
 }
 
 // Simple Functional Singly-Linked List
-class LinkedList {
+class ListImpl {
   constructor({ value, next }) {
     this.value = value
     this.next = next
   }
 
   static cons(list, value) {
-    return new LinkedList({ value: value, next: list })
+    return new ListImpl({ value: value, next: list })
   }
 
   static foldr(fn, init, xs) {
-    return xs ? fn(LinkedList.foldr(fn, init, xs.next), xs.value) : init
+    return xs ? fn(ListImpl.foldr(fn, init, xs.next), xs.value) : init
   }
 
   static foldl(fn, init, xs) {
-    return xs ? LinkedList.foldl(fn, fn(init, xs.value), xs.next) : init
+    return xs ? ListImpl.foldl(fn, fn(init, xs.value), xs.next) : init
   }
 
   static append(base, xs) {
-    return base ? LinkedList.foldr(LinkedList.cons, xs, base) : xs
+    return base ? ListImpl.foldr(ListImpl.cons, xs, base) : xs
   }
 }
