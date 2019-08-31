@@ -4,9 +4,9 @@ export class List {
   }
 
   // Turns a ListImpl to a List
-  static wrap(ListImpl) {
+  static wrap(listImpl) {
     let l = new List()
-    l.head = ListImpl
+    l.head = listImpl
     return l
   }
 
@@ -31,7 +31,7 @@ export class List {
   }
 
   length() {
-    return this.foldl((acc, v) => acc + 1, 0)
+    return this.foldl((acc) => acc + 1, 0)
   }
 
   foldl(fn, init) {
@@ -67,6 +67,6 @@ class ListImpl {
   }
 
   static append(base, xs) {
-    return base ? ListImpl.foldr(ListImpl.cons, xs, base) : xs
+    return ListImpl.foldr(ListImpl.cons, xs, base)
   }
 }
