@@ -1,15 +1,20 @@
-module DNA (nucleotideCounts) where
+module DNA (nucleotideCounts, Nucleotide(..)) where
 
 import qualified Data.Map as M
 
-nucleotideCounts :: String -> Either String (M.Map Char Int)
-nucleotideCounts xs = foldNtides <$> xs'
-    where
-        foldNtides = foldr (\ch m -> M.insertWith (+) ch 1 m) zero
-        zero = M.fromList([('A', 0), ('T', 0), ('G', 0), ('C', 0)])
-        xs' = mapM isValid xs
+data Nucleotide = A | C | G | T deriving (Eq, Ord, Show)
 
-isValid :: Char -> Either String Char
-isValid x
-    | elem x "ACTG" = Right x
-    | otherwise     = Left $ "Invalid nucleotide: " ++ show x
+nucleotideCounts :: String -> Either String (M.Map Nucleotide Int)
+nucleotideCounts = fmap foldNtides . traverse isValid
+    where
+        foldNtides = foldr (\ntide m -> M.insertWith (+) ntide 1 m) zero
+        zero = M.fromList[(A, 0), (T, 0), (G, 0), (C, 0)]
+
+isValid :: Char -> Either String Nucleotide
+isValid nucleotide =
+    case nucleotide of
+        'A' -> Right A
+        'C' -> Right C
+        'G' -> Right G
+        'T' -> Right T
+        _   -> Left $ "Invalid nucleotide: " ++ show nucleotide
