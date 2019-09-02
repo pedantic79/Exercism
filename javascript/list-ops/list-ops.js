@@ -19,19 +19,36 @@ export class List {
   }
 
   concat(list) {
-    return List.wrap(list.foldl((acc, v) => ListImpl.append(acc, v.head), this.head))
+    return List.wrap(
+      ListImpl.append(this.head,
+        list.foldr(
+          (acc, v) => ListImpl.append(v.head, acc),
+          null
+        )
+      )
+    )
   }
 
   filter(pred) {
-    return List.wrap(this.foldr((acc, v) => pred(v) ? ListImpl.cons(acc, v) : acc, null))
+    return List.wrap(
+      this.foldr(
+        (acc, v) => pred(v) ? ListImpl.cons(acc, v) : acc,
+        null
+      )
+    )
   }
 
   map(fn) {
-    return List.wrap(this.foldr((acc, v) => ListImpl.cons(acc, fn(v)), null))
+    return List.wrap(
+      this.foldr(
+        (acc, v) => ListImpl.cons(acc, fn(v)),
+        null
+      )
+    )
   }
 
   length() {
-    return this.foldl((acc) => acc + 1, 0)
+    return this.foldr((acc) => acc + 1, 0)
   }
 
   foldl(fn, init) {
