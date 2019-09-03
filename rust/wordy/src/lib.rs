@@ -6,7 +6,7 @@ enum Operation {
     Pow,
 }
 
-struct Tokens<'a> (std::iter::Peekable<std::str::SplitWhitespace<'a>>);
+struct Tokens<'a>(std::iter::Peekable<std::str::SplitWhitespace<'a>>);
 
 impl<'a> Tokens<'a> {
     pub fn new(input: &'a str) -> Self {
@@ -29,7 +29,7 @@ impl<'a> Tokens<'a> {
         let num = left.parse().ok()?;
         match (num % 10, right) {
             (1, "st") | (2, "nd") | (3, "rd") => Some(num),
-            (num, "th") => Some(num),
+            (_, "th") => Some(num),
             _ => None,
         }
     }
