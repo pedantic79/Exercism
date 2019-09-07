@@ -32,11 +32,7 @@ fn codec<F>(op: &F, (letter, key): (char, char)) -> Option<char>
 where
     F: Fn(u8, u8) -> u8,
 {
-    if letter.is_ascii_alphabetic()
-        && letter.is_ascii_lowercase()
-        && key.is_ascii_alphabetic()
-        && key.is_ascii_lowercase()
-    {
+    if letter.is_ascii_lowercase() && key.is_ascii_lowercase() {
         let key = key as u8 - b'a';
         let letter = letter as u8 - b'a' + 26;
         Some((op(letter, key) % 26 + b'a') as char)
