@@ -44,8 +44,38 @@ impl RailFence {
             })
     }
 
-    fn indices(&self) -> impl Iterator<Item = usize> + '_ {
+    fn indices(&self) -> impl Iterator<Item = usize> {
         let l = self.0.saturating_sub(1);
         (0..=l).chain((1..l).rev()).cycle()
     }
+
+    pub fn indices2(&self) -> impl Iterator<Item = usize> {
+        let l = self.0;
+        let mut n = 1;
+        let mut direction = Direction::Down;
+
+        from_fn(move || {
+            n = match direction {
+                Direction::Up if n + 1 < l => n + 1,
+                Direction::Up => {
+                    direction = Direction::Down;
+                    n - 1
+                }
+                Direction::Down if n > 0 => n - 1,
+                Direction::Down => {
+                    direction = Direction::Up;
+                    n + 1
+                }
+            };
+
+            Some(n)
+        })
+    }
+}
+
+use std::iter::from_fn;
+
+enum Direction {
+    Up,
+    Down,
 }
