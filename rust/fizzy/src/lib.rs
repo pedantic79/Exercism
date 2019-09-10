@@ -1,6 +1,6 @@
 use std::ops::Rem;
 
-type Pred<T> = Box<Fn(T) -> bool>;
+type Pred<T> = Box<dyn Fn(T) -> bool>;
 
 pub struct Matcher<T> {
     predicate: Pred<T>,
