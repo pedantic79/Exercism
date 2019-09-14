@@ -1,7 +1,10 @@
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    sync::Mutex,
+};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Palindrome(BTreeSet<(u64, u64)>, u64);
 
 impl Palindrome {
@@ -24,17 +27,30 @@ impl Palindrome {
     }
 }
 
+#[inline(always)]
 pub fn palindrome_products(min: u64, max: u64) -> Option<(Palindrome, Palindrome)> {
-    // let map: BTreeMap<u64, Palindrome> = (min..=max)
-    //     .flat_map(|x| (x..=max).map(move |y| (x, y)))
-    //     .filter(|(i, j)| is_palindrome(i * j))
-    //     .fold(BTreeMap::new(), |mut acc, (a, b)| {
-    //         acc.entry(a * b)
-    //             .and_modify(|e| e.insert(a, b))
-    //             .or_insert_with(|| Palindrome::new(a, b));
-    //         acc
-    //     });
+    palindrome_products_mutex(min, max)
+}
 
+// This is a simple non-parallel version
+pub fn palindrome_products_sequential(min: u64, max: u64) -> Option<(Palindrome, Palindrome)> {
+    let map: BTreeMap<u64, Palindrome> = (min..=max)
+        .flat_map(|x| (x..=max).map(move |y| (x, y)))
+        .filter(|(i, j)| is_palindrome(i * j))
+        .fold(BTreeMap::new(), |mut acc, (a, b)| {
+            acc.entry(a * b)
+                .and_modify(|e| e.insert(a, b))
+                .or_insert_with(|| Palindrome::new(a, b));
+            acc
+        });
+
+    // Using .into_iter().map() over .values() to move the values out of the BTreeMap
+    let mut p = map.into_iter().map(|(_, v)| v);
+    Some((p.next()?, p.last()?))
+}
+
+// This builds the BTreeMap in parallel using Rayon::reduce
+pub fn palindrome_products_reduce(min: u64, max: u64) -> Option<(Palindrome, Palindrome)> {
     let map: BTreeMap<u64, Palindrome> = (min..=max)
         .into_par_iter()
         .flat_map(|i| (i..=max).into_par_iter().map(move |j| (i, j)))
@@ -49,7 +65,35 @@ pub fn palindrome_products(min: u64, max: u64) -> Option<(Palindrome, Palindrome
             acc
         });
 
+    // Using .into_iter().map() over .values() to move the values out of the BTreeMap
     let mut p = map.into_iter().map(|(_, v)| v);
+    Some((p.next()?, p.last()?))
+}
+
+// This builds the BTreeMap in parallel updating a common "global" BTreeMap
+// Using a Mutex<Option<T>>, so we can move the value out of the Mutex to avoid
+// needing to Clone the palindromes to return them. Without it, we would not
+// be able to move the contents held by a Mutex. This leverages Option<T>::take().
+// See: https://stackoverflow.com/questions/30573188/cannot-move-data-out-of-a-mutex
+pub fn palindrome_products_mutex(min: u64, max: u64) -> Option<(Palindrome, Palindrome)> {
+    let map: Mutex<Option<BTreeMap<u64, Palindrome>>> = Mutex::new(Some(BTreeMap::new()));
+
+    (min..=max)
+        .into_par_iter()
+        .flat_map(|i| (i..=max).into_par_iter().map(move |j| (i, j)))
+        .filter(|(i, j)| is_palindrome(i * j))
+        .for_each(|(a, b)| {
+            let mut mutex_guard = map.lock().unwrap();
+            mutex_guard
+                .as_mut()
+                .unwrap()
+                .entry(a * b)
+                .and_modify(|e| e.insert(a, b))
+                .or_insert_with(|| Palindrome::new(a, b));
+        });
+
+    let mut mutex_guard = map.lock().unwrap();
+    let mut p = mutex_guard.take().unwrap().into_iter().map(|(_, v)| v);
     Some((p.next()?, p.last()?))
 }
 
