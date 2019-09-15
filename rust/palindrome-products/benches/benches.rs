@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
-use palindrome_products::{
+use palindrome_products::products::{
     palindrome_products_mutex, palindrome_products_reduce, palindrome_products_sequential,
 };
 use std::time::Duration;
