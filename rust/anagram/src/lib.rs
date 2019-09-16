@@ -48,7 +48,10 @@ where
         .iter()
         .filter(|anagram| {
             let l = anagram.to_lowercase();
-            lower != l && fnstr == f(&l)
+
+            // slight performance increase by adding the length comparision
+            // since we can avoid doing that check if the lengths are not equal
+            lower != l && lower.len() == l.len() && fnstr == f(&l)
         })
         .copied()
         .collect()
