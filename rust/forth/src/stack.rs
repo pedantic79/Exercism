@@ -61,7 +61,7 @@ impl Stack {
 
     fn binary_op<F>(&mut self, f: F) -> ForthResult
     where
-        F: (Fn(Value, Value) -> ValueResult),
+        F: (FnOnce(Value, Value) -> ValueResult),
     {
         let a = self.stack_pop()?;
         let b = self.stack_pop()?;
