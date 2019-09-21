@@ -2,9 +2,8 @@ section .text
 global leap_year
 leap_year:
     xor eax, eax        ; set default return to 0 (FALSE)
-    test dil, 3         ; Check bottom 2 bits to see if they are set
-    jne .end            ; ZF=1 if any bit set, jump to end if divisible by 4
-    mov al, 1           ; Set the return to TRUE just in-case
+    test dil, 3         ; Check bottom 2 bits to see if it's divisible by 4
+    jne .is_not_leap    ; ZF=1 if any bit set, jump to .is_not_leap
 
     ; Used https://www.hackersdelight.org/magic.htm to determine magic number
     ; and shift amount to divide by 100 using multiplication and shifting
@@ -15,14 +14,14 @@ leap_year:
     ; If it's the same as edi, that means the modulo is 0
     imul ecx, ecx, 100
     cmp edi, ecx        ; compare if they are equal
-    jne .end            ; if they're note equal return TRUE
+    jne .is_leap        ; if not divisible by 100, then it is a leap
 
-    ; Same as above, but shift by 39 to do /400
-    imul rcx, rdi, 0x51EB851F
-    shr rcx, 39
-
-    imul ecx, ecx, 400  ; multiply by 400 to do the same muliplier
-    cmp edi, ecx
-    sete al             ; sets the A register to 0 if divisible by 400, 1 if not
-.end:
+    ; As mawis pointed out, 400 has the prime factors of 2, 2, 2, 2, 5, 5
+    ; And since we already know the number is divisible by 25, since it's
+    ; divisible by 100. We only need to check if it's divisible by 16
+    test dil, 15
+    jne .is_not_leap    ; if it is divisible by 400, then it is not a leap
+.is_leap:
+    mov al, 1
+.is_not_leap:
     ret
