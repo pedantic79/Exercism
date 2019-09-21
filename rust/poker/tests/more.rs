@@ -1,6 +1,7 @@
 use maplit::hashmap;
-use poker::{Card, Hand, PokerHand, Rank, Suit};
+use poker::{Card, Error, Hand, PokerHand, Rank, Suit};
 use std::collections::HashMap;
+use std::convert::TryFrom;
 
 fn suit_map<'a>() -> HashMap<&'a str, Suit> {
     use Suit::*;
@@ -37,18 +38,18 @@ fn rank_map<'a>() -> HashMap<&'a str, Rank> {
 fn test_parse_suit() {
     suit_map()
         .iter()
-        .for_each(|(k, v)| assert_eq!(Suit::try_from(k).as_ref(), Some(v)));
+        .for_each(|(&k, v)| assert_eq!(Suit::try_from(k).as_ref(), Ok(v)));
 
-    assert_eq!(Suit::try_from("A"), None);
+    assert_eq!(Suit::try_from("A"), Err(Error::InvalidSuit));
 }
 
 #[test]
 fn test_parse_rank() {
     rank_map()
         .iter()
-        .for_each(|(k, v)| assert_eq!(Rank::try_from(k).as_ref(), Some(v)));
+        .for_each(|(&k, v)| assert_eq!(Rank::try_from(k).as_ref(), Ok(v)));
 
-    assert_eq!(Rank::try_from("1"), None);
+    assert_eq!(Rank::try_from("1"), Err(Error::InvalidRank));
 }
 
 #[test]
@@ -57,12 +58,12 @@ fn test_parse_card() {
         suit_map().iter().for_each(|(s, suit_exp)| {
             let card = format!("{}{}", r, s);
             let exp = poker::Card::new(*rank_exp, *suit_exp);
-            assert_eq!(Card::try_from(&card), Some(exp));
+            assert_eq!(Card::try_from(&card[..]), Ok(exp));
         })
     });
 
-    assert_eq!(Card::try_from("1S"), None);
-    assert_eq!(Card::try_from("AE"), None);
+    assert_eq!(Card::try_from("1S"), Err(Error::InvalidRank));
+    assert_eq!(Card::try_from("AE"), Err(Error::InvalidSuit));
 }
 
 #[test]
@@ -75,15 +76,19 @@ fn test_parse_hand() {
         Card::try_from("4H"),
     ]
     .iter()
-    .map(|x| x.unwrap())
+    .map(|x| x.as_ref().unwrap())
+    .copied()
     .collect::<Vec<Card>>();
 
     let h = Hand::try_new("3S 3D 3C 3H 4H", &v);
 
     assert_eq!(Hand::try_from("3S 3D 3C 3H 4H"), h);
-    assert_eq!(Hand::try_from("3S 3D 3C 3H"), None);
-    assert_eq!(Hand::try_from("3S 3D 3C 3H 4H 5H"), None);
-    assert_eq!(Hand::try_from("3S 3D 3C 3H 5Z"), None);
+    assert_eq!(Hand::try_from("3S 3D 3C 3H"), Err(Error::InvalidCardCount));
+    assert_eq!(
+        Hand::try_from("3S 3D 3C 3H 4H 5H"),
+        Err(Error::InvalidCardCount)
+    );
+    assert_eq!(Hand::try_from("3S 3D 3C 3H 5Z"), Err(Error::InvalidSuit));
 }
 
 #[test]
