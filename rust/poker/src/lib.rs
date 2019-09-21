@@ -1,11 +1,21 @@
 use counter::Counter;
 use std::cmp::Ordering;
+use std::convert::TryFrom;
+
+#[derive(Debug, PartialEq)]
+pub enum Error {
+    InvalidCard,
+    InvalidCardCount,
+    InvalidRank,
+    InvalidSuit,
+}
 
 pub fn winning_hands<'a>(hands: &[&'a str]) -> Option<Vec<&'a str>> {
     let mut h = hands
         .iter()
-        .map(|h| Hand::try_from(h))
-        .collect::<Option<Vec<Hand>>>()?;
+        .map(|h| Hand::try_from(*h))
+        .collect::<Result<Vec<Hand>, Error>>()
+        .ok()?;
     h.sort();
 
     let winner = h.last()?;
@@ -26,15 +36,16 @@ pub enum Suit {
     Spades,
 }
 
-impl Suit {
-    pub fn try_from(s: &str) -> Option<Self> {
+impl TryFrom<&str> for Suit {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         use Suit::*;
         match s {
-            "S" => Some(Spades),
-            "H" => Some(Hearts),
-            "D" => Some(Diamonds),
-            "C" => Some(Clubs),
-            _ => None,
+            "S" => Ok(Spades),
+            "H" => Ok(Hearts),
+            "D" => Ok(Diamonds),
+            "C" => Ok(Clubs),
+            _ => Err(Error::InvalidSuit),
         }
     }
 }
@@ -49,26 +60,6 @@ pub enum Rank {
 }
 
 impl Rank {
-    pub fn try_from(s: &str) -> Option<Self> {
-        use Rank::*;
-        match s {
-            "A" => Some(Ace),
-            "K" => Some(King),
-            "Q" => Some(Queen),
-            "J" => Some(Jack),
-            "10" => Some(Num(10)),
-            "9" => Some(Num(9)),
-            "8" => Some(Num(8)),
-            "7" => Some(Num(7)),
-            "6" => Some(Num(6)),
-            "5" => Some(Num(5)),
-            "4" => Some(Num(4)),
-            "3" => Some(Num(3)),
-            "2" => Some(Num(2)),
-            _ => None,
-        }
-    }
-
     fn value(self) -> u8 {
         use Rank::*;
         match self {
@@ -77,6 +68,29 @@ impl Rank {
             Queen => 12,
             Jack => 11,
             Num(n) => n,
+        }
+    }
+}
+
+impl TryFrom<&str> for Rank {
+    type Error = Error;
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        use Rank::*;
+        match s {
+            "A" => Ok(Ace),
+            "K" => Ok(King),
+            "Q" => Ok(Queen),
+            "J" => Ok(Jack),
+            "10" => Ok(Num(10)),
+            "9" => Ok(Num(9)),
+            "8" => Ok(Num(8)),
+            "7" => Ok(Num(7)),
+            "6" => Ok(Num(6)),
+            "5" => Ok(Num(5)),
+            "4" => Ok(Num(4)),
+            "3" => Ok(Num(3)),
+            "2" => Ok(Num(2)),
+            _ => Err(Error::InvalidRank),
         }
     }
 }
@@ -97,8 +111,12 @@ impl Card {
     pub fn new(r: Rank, s: Suit) -> Self {
         Self { rank: r, suit: s }
     }
+}
 
-    pub fn try_from(s: &str) -> Option<Self> {
+impl TryFrom<&str> for Card {
+    type Error = Error;
+
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         let l = s.len();
 
         if l == 2 || l == 3 {
@@ -106,9 +124,9 @@ impl Card {
             let r = Rank::try_from(&s[..split])?;
             let t = Suit::try_from(&s[split..])?;
 
-            Some(Self::new(r, t))
+            Ok(Self::new(r, t))
         } else {
-            None
+            Err(Error::InvalidCard)
         }
     }
 }
@@ -126,26 +144,30 @@ pub struct Hand<'a> {
 }
 
 impl<'a> Hand<'a> {
-    pub fn try_new(src: &'a str, cards: &[Card]) -> Option<Self> {
+    pub fn try_new(src: &'a str, cards: &[Card]) -> Result<Self, Error> {
         if cards.len() != 5 {
-            return None;
+            return Err(Error::InvalidCardCount);
         }
 
         let mut c = cards.to_owned();
         c.sort();
         let cards = [c[0], c[1], c[2], c[3], c[4]];
 
-        Some(Self {
+        Ok(Self {
             source: src,
             pokerhand: PokerHand::process(&cards),
         })
     }
+}
 
-    pub fn try_from(s: &'a str) -> Option<Self> {
+impl<'a> TryFrom<&'a str> for Hand<'a> {
+    type Error = Error;
+
+    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
         let cards = s
             .split_whitespace()
-            .map(|card| Card::try_from(card))
-            .collect::<Option<Vec<Card>>>()?;
+            .map(Card::try_from)
+            .collect::<Result<Vec<Card>, Error>>()?;
 
         Self::try_new(s, &cards)
     }
