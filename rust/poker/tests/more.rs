@@ -1,7 +1,10 @@
 use maplit::hashmap;
-use poker::{Card, Error, Hand, PokerHand, Rank, Suit};
-use std::collections::HashMap;
-use std::convert::TryFrom;
+use poker::{
+    card::{Card, Rank, Suit},
+    hand::{cardhand::CardHand, pokerhand::PokerHand, Hand},
+    Error,
+};
+use std::{collections::HashMap, convert::TryFrom};
 
 fn suit_map<'a>() -> HashMap<&'a str, Suit> {
     use Suit::*;
@@ -57,7 +60,7 @@ fn test_parse_card() {
     rank_map().iter().for_each(|(r, rank_exp)| {
         suit_map().iter().for_each(|(s, suit_exp)| {
             let card = format!("{}{}", r, s);
-            let exp = poker::Card::new(*rank_exp, *suit_exp);
+            let exp = poker::card::Card::new(*rank_exp, *suit_exp);
             assert_eq!(Card::try_from(&card[..]), Ok(exp));
         })
     });
@@ -95,19 +98,19 @@ fn test_parse_hand() {
 fn test_is_straight() {
     use PokerHand::*;
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "4D", "5C", "6H", "7H"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "4D", "5C", "6H", "7H"])),
         Straight(7)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["AS", "2D", "3C", "4H", "5H"]).as_ref()),
+        PokerHand::from(mk_hand(["AS", "2D", "3C", "4H", "5H"])),
         Straight(5)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["KS", "AD", "2C", "3H", "4H"]).as_ref()),
+        PokerHand::from(mk_hand(["KS", "AD", "2C", "3H", "4H"])),
         HighCard([14, 13, 4, 3, 2])
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["KS", "QD", "10C", "JH", "AH"]).as_ref()),
+        PokerHand::from(mk_hand(["KS", "QD", "10C", "JH", "AH"])),
         Straight(14)
     )
 }
@@ -116,19 +119,19 @@ fn test_is_straight() {
 fn test_is_flush() {
     use PokerHand::*;
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "4D", "5C", "6H", "7H"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "4D", "5C", "6H", "7H"])),
         Straight(7)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["4H", "2H", "3H", "9H", "5H"]).as_ref()),
+        PokerHand::from(mk_hand(["4H", "2H", "3H", "9H", "5H"])),
         Flush([9, 5, 4, 3, 2])
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["4H", "AH", "3H", "6H", "5H"]).as_ref()),
+        PokerHand::from(mk_hand(["4H", "AH", "3H", "6H", "5H"])),
         Flush([14, 6, 5, 4, 3])
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["3H", "QH", "10C", "JH", "AH"]).as_ref()),
+        PokerHand::from(mk_hand(["3H", "QH", "10C", "JH", "AH"])),
         HighCard([14, 12, 11, 10, 3])
     )
 }
@@ -137,19 +140,19 @@ fn test_is_flush() {
 fn test_is_sflush() {
     use PokerHand::*;
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "4D", "5C", "6H", "8D"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "4D", "5C", "6H", "8D"])),
         HighCard([8, 6, 5, 4, 3])
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["4H", "2H", "3H", "9H", "5H"]).as_ref()),
+        PokerHand::from(mk_hand(["4H", "2H", "3H", "9H", "5H"])),
         Flush([9, 5, 4, 3, 2])
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["4H", "2H", "3H", "6H", "5H"]).as_ref()),
+        PokerHand::from(mk_hand(["4H", "2H", "3H", "6H", "5H"])),
         StraightFlush(6)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["KH", "QH", "10C", "JH", "AH"]).as_ref()),
+        PokerHand::from(mk_hand(["KH", "QH", "10C", "JH", "AH"])),
         Straight(14)
     )
 }
@@ -158,19 +161,19 @@ fn test_is_sflush() {
 fn test_the_rest() {
     use PokerHand::*;
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "3D", "3C", "4H", "4H"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "3D", "3C", "4H", "4H"])),
         FullHouse(3, 4)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "3D", "4C", "4H", "4H"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "3D", "4C", "4H", "4H"])),
         FullHouse(4, 3)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "3D", "AC", "4H", "4H"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "3D", "AC", "4H", "4H"])),
         TwoPair([4, 3], 14)
     );
     assert_eq!(
-        PokerHand::process(mk_hand(["3S", "3D", "AC", "KH", "10H"]).as_ref()),
+        PokerHand::from(mk_hand(["3S", "3D", "AC", "KH", "10H"])),
         Pair(3, [14, 13, 10])
     );
 }
@@ -187,8 +190,8 @@ fn mk_card(card: &str) -> Card {
     Card::try_from(card).unwrap()
 }
 
-fn mk_hand(cards: [&str; 5]) -> Vec<Card> {
+fn mk_hand(cards: [&str; 5]) -> CardHand {
     let mut v = cards.iter().map(|c| mk_card(c)).collect::<Vec<Card>>();
     v.sort();
-    v
+    CardHand::try_from(v.as_ref()).unwrap()
 }
