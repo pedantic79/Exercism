@@ -17,8 +17,8 @@ export class WordProblem {
 
         const tokens = this.input.replace(/\?$/, '').split(/ +/)
 
-        check_token(tokens.shift(), 'What')
-        check_token(tokens.shift(), 'is')
+        check_token('What', tokens.shift())
+        check_token('is', tokens.shift())
         let total = parse_num(tokens.shift())
 
         while (tokens.length > 0) {
