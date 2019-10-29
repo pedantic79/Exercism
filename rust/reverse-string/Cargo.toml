@@ -1,5 +1,6 @@
 [dependencies]
-unicode-segmentation = "1.3.0"
+# unicode-segmentation = "1.3.0"
+unic-segment = "0.9"
 
 [features]
 grapheme = []
