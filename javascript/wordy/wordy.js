@@ -14,22 +14,25 @@ export class WordProblem {
       throw new ArgumentError(`parse error: ${this.input} does not end with ?`);
     }
 
-    const tokens = this.input.replace(/\?$/, "").split(/ +/);
+    const tokens = this.input
+      .replace(/\?$/, "")
+      .split(/ +/)
+      .reverse();
 
-    check_token("What", tokens.shift());
-    check_token("is", tokens.shift());
-    let total = parse_num(tokens.shift());
+    checkToken("What", tokens.pop());
+    checkToken("is", tokens.pop());
+    let total = parseNum(tokens.pop());
 
     while (tokens.length > 0) {
-      const operation = parse_op(tokens);
-      const number = parse_num(tokens.shift());
+      const operation = parseOp(tokens);
+      const number = parseNum(tokens.pop());
       total = operation(total, number);
     }
     return total;
   }
 }
 
-const check_token = (expected, actual) => {
+const checkToken = (expected, actual) => {
   if (expected !== actual) {
     throw new ArgumentError(
       `parse error: '${expected}' is expected, found ${actual}`
@@ -37,7 +40,7 @@ const check_token = (expected, actual) => {
   }
 };
 
-const parse_num = token => {
+const parseNum = token => {
   const number = token.match(/^(-?\d+)$/);
   if (number === undefined) {
     throw new ArgumentError(`parse error: invalid number ${token}`);
@@ -52,10 +55,10 @@ const OPERATIONS = {
   divided: (total, value) => total / value
 };
 
-const parse_op = tokens => {
-  const token = tokens.shift();
+const parseOp = tokens => {
+  const token = tokens.pop();
   if (token === "multiplied" || token === "divided") {
-    check_token("by", tokens.shift());
+    checkToken("by", tokens.pop());
   }
 
   const operation = OPERATIONS[token];
