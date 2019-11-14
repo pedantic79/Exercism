@@ -30,10 +30,10 @@ PRESENTS = [
 
 
 def generate_day(day):
-    for d in range(day, 0, -1):
-        yield f'{PRESENTS[d]},'
-
     if day > 0:
+        for present in PRESENTS[day:0:-1]:
+            yield f'{present},'
+
         yield f'and {PRESENTS[0]}.'
     else:
         yield f'{PRESENTS[0]}.'
