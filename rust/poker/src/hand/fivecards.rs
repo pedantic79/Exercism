@@ -6,9 +6,11 @@ use crate::{
 use counter::Counter;
 use std::convert::TryFrom;
 
-pub struct CardHand([Card; 5]);
+/// FiveCards represents plain playing cards.
+/// It has methods for evaluating the five cards, to determine the best PokerHand
+pub struct FiveCards([Card; 5]);
 
-impl TryFrom<&[Card]> for CardHand {
+impl TryFrom<&[Card]> for FiveCards {
     type Error = super::Error;
 
     fn try_from(cards: &[Card]) -> Result<Self, Self::Error> {
@@ -22,7 +24,7 @@ impl TryFrom<&[Card]> for CardHand {
     }
 }
 
-impl CardHand {
+impl FiveCards {
     // Checks for 4-kind, fullhouse, 3-kind, etc.
     fn try_mult_cards(sorted: &[(u8, usize)]) -> Option<PokerHand> {
         use PokerHand::*;

@@ -1,4 +1,4 @@
-pub mod cardhand;
+pub mod fivecards;
 pub mod pokerhand;
 
 use std::{
@@ -7,7 +7,7 @@ use std::{
 };
 
 use crate::{Card, Error};
-use cardhand::CardHand;
+use fivecards::FiveCards;
 use pokerhand::PokerHand;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -18,7 +18,7 @@ pub struct Hand<'a> {
 
 impl<'a> Hand<'a> {
     pub fn try_new(src: &'a str, cards: &[Card]) -> Result<Self, Error> {
-        let hand: CardHand = cards.try_into()?;
+        let hand: FiveCards = cards.try_into()?;
 
         Ok(Self {
             source: src,

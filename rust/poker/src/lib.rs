@@ -2,7 +2,6 @@ pub mod card;
 pub mod hand;
 
 use card::Card;
-use hand::cardhand::CardHand;
 use hand::Hand;
 use std::convert::TryFrom;
 

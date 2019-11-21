@@ -1,7 +1,7 @@
 use maplit::hashmap;
 use poker::{
     card::{Card, Rank, Suit},
-    hand::{cardhand::CardHand, pokerhand::PokerHand, Hand},
+    hand::{fivecards::FiveCards, pokerhand::PokerHand, Hand},
     Error,
 };
 use std::{collections::HashMap, convert::TryFrom};
@@ -190,8 +190,8 @@ fn mk_card(card: &str) -> Card {
     Card::try_from(card).unwrap()
 }
 
-fn mk_hand(cards: [&str; 5]) -> CardHand {
+fn mk_hand(cards: [&str; 5]) -> FiveCards {
     let mut v = cards.iter().map(|c| mk_card(c)).collect::<Vec<Card>>();
     v.sort();
-    CardHand::try_from(v.as_ref()).unwrap()
+    FiveCards::try_from(v.as_ref()).unwrap()
 }
