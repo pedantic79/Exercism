@@ -2,9 +2,9 @@
 
 Given an age in seconds, calculate how old someone would be on:
 
-   - Earth: orbital period 365.25 Earth days, or 31557600 seconds
    - Mercury: orbital period 0.2408467 Earth years
    - Venus: orbital period 0.61519726 Earth years
+   - Earth: orbital period 1.0 Earth years, 365.25 Earth days, or 31557600 seconds
    - Mars: orbital period 1.8808158 Earth years
    - Jupiter: orbital period 11.862615 Earth years
    - Saturn: orbital period 29.447498 Earth years
@@ -44,7 +44,7 @@ and remove the `#[ignore]` flag from the next test and get the tests to pass
 again. Each separate test is a function with `#[test]` flag above it.
 Continue, until you pass every test.
 
-If you wish to run all tests without editing the tests source file, use:
+If you wish to run all ignored tests without editing the tests source file, use:
 
 ```bash
 $ cargo test -- --ignored
