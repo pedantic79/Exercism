@@ -1,4 +1,4 @@
-use crate::CardHand;
+use super::FiveCards;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub enum PokerHand {
@@ -13,8 +13,8 @@ pub enum PokerHand {
     StraightFlush(u8),
 }
 
-impl From<CardHand> for PokerHand {
-    fn from(cardhand: CardHand) -> Self {
+impl From<FiveCards> for PokerHand {
+    fn from(cardhand: FiveCards) -> Self {
         cardhand.process()
     }
 }
