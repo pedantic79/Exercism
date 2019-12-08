@@ -1,4 +1,4 @@
-use std::char;
+use std::char::from_digit;
 use std::iter::FromIterator;
 
 struct Board {
@@ -12,9 +12,9 @@ impl From<&[&str]> for Board {
     }
 }
 
-impl Into<Vec<String>> for Board {
-    fn into(self) -> Vec<String> {
-        self.places.into_iter().map(String::from_iter).collect()
+impl From<Board> for Vec<String> {
+    fn from(input: Board) -> Self {
+        input.places.into_iter().map(String::from_iter).collect()
     }
 }
 
@@ -42,30 +42,27 @@ impl Board {
             ' ' => {
                 let mine_count = self
                     .neighbors(r, c)
-                    .into_iter()
                     .filter(|(row, col)| self.places[*row][*col] == '*')
                     .count();
 
                 if mine_count == 0 {
                     ' '
                 } else {
-                    char::from_digit(mine_count as u32, 10).unwrap_or('?')
+                    from_digit(mine_count as u32, 10).unwrap_or('?')
                 }
             }
             _ => unreachable!("Unexpected character '{}'", p),
         }
     }
 
-    fn neighbors(&self, r: usize, c: usize) -> Vec<(usize, usize)> {
+    fn neighbors(&self, r: usize, c: usize) -> impl Iterator<Item = (usize, usize)> + '_ {
         get_range(r, self.places.len())
-            .flat_map(|row| get_range(c, self.places[r].len()).map(move |col| (row, col)))
-            .collect()
+            .flat_map(move |row| get_range(c, self.places[r].len()).map(move |col| (row, col)))
     }
 }
 
 pub fn annotate(minefield: &[&str]) -> Vec<String> {
-    let b: Board = minefield.into();
-    b.annotate().into()
+    Board::from(minefield).annotate().into()
 }
 
 fn get_range(n: usize, n_max: usize) -> impl Iterator<Item = usize> {
