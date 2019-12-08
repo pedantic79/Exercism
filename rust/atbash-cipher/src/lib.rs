@@ -11,16 +11,14 @@ pub fn decode(cipher: &str) -> String {
 }
 
 fn at_bash(s: &str) -> impl Iterator<Item = char> + '_ {
-    s.chars()
-        .filter(|c| c.is_ascii_alphanumeric())
-        .map(|c| c.to_ascii_lowercase())
-        .map(|c| {
-            if c.is_numeric() {
-                c
-            } else {
-                (b'a' + b'z' - c as u8) as char
-            }
-        })
+    s.bytes().filter(|c| c.is_ascii_alphanumeric()).map(|c| {
+        if c.is_ascii_digit() {
+            c
+        } else {
+            b'a' + b'z' - c.to_ascii_lowercase()
+        }
+        .into()
+    })
 }
 
 /// split_flat_map is public so I can run benchmarks
