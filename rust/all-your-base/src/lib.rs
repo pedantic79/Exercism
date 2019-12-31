@@ -37,19 +37,18 @@ pub enum Error {
 ///     process input with leading 0 digits.
 ///
 pub fn convert(number: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>, Error> {
-    let n = to_u32(number, from_base)?;
-    from_u32(n, to_base)
+    to_u32(number, from_base).and_then(|n| from_u32(n, to_base))
 }
 
 fn to_u32(number: &[u32], base: u32) -> Result<u32, Error> {
     if base < 2 {
         Err(Error::InvalidInputBase)
     } else {
-        number.iter().try_fold(0, |total, digit| {
-            if *digit < base {
-                Ok(total * base + *digit)
+        number.iter().try_fold(0, |total, &digit| {
+            if digit < base {
+                Ok(total * base + digit)
             } else {
-                Err(Error::InvalidDigit(*digit))
+                Err(Error::InvalidDigit(digit))
             }
         })
     }
