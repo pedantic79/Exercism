@@ -8,15 +8,15 @@
     "url": "https://github.com/exercism/javascript"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.4",
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@types/jest": "^24.0.25",
+    "@types/node": "^12.12.22",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.8.0",
-    "eslint": "^6.3.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.19.1",
     "jest": "^24.8.0"
   },
   "jest": {
