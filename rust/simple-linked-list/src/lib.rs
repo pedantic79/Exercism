@@ -72,14 +72,20 @@ impl<T: Clone> SimpleLinkedList<T> {
     }
 }
 
-impl<'a, T: Clone> From<&'a [T]> for SimpleLinkedList<T> {
-    fn from(item: &[T]) -> Self {
+impl<T> std::iter::FromIterator<T> for SimpleLinkedList<T> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         let mut list = Self::new();
-        for i in item {
-            list.push(i.clone());
+        for i in iter {
+            list.push(i);
         }
 
         list
+    }
+}
+
+impl<'a, T: Clone> From<&'a [T]> for SimpleLinkedList<T> {
+    fn from(item: &[T]) -> Self {
+        item.iter().cloned().collect()
     }
 }
 

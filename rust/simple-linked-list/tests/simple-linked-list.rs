@@ -30,7 +30,7 @@ fn test_pop_decrements_length() {
 
 #[test]
 #[ignore]
-fn test_pop_returns_last_added_element() {
+fn test_pop_returns_head_element_and_removes_it() {
     let mut list: SimpleLinkedList<u32> = SimpleLinkedList::new();
     list.push(1);
     list.push(2);
@@ -41,19 +41,25 @@ fn test_pop_returns_last_added_element() {
 
 #[test]
 #[ignore]
-fn test_peek_returns_head_element() {
+fn test_peek_returns_reference_to_head_element_but_does_not_remove_it() {
     let mut list: SimpleLinkedList<u32> = SimpleLinkedList::new();
     assert_eq!(list.peek(), None, "No element should be contained in list");
     list.push(2);
     assert_eq!(list.peek(), Some(&2), "Element must be 2");
     assert_eq!(list.peek(), Some(&2), "Element must be still 2");
+    list.push(3);
+    assert_eq!(list.peek(), Some(&3), "Head element is now 3");
+    assert_eq!(list.pop(), Some(3), "Element must be 3");
+    assert_eq!(list.peek(), Some(&2), "Head element is now 2");
+    assert_eq!(list.pop(), Some(2), "Element must be 2");
+    assert_eq!(list.peek(), None, "No element should be contained in list");
 }
 
 #[test]
 #[ignore]
 fn test_from_slice() {
-    let array = ["1", "2", "3", "4"];
-    let mut list = SimpleLinkedList::from(array.as_ref());
+    let mut array = vec!["1", "2", "3", "4"];
+    let mut list: SimpleLinkedList<_> = array.drain(..).collect();
     assert_eq!(list.pop(), Some("4"));
     assert_eq!(list.pop(), Some("3"));
     assert_eq!(list.pop(), Some("2"));
