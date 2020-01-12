@@ -3,8 +3,6 @@ use std::collections::HashMap;
 const VALID: [char; 4] = ['A', 'C', 'G', 'T'];
 
 pub fn count(nucleotide: char, dna: &str) -> Result<usize, char> {
-    valid_nucleotide(nucleotide)?;
-
     let mut count = 0;
 
     for c in dna.chars() {
@@ -27,7 +25,7 @@ pub fn nucleotide_counts(dna: &str) -> Result<HashMap<char, usize>, char> {
 }
 
 fn valid_nucleotide(nucleotide: char) -> Result<(), char> {
-    if VALID.iter().any(|&c| c == nucleotide) {
+    if VALID.contains(&nucleotide) {
         Ok(())
     } else {
         Err(nucleotide)
