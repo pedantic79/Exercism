@@ -12,15 +12,15 @@ export class ResistorColor {
     "white"
   ];
 
-  private static readonly MAX_RESISTOR_COUNT: number = 2;
+  private static readonly MAX_COLOR_COUNT = 2;
 
   private colors: string[];
 
   constructor(colors: string[]) {
-    if (colors.length < ResistorColor.MAX_RESISTOR_COUNT) {
+    if (colors.length < ResistorColor.MAX_COLOR_COUNT) {
       throw new Error("At least two colors need to be present");
     }
-    this.colors = colors.slice(0, ResistorColor.MAX_RESISTOR_COUNT);
+    this.colors = colors.slice(0, ResistorColor.MAX_COLOR_COUNT);
   }
 
   private getResistorValue(resistorColor: string): number {
@@ -29,19 +29,19 @@ export class ResistorColor {
     );
   }
 
-  private buildTotalResitorValue(
-    totalRestistorValue: number,
+  private buildTotalResistorValue(
+    totalResistorValue: number,
     currentResistorValue: number
   ): number {
-    return totalRestistorValue * 10 + currentResistorValue;
+    return totalResistorValue * 10 + currentResistorValue;
   }
 
   value = (): number =>
-    this.colors.reduce((totalRestistorValue, currentResistorColor) => {
+    this.colors.reduce((totalResistorValue, currentResistorColor) => {
       const currentResistorValue = this.getResistorValue(currentResistorColor);
 
-      return this.buildTotalResitorValue(
-        totalRestistorValue,
+      return this.buildTotalResistorValue(
+        totalResistorValue,
         currentResistorValue
       );
     }, 0);
