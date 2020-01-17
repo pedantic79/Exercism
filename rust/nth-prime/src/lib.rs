@@ -1,8 +1,10 @@
 pub fn nth(n: u32) -> u32 {
-    let mut primes = vec![2, 3];
+    let n = n as usize;
+    let spoke = [2, 3];
+    let mut primes = vec![5];
 
-    for k in 0.. {
-        if primes.len() > n as usize {
+    for k in 1.. {
+        if primes.len() + spoke.len() > n {
             break;
         }
 
@@ -19,21 +21,40 @@ pub fn nth(n: u32) -> u32 {
         // larger than 3) is equivalent to a Prime Wheel with just a 2 spoke.
         // It's candidates are 2k+1
         //
-        // Also, we need to remove k=0, r=1, which is the case where the
-        // candidate is 1, which we don't consider a prime
+        // We're skipping k=0, and seeding the value of k=0, r=5 into primes
+        //
         for &r in &[1, 5] {
             let cand = 6 * k + r;
 
-            if cand > 1
-                && !primes
-                    .iter()
-                    .take_while(|&x| x * x <= cand)
-                    .any(|&p| cand % p == 0)
+            if !primes
+                .iter()
+                .take_while(|&x| x * x <= cand)
+                .any(|&p| cand % p == 0)
             {
                 primes.push(cand);
             }
         }
     }
 
-    primes[n as usize]
+    unsafe {
+        append(&mut primes, &spoke);
+    }
+
+    // if n < spoke.len() {
+    //     spoke[n]
+    // } else {
+    //     primes[n - spoke.len()]
+    // }
+    primes[n]
+}
+
+// This appends `slice` to `v`, this works the same way that `String::push_str`
+unsafe fn append<T>(v: &mut Vec<T>, slice: &[T]) {
+    let len = v.len();
+    let amt = slice.len();
+    v.reserve(amt);
+
+    std::ptr::copy(v.as_ptr(), v.as_mut_ptr().offset(amt as isize), len);
+    std::ptr::copy(slice.as_ptr(), v.as_mut_ptr(), amt);
+    v.set_len(amt + len);
 }
