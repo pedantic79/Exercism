@@ -7,10 +7,12 @@ use orbitalfactor::OrbitalFactor;
 const EARTH_ORBITAL_DURATION: u64 = 31_557_600;
 
 pub trait Planet {
-    fn orbital_factor() -> OrbitalFactor;
+    const ORBITAL_FACTOR: f64;
+
     fn orbital_duration() -> Duration {
-        Self::orbital_factor() * Duration::from(EARTH_ORBITAL_DURATION)
+        OrbitalFactor::from(Self::ORBITAL_FACTOR) * Duration::from(EARTH_ORBITAL_DURATION)
     }
+
     fn years_during(d: &Duration) -> f64 {
         d / Self::orbital_duration()
     }
@@ -22,9 +24,7 @@ macro_rules! planet {
         pub struct $name;
 
         impl Planet for $name {
-            fn orbital_factor() -> OrbitalFactor {
-                OrbitalFactor::from($factor)
-            }
+            const ORBITAL_FACTOR: f64 = $factor;
         }
     };
 }
