@@ -1,11 +1,7 @@
-// unicode-segmentation does not properly handle the most modern emoji
-// specifically the ZWJ. So I'm using unic_segment which does.
-// use unicode_segmentation::UnicodeSegmentation;
-use unic_segment::Graphemes;
+use unicode_segmentation::UnicodeSegmentation;
 
 pub fn reverse(input: &str) -> String {
-    // input.graphemes(true).rev().collect()
-    Graphemes::new(input).rev().collect()
+    input.graphemes(true).rev().collect()
 }
 
 #[cfg(test)]
@@ -17,6 +13,7 @@ mod tests {
 
     #[test]
     fn emoji() {
+        // This test fails with unicode-segmentaton <1.4.0
         assert_eq!(super::reverse("🤦🏼👪"), "👪🤦🏼");
     }
 
