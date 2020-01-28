@@ -56,16 +56,13 @@ impl<T> SimpleLinkedList<T> {
     pub fn peek(&self) -> Option<&T> {
         self.head.as_ref().map(|b| &b.data)
     }
-}
 
-impl<T: Clone> SimpleLinkedList<T> {
-    pub fn rev(&self) -> Self {
+    pub fn rev(self) -> Self {
         let mut list = Self::new();
-        let mut ptr = &self.head;
+        let mut ptr = self;
 
-        while let Some(node) = ptr {
-            list.push(node.data.clone());
-            ptr = &node.next;
+        while let Some(data) = ptr.pop() {
+            list.push(data);
         }
 
         list
@@ -80,12 +77,6 @@ impl<T> std::iter::FromIterator<T> for SimpleLinkedList<T> {
         }
 
         list
-    }
-}
-
-impl<'a, T: Clone> From<&'a [T]> for SimpleLinkedList<T> {
-    fn from(item: &[T]) -> Self {
-        item.iter().cloned().collect()
     }
 }
 
