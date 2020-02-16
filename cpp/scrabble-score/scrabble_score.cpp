@@ -7,13 +7,9 @@
 
 namespace scrabble_score {
 
-const std::map<std::string, int> scrabble = {std::pair{"aeioulnrst", 1},
-                                             {"dg", 2},
-                                             {"bcmp", 3},
-                                             {"fhvwy", 4},
-                                             {"k", 5},
-                                             {"jx", 8},
-                                             {"qz", 10}};
+const std::map<std::string, int> scrabble{
+    {"aeioulnrst", 1}, {"dg", 2}, {"bcmp", 3}, {"fhvwy", 4},
+    {"k", 5},          {"jx", 8}, {"qz", 10}};
 
 int score_char(char ch) {
     char c = std::tolower(ch);
@@ -23,7 +19,7 @@ int score_char(char ch) {
         });
 
     if (i == std::end(scrabble)) {
-        return -1;  // TODO: Not found, how do we handle this?
+        return -1; // TODO: Not found, how do we handle this?
     } else {
         return i->second;
     }
@@ -32,8 +28,8 @@ int score_char(char ch) {
 int score(std::string_view str) {
     std::vector<int> v(str.length());
 
-    std::transform(std::begin(str), std::end(str), std::back_insert_iterator(v),
-                   score_char);
+    std::transform(std::begin(str), std::end(str),
+                   std::back_insert_iterator<decltype(v)>(v), score_char);
 
     return std::accumulate(std::begin(v), std::end(v), 0);
 }
