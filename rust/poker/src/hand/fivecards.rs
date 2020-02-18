@@ -32,20 +32,20 @@ impl FiveCards {
         let val = sorted.iter().map(|x| x.0).collect::<Vec<_>>();
         // could write this as a giant if-else-if...-else block
         match sorted.len() {
-            2 => match (sizes[0], sizes[1]) {
-                (4, 1) => Some(FourKind(val[0], val[1])),
-                (3, 2) => Some(FullHouse(val[0], val[1])),
+            2 => match sizes.as_slice() {
+                [4, 1] => Some(FourKind(val[0], val[1])),
+                [3, 2] => Some(FullHouse(val[0], val[1])),
                 _ => None,
             },
 
-            3 => match (sizes[0], sizes[1], sizes[2]) {
-                (3, 1, 1) => Some(ThreeKind(val[0], [val[2], val[1]])),
-                (2, 2, 1) => Some(TwoPair([val[1], val[0]], val[2])),
+            3 => match sizes.as_slice() {
+                [3, 1, 1] => Some(ThreeKind(val[0], [val[2], val[1]])),
+                [2, 2, 1] => Some(TwoPair([val[1], val[0]], val[2])),
                 _ => None,
             },
 
-            4 => match (sizes[0], sizes[1], sizes[2], sizes[3]) {
-                (2, 1, 1, 1) => Some(Pair(val[0], [val[3], val[2], val[1]])),
+            4 => match sizes.as_slice() {
+                [2, 1, 1, 1] => Some(Pair(val[0], [val[3], val[2], val[1]])),
                 _ => None,
             },
 
