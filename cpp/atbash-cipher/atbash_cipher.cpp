@@ -7,7 +7,7 @@ char tolower(char ch) {
 
 char transform(char c) {
     if (std::isalpha(c)) {
-        return 'a' + 'z' - c;
+        return 'a' + 'z' - tolower(c);
     } else {
         return c;
     }
@@ -18,15 +18,13 @@ std::string atbash_cipher::encode(std::string_view s) {
     std::string output;
 
     std::for_each(s.begin(), s.end(), [&](char c) {
-        const auto lc = tolower(c);
-
-        if (std::isalnum(lc)) {
+        if (std::isalnum(c)) {
             if (count != 0 && count % 5 == 0) {
                 output.push_back(' ');
             }
 
             count++;
-            output.push_back(transform(lc));
+            output.push_back(transform(c));
         }
     });
 
