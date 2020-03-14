@@ -1,12 +1,14 @@
 class Squares {
-  constructor(private readonly number: number) { }
+  private readonly num: number
+
+  constructor(num: number) { this.num = num }
 
   public get squareOfSum(): number {
-    return (this.number ** 4 + 2 * this.number ** 3 + this.number ** 2) / 4
+    return (this.num ** 4 + 2 * this.num ** 3 + this.num ** 2) / 4
   }
 
   public get sumOfSquares(): number {
-    return (this.number + 3 * this.number ** 2 + 2 * this.number ** 3) / 6
+    return (this.num + 3 * this.num ** 2 + 2 * this.num ** 3) / 6
   }
 
   public get difference(): number {
