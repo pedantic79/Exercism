@@ -1,36 +1,29 @@
 {
-  "name": "xtypescript",
+  "name": "@exercism/typescript",
   "version": "1.0.0",
   "description": "Exercism exercises in Typescript.",
   "author": "",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/exercism/xtypescript"
+    "url": "https://github.com/exercism/typescript"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.1",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.20.1",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  },
   "scripts": {
-    "test": "tsc --noEmit -p . && jest --no-cache",
-    "lint": "tsc --noEmit -p . && tslint \"*.ts?(x)\"",
-    "lintci": "tslint \"*.ts?(x)\" --force"
+    "test": "yarn lint:types && jest --no-cache",
+    "lint": "yarn lint:types && yarn lint:ci",
+    "lint:types": "yarn tsc --noEmit -p .",
+    "lint:ci": "eslint . --ext .tsx,.ts"
   },
-  "dependencies": {
-    "@types/jest": "^24.0.15",
-    "@types/node": "^10.14.12",
-    "jest": "^24.8.0",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ]
-  }
+  "dependencies": {}
 }

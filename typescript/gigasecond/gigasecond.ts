@@ -1,8 +1,9 @@
 class Gigasecond {
-    constructor(private readonly start: Date) { }
+    private readonly start: Date
+    constructor(start: Date) { this.start = start }
 
     date(): Date {
-        return new Date(this.start.getTime() + 10 ** 12);
+        return new Date(this.start.getTime() + 10 ** 12)
     }
 }
 
