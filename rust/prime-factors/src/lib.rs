@@ -8,7 +8,7 @@ pub fn factors(n: u64) -> Vec<u64> {
             v.push(divisor);
             n /= divisor
         } else {
-            divisor += 1
+            divisor  += 1
         }
     }
 
