@@ -14,4 +14,8 @@ def counter(iterator):
 
 
 def count_words(sentence):
-    return counter(word.lower().strip('\'"') for word in RE_SPLITTER.split(sentence) if word)
+    return counter(
+        word.lower().strip("'\"")
+        for word in RE_SPLITTER.split(sentence)
+        if word
+    )

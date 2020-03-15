@@ -9,7 +9,9 @@ STRING_TO_SCORES = {
 }
 
 LETTER_VALUES = {
-    letter: score for (string, score) in STRING_TO_SCORES.items() for letter in string
+    letter: score
+    for (string, score) in STRING_TO_SCORES.items()
+    for letter in string
 }
 
 
