@@ -54,7 +54,7 @@ unsafe fn append<T>(v: &mut Vec<T>, slice: &[T]) {
     let amt = slice.len();
     v.reserve(amt);
 
-    std::ptr::copy(v.as_ptr(), v.as_mut_ptr().offset(amt as isize), len);
+    std::ptr::copy(v.as_ptr(), v.as_mut_ptr().add(amt), len);
     std::ptr::copy(slice.as_ptr(), v.as_mut_ptr(), amt);
     v.set_len(amt + len);
 }
