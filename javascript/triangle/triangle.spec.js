@@ -1,4 +1,4 @@
-import {Triangle} from './triangle';
+import { Triangle } from './triangle';
 
 describe('Triangle', () => {
   test('equilateral triangles have equal sides', () => {
@@ -41,12 +41,10 @@ describe('Triangle', () => {
     expect(triangle.kind()).toEqual('scalene');
   });
 
-  test(
-      'scalene triangles have no equal sides in descending order either',
-      () => {
-        const triangle = new Triangle(5, 4, 2);
-        expect(triangle.kind()).toEqual('scalene');
-      });
+  test('scalene triangles have no equal sides in descending order either', () => {
+    const triangle = new Triangle(5, 4, 2);
+    expect(triangle.kind()).toEqual('scalene');
+  });
 
   test('very small triangles are legal', () => {
     const triangle = new Triangle(0.4, 0.6, 0.3);

@@ -16,7 +16,6 @@ describe('append entries to a list and return the new list', () => {
   test('non-empty lists', () => {
     const list1 = new List([1, 2]);
     const list2 = new List([2, 3, 4, 5]);
-
     expect(list1.append(list2).values).toEqual([1, 2, 2, 3, 4, 5]);
   });
 });

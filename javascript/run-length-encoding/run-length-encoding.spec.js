@@ -1,4 +1,4 @@
-import {decode, encode} from './run-length-encoding';
+import { encode, decode } from './run-length-encoding';
 
 describe('run-length encode a string', () => {
   test('encode empty string', () => {
@@ -13,12 +13,9 @@ describe('run-length encode a string', () => {
     expect(encode('AABBBCCCC')).toEqual('2A3B4C');
   });
 
-  test(
-      'encode string with single characters mixed with repeated characters',
-      () => {
-        expect(encode('WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB'))
-            .toEqual('12WB12W3B24WB');
-      });
+  test('encode string with single characters mixed with repeated characters', () => {
+    expect(encode('WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB')).toEqual('12WB12W3B24WB');
+  });
 
   test('encode string with multiple whitespaces', () => {
     expect(encode('  hsqq qww  ')).toEqual('2 hs2q q2w2 ');
@@ -42,12 +39,9 @@ describe('run-length decode a string', () => {
     expect(decode('2A3B4C')).toEqual('AABBBCCCC');
   });
 
-  test(
-      'decode string with single characters mixed with repeated characters',
-      () => {
-        expect(decode('12WB12W3B24WB'))
-            .toEqual('WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB');
-      });
+  test('decode string with single characters mixed with repeated characters', () => {
+    expect(decode('12WB12W3B24WB')).toEqual('WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB');
+  });
 
   test('decode string with multiple whitespaces', () => {
     expect(decode('2 hs2q q2w2 ')).toEqual('  hsqq qww  ');
