@@ -1,33 +1,16 @@
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{BTreeMap, HashSet};
 
-#[inline]
-pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    // Vec is faster
-    anagrams_vec(word, possible_anagrams)
-}
+pub use anagrams_vec as anagrams_for;
 
-#[inline]
-pub fn anagrams_sort<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    anagrams_fn(word, possible_anagrams, |s| {
-        let mut v = s.chars().collect::<Vec<char>>();
-        v.sort();
-        v.iter().collect::<String>()
-    })
-}
-
-#[inline]
 pub fn anagrams_map<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
     anagrams_fn(word, possible_anagrams, |s| {
-        let mut m = HashMap::new();
-        for c in s.chars() {
-            *m.entry(c).or_insert(1) += 1;
-        }
-        m
+        s.chars().fold(BTreeMap::new(), |mut hm, c| {
+            *hm.entry(c).or_insert(0) += 1;
+            hm
+        })
     })
 }
 
-#[inline]
 pub fn anagrams_vec<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
     anagrams_fn(word, possible_anagrams, |s| {
         let mut v = s.chars().collect::<Vec<char>>();
@@ -36,6 +19,7 @@ pub fn anagrams_vec<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'
     })
 }
 
+#[inline]
 fn anagrams_fn<'a, T, F>(word: &str, possible_anagrams: &[&'a str], mut f: F) -> HashSet<&'a str>
 where
     T: Eq,
