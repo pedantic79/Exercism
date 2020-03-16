@@ -1,4 +1,4 @@
-import {validate} from './armstrong-numbers';
+import { validate } from './armstrong-numbers';
 
 describe('ArmstrongNumber', () => {
   test('Single digit numbers are Armstrong numbers', () => {

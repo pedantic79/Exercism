@@ -1,4 +1,4 @@
-import {translate} from './protein-translation';
+import { translate } from './protein-translation';
 
 describe('ProteinTranslation', () => {
   test('Empty RNA has no proteins', () => {
@@ -18,9 +18,7 @@ describe('ProteinTranslation', () => {
   });
 
   test('Serine codons translate into protein', () => {
-    expect(translate('UCUUCCUCAUCG')).toEqual([
-      'Serine', 'Serine', 'Serine', 'Serine'
-    ]);
+    expect(translate('UCUUCCUCAUCG')).toEqual(['Serine', 'Serine', 'Serine', 'Serine']);
   });
 
   test('Tyrosine codons translate into protein', () => {
@@ -48,15 +46,11 @@ describe('ProteinTranslation', () => {
   });
 
   test('Small RNA strand', () => {
-    expect(translate('AUGUUUUCU')).toEqual([
-      'Methionine', 'Phenylalanine', 'Serine'
-    ]);
+    expect(translate('AUGUUUUCU')).toEqual(['Methionine', 'Phenylalanine', 'Serine']);
   });
 
   test('Stop codon ends translation', () => {
-    expect(translate('AUGUUUUCUUAAAUG')).toEqual([
-      'Methionine', 'Phenylalanine', 'Serine'
-    ]);
+    expect(translate('AUGUUUUCUUAAAUG')).toEqual(['Methionine', 'Phenylalanine', 'Serine']);
   });
 
   test('Invalid codon throws error', () => {

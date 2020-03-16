@@ -1,4 +1,4 @@
-import {value} from './resistor-color-duo.js';
+import { value } from './resistor-color-duo.js';
 
 describe('Resistor Colors', () => {
   test('Brown and black', () => {
