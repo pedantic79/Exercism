@@ -4,7 +4,7 @@ name = "anagram"
 version = "0.0.0"
 
 [dev-dependencies]
-criterion = "0.2"
+criterion = "0.3"
 
 [[bench]]
 name = "benchmark"
