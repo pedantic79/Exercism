@@ -1,13 +1,25 @@
 module Acronym (abbreviate) where
 
-import Data.Char (isAlpha, isLower, isSpace, toUpper)
-import Data.List.Split (splitOneOf, splitWhen)
+import Data.Bool (bool)
+import Data.Char (isAlpha, isSpace, isUpper, toUpper)
+import Data.Foldable (foldMap)
+import Data.List.Split (splitOneOf)
+import Data.Maybe (listToMaybe)
+import Data.Monoid (Any(..), getAny)
+
 
 abbreviate :: String -> String
-abbreviate = concatMap (fmap head . filter (/="") . splitWhen isLower . capitalize) . splitOneOf " -" . filter validLetter
+abbreviate = concatMap getImportant . splitOneOf " -" . filter validLetter
+
+validLetter :: Char -> Bool
+validLetter = getAny . foldMap (Any .) [isAlpha, isSpace, (== '-')]
 
 capitalize :: String -> String
 capitalize (x:xs) = toUpper x:xs
+capitalize [] = []
 
-validLetter :: Char -> Bool
-validLetter c = isAlpha c || isSpace c || c == '-'
+getFirst :: String -> String
+getFirst = maybe [] (:[]) . listToMaybe
+
+getImportant :: String -> String
+getImportant = bool <$> (filter isUpper . capitalize ) <*> getFirst <*> (all isUpper)
