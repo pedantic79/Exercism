@@ -31,11 +31,11 @@ where
     possible_anagrams
         .iter()
         .filter(|anagram| {
-            let l = anagram.to_lowercase();
+            lower.len() == anagram.len() && {
+                let l = anagram.to_lowercase();
 
-            // slight performance increase by adding the length comparision
-            // since we can avoid doing that check if the lengths are not equal
-            lower != l && lower.len() == l.len() && fnstr == f(&l)
+                lower != l && fnstr == f(&l)
+            }
         })
         .copied()
         .collect()
