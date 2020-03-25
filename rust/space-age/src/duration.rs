@@ -2,7 +2,7 @@ use std::ops::Div;
 
 #[derive(Debug)]
 pub struct Duration {
-    pub seconds: f64,
+    seconds: f64,
 }
 
 impl From<u64> for Duration {

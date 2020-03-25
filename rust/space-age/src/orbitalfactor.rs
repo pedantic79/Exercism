@@ -12,10 +12,10 @@ impl From<f64> for OrbitalFactor {
     }
 }
 
-impl Mul<Duration> for OrbitalFactor {
+impl Mul<f64> for OrbitalFactor {
     type Output = Duration;
 
-    fn mul(self, rhs: Duration) -> Duration {
-        Duration::from(self.factor * rhs.seconds)
+    fn mul(self, rhs: f64) -> Duration {
+        Duration::from(self.factor * rhs)
     }
 }
