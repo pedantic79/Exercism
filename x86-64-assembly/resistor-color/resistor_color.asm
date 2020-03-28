@@ -11,33 +11,26 @@ grey:   db "grey",   0
 white:  db "white",  0
 COLORS: dq black,brown,red,orange,yellow,green,blue,violet,grey,white,0
 
-%macro  check_color 3
-
-    lea rsi, [rel %1]
-    call streq
-    test eax, eax
-    je %2
-
-    mov eax, %3
-    ret
-
-%endmacro
-
 section .text
 global color_code
 color_code:
-         check_color black, .brown, 0
-.brown:  check_color brown, .red, 1
-.red:    check_color red, .orange, 2
-.orange: check_color orange, .yellow, 3
-.yellow: check_color yellow, .green, 4
-.green:  check_color green, .blue, 5
-.blue:   check_color blue, .violet, 6
-.violet: check_color violet, .grey, 7
-.grey:   check_color grey, .white, 8
-.white:  check_color white, .end, 9
+    lea r8, [rel COLORS]
+    xor r9, r9             ; set to pos to 0
+
+.loop:
+    mov rsi, [r8 + 8 * r9] ; READ from COLORS[r9]
+    test rsi, rsi          ; check if null
+    je .end
+
+    call streq             ; check if equal
+    test eax, eax
+    jne .end               ; jump if true
+
+    inc r9,                ; increment pos
+    jmp .loop
+
 .end:
-    mov eax, 10
+    mov rax, r9            ; return pos
     ret
 
 global colors
