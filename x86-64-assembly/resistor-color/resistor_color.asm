@@ -26,7 +26,7 @@ color_code:
     test eax, eax
     jne .end               ; jump if true
 
-    inc r9,                ; increment pos
+    inc r9                 ; increment pos
     jmp .loop
 
 .end:
@@ -42,7 +42,7 @@ streq:
     mov eax, -1
 
 .streq_loop:
-    add eax, 1
+    inc eax
     movzx edx, byte [rdi + rax] ; load next character into edx
     test dl, dl                 ; check if edx is '\0'
     je .streq_end
