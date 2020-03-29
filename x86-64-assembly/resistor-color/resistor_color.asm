@@ -9,16 +9,16 @@ blue:   db "blue",   0
 violet: db "violet", 0
 grey:   db "grey",   0
 white:  db "white",  0
-COLORS: dq black,brown,red,orange,yellow,green,blue,violet,grey,white,0
+color_list: dq black,brown,red,orange,yellow,green,blue,violet,grey,white,0
 
 section .text
 global color_code
 color_code:
-    lea r8, [rel COLORS]
+    lea r8, [rel color_list]
     xor r9, r9             ; set to pos to 0
 
 .loop:
-    mov rsi, [r8 + 8 * r9] ; READ from COLORS[r9]
+    mov rsi, [r8 + 8 * r9] ; READ from color_list[r9]
     test rsi, rsi          ; check if null
     je .end
 
@@ -26,7 +26,7 @@ color_code:
     test eax, eax
     jne .end               ; jump if true
 
-    inc r9                 ; increment pos
+    add r9, 1              ; increment pos
     jmp .loop
 
 .end:
@@ -35,14 +35,14 @@ color_code:
 
 global colors
 colors:
-    lea rax, [rel COLORS]
+    lea rax, [rel color_list]
     ret
 
 streq:
     mov eax, -1
 
 .streq_loop:
-    inc eax
+    add eax, 1
     movzx edx, byte [rdi + rax] ; load next character into edx
     test dl, dl                 ; check if edx is '\0'
     je .streq_end
