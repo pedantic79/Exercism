@@ -9,11 +9,11 @@ is_pangram:
     add r9, 1
     movzx edi, byte [rsi + r9]  ; read next character
     test edi, edi
-    je .end                     ; skip the end if '\0'
+    jz .end                     ; skip the end if '\0'
 
     call is_alpha_mask          ; 0 if non-alpha, else the mask value
     test eax, eax
-    je .loop                    ; if 0 then skip
+    jz .loop                    ; if 0 then skip
 
     or r8d, eax                 ; add the mask to total
     jmp .loop                   ; always loop
@@ -24,16 +24,13 @@ is_pangram:
     sete al                     ; then set to 1
     ret
 
-
 is_alpha_mask:
     ; rdi
     xor eax, eax
     or rdi, 32                  ; lowercase
-    sub rdi, 97                 ; subtract 'a'
+    sub rdi, 'a'                ; subtract 'a'
     cmp rdi, 26
     jae .end                    ; return 0 if >= 26
-    mov eax, 1
-    mov rcx, rdi                ; move to cl
-    shl eax, cl                 ; left-shift
+    bts eax, edi
 .end:
     ret
