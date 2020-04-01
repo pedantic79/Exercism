@@ -1,48 +1,36 @@
 use std::char::from_digit;
-use std::iter::FromIterator;
 
-struct Board {
-    places: Vec<Vec<char>>,
+struct Board<'a> {
+    places: &'a [&'a str],
 }
 
-impl From<&[&str]> for Board {
-    fn from(input: &[&str]) -> Self {
-        let places = input.iter().map(|&r| r.chars().collect()).collect();
+impl<'a> From<&'a [&'a str]> for Board<'a> {
+    fn from(places: &'a [&'a str]) -> Self {
         Self { places }
     }
 }
 
-impl From<Board> for Vec<String> {
-    fn from(input: Board) -> Self {
-        input.places.into_iter().map(String::from_iter).collect()
-    }
-}
-
-impl Board {
-    fn annotate(self) -> Self {
-        let places = self
-            .places
+impl<'a> Board<'a> {
+    fn annotate(self) -> Vec<String> {
+        self.places
             .iter()
             .enumerate()
             .map(|(x, row)| {
-                row.iter()
+                row.bytes()
                     .enumerate()
-                    .map(|(y, _)| self.count_mines(x, y))
+                    .map(|(y, p)| self.count_mines(p, x, y))
                     .collect()
             })
-            .collect();
-
-        Self { places }
+            .collect()
     }
 
-    fn count_mines(&self, r: usize, c: usize) -> char {
-        let p = self.places[r][c];
+    fn count_mines(&self, p: u8, r: usize, c: usize) -> char {
         match p {
-            '0'..='9' | '*' | '?' => p,
-            ' ' => {
+            b'0'..=b'9' | b'*' | b'?' => p as char,
+            b' ' => {
                 let mine_count = self
                     .neighbors(r, c)
-                    .filter(|(row, col)| self.places[*row][*col] == '*')
+                    .filter(|&(row, col)| self.places[row].as_bytes()[col] == b'*')
                     .count();
 
                 if mine_count == 0 {
@@ -55,16 +43,19 @@ impl Board {
         }
     }
 
+    fn get_range(low: usize, max: usize) -> impl Iterator<Item = usize> {
+        let lower = low.saturating_sub(1);
+        let upper = (low + 2).min(max);
+        lower..upper
+    }
+
     fn neighbors(&self, r: usize, c: usize) -> impl Iterator<Item = (usize, usize)> + '_ {
-        get_range(r, self.places.len())
-            .flat_map(move |row| get_range(c, self.places[r].len()).map(move |col| (row, col)))
+        Self::get_range(r, self.places.len()).flat_map(move |row| {
+            Self::get_range(c, self.places[r].len()).map(move |col| (row, col))
+        })
     }
 }
 
 pub fn annotate(minefield: &[&str]) -> Vec<String> {
-    Board::from(minefield).annotate().into()
-}
-
-fn get_range(n: usize, n_max: usize) -> impl Iterator<Item = usize> {
-    n.saturating_sub(1)..(n + 2).min(n_max)
+    Board::from(minefield).annotate()
 }
