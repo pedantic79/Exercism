@@ -7,7 +7,7 @@ char tolower(char ch) {
 
 char transform(char c) {
     if (std::isalpha(c)) {
-        return 'a' + 'z' - tolower(c);
+        return static_cast<char>('a' + 'z' - tolower(c));
     } else {
         return c;
     }

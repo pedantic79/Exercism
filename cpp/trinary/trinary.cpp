@@ -1,6 +1,6 @@
 #include "trinary.h"
 #include <cctype>
-#include <exception>
+#include <stdexcept>
 #include <numeric>
 #include <string>
 

@@ -12,7 +12,7 @@ const std::map<std::string, int> scrabble{
     {"k", 5},          {"jx", 8}, {"qz", 10}};
 
 int score_char(char ch) {
-    char c = std::tolower(ch);
+    char c = static_cast<char>(std::tolower(ch));
     auto i =
         std::find_if(std::begin(scrabble), std::end(scrabble), [c](auto p) {
             return p.first.find(c) != std::string::npos;
