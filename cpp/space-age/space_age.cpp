@@ -17,7 +17,9 @@ space_age::space_age(unsigned long long secs) : mSeconds(secs) {}
 
 unsigned long long space_age::seconds() const { return mSeconds; }
 
-double space_age::on_earth() const { return mSeconds * earthYearsPerSecond; }
+double space_age::on_earth() const {
+    return static_cast<double>(mSeconds) * earthYearsPerSecond;
+}
 
 double space_age::on_mercury() const { return on_earth() / mercuryFactor; }
 
