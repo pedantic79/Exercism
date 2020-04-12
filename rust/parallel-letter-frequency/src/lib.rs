@@ -35,7 +35,9 @@ fn count(lines: &[&str]) -> HashMap<char, usize> {
         .flat_map(|line| line.chars())
         .filter(|c| c.is_alphabetic())
         .fold(HashMap::new(), |mut acc, c| {
-            *acc.entry(c.to_lowercase().next().unwrap()).or_insert(0) += 1;
+            for codepoint in c.to_lowercase() {
+                *acc.entry(codepoint).or_insert(0) += 1;
+            }
             acc
         })
 }
