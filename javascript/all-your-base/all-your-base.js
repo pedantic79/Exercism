@@ -2,15 +2,19 @@ export const convert = (digits, baseIn, baseOut) => {
   const len = digits.length;
 
   if (baseIn < 2 || !Number.isInteger(baseIn)) {
-    throw new Error('Wrong input base');
+    throw new Error("Wrong input base");
   }
 
   if (baseOut < 2 || !Number.isInteger(baseOut)) {
-    throw new Error('Wrong output base');
+    throw new Error("Wrong output base");
   }
 
-  if (len == 0 || len > 1 && digits[0] == 0 || digits.some((n) => n < 0 || n >= baseIn)) {
-    throw new Error('Input has wrong format');
+  if (
+    len === 0 ||
+    (len > 1 && digits[0] === 0) ||
+    digits.some((n) => n < 0 || n >= baseIn)
+  ) {
+    throw new Error("Input has wrong format");
   }
 
   return fromInt(toInt(digits, baseIn), baseOut);
@@ -22,7 +26,7 @@ const toInt = (digits, base) =>
 const fromInt = (num, base) => {
   let outputDigits = new Array();
 
-  if (num == 0) {
+  if (num === 0) {
     return [0];
   }
 
@@ -32,4 +36,4 @@ const fromInt = (num, base) => {
   }
 
   return outputDigits.reverse();
-}
+};
