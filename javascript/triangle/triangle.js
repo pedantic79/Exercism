@@ -5,21 +5,23 @@ export class Triangle {
 
   kind() {
     if (!this.valid()) {
-      throw Error('invalid triangle');
+      throw Error("invalid triangle");
     }
 
     const uniqueSides = new Set(this.sides);
-    if (uniqueSides.size == 1) {
-      return 'equilateral'
-    } else if (uniqueSides.size == 2) {
-      return 'isosceles'
+    if (uniqueSides.size === 1) {
+      return "equilateral";
+    } else if (uniqueSides.size === 2) {
+      return "isosceles";
     } else {
-      return 'scalene'
+      return "scalene";
     }
   }
 
   valid() {
-    return this.sides.every((side) => side > 0) &&
-        this.sides[0] + this.sides[1] > this.sides[2];
+    return (
+      this.sides.every((side) => side > 0) &&
+      this.sides[0] + this.sides[1] > this.sides[2]
+    );
   }
 }
