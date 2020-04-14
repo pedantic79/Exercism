@@ -13,17 +13,11 @@ export default class Bob {
     const question = isQuestion(message);
     const shoutedQuestion = yell && question;
 
-    if (silence) {
-      return "Fine. Be that way!";
-    } else if (shoutedQuestion) {
-      return "Calm down, I know what I'm doing!";
-    } else if (question) {
-      return "Sure.";
-    } else if (yell) {
-      return "Whoa, chill out!";
-    } else {
-      return "Whatever.";
-    }
+    if (silence) return "Fine. Be that way!";
+    if (shoutedQuestion) return "Calm down, I know what I'm doing!";
+    if (question) return "Sure.";
+    if (yell) return "Whoa, chill out!";
+    return "Whatever.";
   }
 }
 
