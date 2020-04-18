@@ -1,4 +1,6 @@
-DEFAULT_STUDENTS = [
+from typing import List, Dict
+
+DEFAULT_STUDENTS: List[str] = [
     "Alice",
     "Bob",
     "Charlie",
@@ -12,20 +14,22 @@ DEFAULT_STUDENTS = [
     "Kincaid",
     "Larry",
 ]
-PLANT_NAMES = {
+PLANT_NAMES: Dict[str, str] = {
     plant[0]: plant for plant in ["Clover", "Radishes", "Grass", "Violets"]
 }
 
 
 class Garden:
-    def __init__(self, diagram, students=None):
-        self.garden = diagram.splitlines()
-        self.students = sorted(students if students else DEFAULT_STUDENTS)
+    def __init__(self, diagram: str, students: List[str] = []):
+        self.garden: List[str] = diagram.splitlines()
+        self.students: List[str] = sorted(
+            students if students else DEFAULT_STUDENTS
+        )
 
-    def plants(self, student):
-        student_index = self.students.index(student)
-        start_index = student_index * 2
-        end_index = start_index + 2
+    def plants(self, student: str) -> List[str]:
+        student_index: int = self.students.index(student)
+        start_index: int = student_index * 2
+        end_index: int = start_index + 2
 
         return [
             PLANT_NAMES[abbreviation]
