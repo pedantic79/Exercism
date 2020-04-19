@@ -1,5 +1,11 @@
 const ASCII_A: number = "A".charCodeAt(0);
+const ASCII_Z: number = "Z".charCodeAt(0);
+
 const ASCII_0: number = "0".charCodeAt(0);
+const ASCII_9: number = "9".charCodeAt(0);
+
+const ENGLISH_ALPHABET = { start: ASCII_A, end: ASCII_Z };
+const ARABIC_NUMERALS = { start: ASCII_0, end: ASCII_9 };
 
 class RobotFactory {
   name_cache: Set<string> = new Set();
@@ -14,16 +20,19 @@ class RobotFactory {
     return name;
   }
 
-  randomCharacter(start: number, size: number): string {
-    return String.fromCharCode(start + Math.floor(Math.random() * size));
+  randomCharacter(characterSet: { start: number; end: number }): string {
+    const size = characterSet.end - characterSet.start + 1;
+    return String.fromCharCode(
+      characterSet.start + Math.floor(Math.random() * size)
+    );
   }
 
   randomLetter(): string {
-    return this.randomCharacter(ASCII_A, 26);
+    return this.randomCharacter(ENGLISH_ALPHABET);
   }
 
   randomNumber(): string {
-    return this.randomCharacter(ASCII_0, 10);
+    return this.randomCharacter(ARABIC_NUMERALS);
   }
 
   randomName(): string {
