@@ -3,15 +3,16 @@
 #include <algorithm>
 #include <bitset>
 #include <cctype>
+#include <string>
 
-using namespace std;
+const std::string alpha = "QWERTYUIOPASDFGHJKLZXCVBNM";
 
-bool pangram::is_pangram(string_view str) {
+bool pangram::is_pangram(const std::string &str) {
     std::bitset<26> letters;
 
-    for_each(begin(str), end(str), [&](auto c) {
-        if (isalpha(c)) {
-            const auto pos = tolower(c) - 'a';
+    std::for_each(str.cbegin(), str.cend(), [&](auto c) {
+        if (std::isalpha(c)) {
+            const auto pos = std::tolower(c) - 'a';
             letters.set(pos);
         }
     });
