@@ -1,9 +1,9 @@
 #ifndef PANGRAM_H
 #define PANGRAM_H
 
-#include <string_view>
+#include <string>
 
 namespace pangram {
-bool is_pangram(std::string_view);
+bool is_pangram(const std::string &str);
 }
 #endif
