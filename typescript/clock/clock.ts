@@ -7,17 +7,17 @@ const TIME_FIELD_PAD = "0"; // 02:00, pad with 0
 export default class Clock {
   private minutes = 0;
 
-  constructor(hours: number, minutes: number = 0) {
-    this.normalize(hours * MINUTES_IN_HOUR + minutes);
+  constructor(hours: number, minutes = 0) {
+    this.setNormalizedMinutes(hours * MINUTES_IN_HOUR + minutes);
   }
 
   plus(minutes: number): Clock {
-    this.normalize(this.minutes + minutes);
+    this.setNormalizedMinutes(this.minutes + minutes);
     return this;
   }
 
   minus(minutes: number): Clock {
-    this.normalize(this.minutes - minutes);
+    this.setNormalizedMinutes(this.minutes - minutes);
     return this;
   }
 
@@ -25,7 +25,7 @@ export default class Clock {
     return other.minutes === this.minutes;
   }
 
-  normalize(minutes: number): void {
+  private setNormalizedMinutes(minutes: number): void {
     this.minutes = remainder(minutes, MINUTES_IN_DAY);
   }
 
@@ -38,7 +38,7 @@ export default class Clock {
 }
 
 function remainder(dividend: number, divisor: number): number {
-  return Math.trunc(((dividend % divisor) + divisor) % divisor);
+  return ((dividend % divisor) + divisor) % divisor;
 }
 
 function formatNumber(num: number): string {
