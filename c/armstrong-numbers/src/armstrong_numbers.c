@@ -1,6 +1,6 @@
 #include "armstrong_numbers.h"
 
-int num_length(int num) {
+static int num_length(int num) {
     int count = 0;
 
     while (num > 0) {
@@ -11,7 +11,7 @@ int num_length(int num) {
     return count;
 }
 
-int ipow(int base, int exp) {
+static int ipow(int base, int exp) {
     int total = 1;
 
     for (int i = 0; i < exp; i++) {
