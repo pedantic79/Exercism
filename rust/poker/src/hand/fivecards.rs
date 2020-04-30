@@ -3,8 +3,7 @@ use crate::{
     hand::pokerhand::PokerHand,
     Error,
 };
-use counter::Counter;
-use std::convert::TryFrom;
+use std::{cmp::Ordering, collections::HashMap, convert::TryFrom};
 
 /// FiveCards represents plain playing cards.
 /// It has methods for evaluating the five cards, to determine the best PokerHand
@@ -54,11 +53,21 @@ impl FiveCards {
     }
 
     fn mk_grouped(&self) -> Vec<(u8, usize)> {
-        self.0
+        let hm = self
+            .0
             .iter()
             .map(|c| c.rank.value())
-            .collect::<Counter<_>>()
-            .most_common_ordered()
+            .fold(HashMap::new(), |mut hm, value| {
+                *hm.entry(value).or_insert(0_usize) += 1;
+                hm
+            });
+
+        let mut v = hm.into_iter().collect::<Vec<_>>();
+        v.sort_by(|a, b| match b.1.cmp(&a.1) {
+            Ordering::Equal => a.0.cmp(&b.0),
+            unequal => unequal,
+        });
+        v
     }
 
     fn mk_value_array(&self) -> [u8; 5] {
@@ -126,7 +135,6 @@ impl FiveCards {
     pub fn process(self) -> PokerHand {
         self.try_straight_flush()
             .or_else(|| Self::try_mult_cards(&self.mk_grouped()))
-            .or_else(|| Some(PokerHand::HighCard(self.mk_value_array())))
-            .unwrap()
+            .unwrap_or_else(|| PokerHand::HighCard(self.mk_value_array()))
     }
 }
