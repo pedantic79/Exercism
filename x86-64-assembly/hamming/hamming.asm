@@ -4,8 +4,8 @@ distance:
         xor     edx, edx
         xor     eax, eax
 .start:
-        mov     r8b, byte [rdi + rdx]
-        mov     cl, byte [rsi + rdx]
+        movzx   r8d, byte [rdi + rdx]
+        movzx   ecx, byte [rsi + rdx]
 
         ;; checks are not null
         test    r8b, r8b
