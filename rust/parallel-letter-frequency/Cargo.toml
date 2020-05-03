@@ -3,6 +3,11 @@ edition = "2018"
 name = "parallel-letter-frequency"
 version = "0.0.0"
 
+[features]
+default = []
+pariter = ["rayon"]
+crossbeam = ["crossbeam-utils"]
+
 [dependencies]
-# rayon = "1.0.3"
-crossbeam-utils = "0.7.2"
+rayon = { version = "1.0.3", optional = true }
+crossbeam-utils = { version = "0.7.2", optional = true }
