@@ -1,5 +1,14 @@
+/*
+ * @prettier
+ */
+
+const FIND_INDEX_NOT_FOUND = -1;
+const BINARY_SEARCH_NOT_FOUND = -1;
+
+type Undefinable<T> = T | undefined;
+
 export default class BinarySearch {
-  readonly array: number[] | undefined = undefined;
+  readonly array: Undefinable<number[]> = undefined;
 
   constructor(inputArray: number[]) {
     if (isSorted(inputArray)) {
@@ -9,7 +18,7 @@ export default class BinarySearch {
 
   indexOf(element: number): number {
     if (this.array === undefined) {
-      return -1;
+      return BINARY_SEARCH_NOT_FOUND;
     }
 
     let leftIndex = 0;
@@ -29,14 +38,13 @@ export default class BinarySearch {
       }
     }
 
-    return -1;
+    return BINARY_SEARCH_NOT_FOUND;
   }
 }
 
-function isSorted(possiblySortedArray: number[]): boolean {
+function isSorted(array: number[]): boolean {
   return (
-    possiblySortedArray.findIndex(
-      (value, index) => index > 0 && value < possiblySortedArray[index - 1]
-    ) === -1
+    array.findIndex((value, index) => index > 0 && value < array[index - 1]) ===
+    FIND_INDEX_NOT_FOUND
   );
 }
