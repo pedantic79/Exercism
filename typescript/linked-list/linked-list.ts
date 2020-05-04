@@ -3,16 +3,12 @@
  */
 
 type NodePtr<T> = Node<T> | null;
-type IterateCallBack<T> = (
-  value: T,
-  prev: NodePtr<T>,
-  next: NodePtr<T>
-) => void;
+type IterateCallBack<T> = (node: Node<T>) => void;
 
-class IteratorEarlyReturn extends Error {
+class IterateEarlyReturn extends Error {
   constructor() {
-    super("Iterator Early Return");
-    this.name = "IteratorEarlyReturn";
+    super("Iterate Early Return");
+    this.name = "IterateEarlyReturn";
   }
 }
 
@@ -58,22 +54,12 @@ export default class LinkedList<T> {
   }
 
   shift(): T {
-    if (!this.head) {
-      throw new Error("empty list");
-    }
-
-    const { value } = this.head;
-    if (this.head.next) {
-      this.head = this.head.next;
-      this.head.prev = null;
-    } else {
-      this.last = this.head = null;
-    }
-    return value;
+    return this.deleteNode(this.head);
   }
 
   unshift(value: T): void {
     const node = new Node({ value, next: this.head });
+
     if (this.head) {
       this.head.prev = node;
     } else {
@@ -84,19 +70,7 @@ export default class LinkedList<T> {
   }
 
   pop(): T {
-    if (!this.last) {
-      throw new Error("empty list");
-    }
-
-    const { value } = this.last;
-    if (this.last.prev) {
-      this.last = this.last.prev;
-      this.last.next = null;
-    } else {
-      this.last = this.head = null;
-    }
-
-    return value;
+    return this.deleteNode(this.last);
   }
 
   count(): number {
@@ -110,36 +84,49 @@ export default class LinkedList<T> {
   }
 
   delete(value: T): void {
-    this.iterate(
-      (cursorValue: T, cursorPrev: NodePtr<T>, cursorNext: NodePtr<T>) => {
-        if (cursorValue === value) {
-          const left = cursorPrev;
-          const rite = cursorNext;
-
-          if (left) {
-            left.next = rite;
-          } else {
-            this.head = this.head && this.head.next;
-          }
-
-          if (rite) {
-            rite.prev = left;
-          } else {
-            this.last = this.last && this.last.prev;
-          }
-
-          throw new IteratorEarlyReturn();
-        }
+    this.iterate((node: Node<T>) => {
+      if (value === node.value) {
+        this.deleteNode(node);
+        throw new IterateEarlyReturn();
       }
-    );
+    });
+  }
+
+  private deleteNode(node: NodePtr<T>): T {
+    if (!node) {
+      throw new Error("empty list");
+    }
+
+    const { value, prev, next } = node;
+
+    const left = prev;
+    const right = next;
+
+    if (left) {
+      left.next = right;
+    } else {
+      this.head = this.head && this.head.next;
+    }
+
+    if (right) {
+      right.prev = left;
+    } else {
+      this.last = this.last && this.last.prev;
+    }
+
+    return value;
   }
 
   private iterate(callback: IterateCallBack<T>): void {
     for (let cursor = this.head; cursor; cursor = cursor.next) {
       try {
-        callback(cursor.value, cursor.prev, cursor.next);
-      } catch (EarlyExit) {
-        break;
+        callback(cursor);
+      } catch (e) {
+        if (e instanceof IterateEarlyReturn) {
+          break;
+        } else {
+          throw e;
+        }
       }
     }
   }
