@@ -1,5 +1,5 @@
-pub mod card;
-pub mod hand;
+pub(crate) mod card;
+pub(crate) mod hand;
 
 use card::Card;
 use hand::Hand;
