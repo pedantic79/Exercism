@@ -2,7 +2,7 @@ use crate::Error;
 use std::convert::TryFrom;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd)]
-pub enum Suit {
+pub(crate) enum Suit {
     Clubs,
     Diamonds,
     Hearts,
@@ -18,7 +18,19 @@ impl TryFrom<&str> for Suit {
             "H" => Ok(Hearts),
             "D" => Ok(Diamonds),
             "C" => Ok(Clubs),
-            _ => Err(Error::InvalidSuit),
+            _ => Err(Error::Suit),
         }
+    }
+}
+
+#[cfg(tests)]
+mod tests {
+    #[test]
+    fn test_parse_suit() {
+        suit_map()
+            .iter()
+            .for_each(|(&k, v)| assert_eq!(Suit::try_from(k).as_ref(), Ok(v)));
+
+        assert_eq!(Suit::try_from("A"), Err(Error::InvalidSuit));
     }
 }

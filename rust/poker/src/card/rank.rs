@@ -2,7 +2,7 @@ use crate::Error;
 use std::{cmp::Ordering, convert::TryFrom};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Rank {
+pub(crate) enum Rank {
     Num(u8),
     Jack,
     Queen,
@@ -41,7 +41,7 @@ impl TryFrom<&str> for Rank {
             "4" => Ok(Num(4)),
             "3" => Ok(Num(3)),
             "2" => Ok(Num(2)),
-            _ => Err(Error::InvalidRank),
+            _ => Err(Error::Rank),
         }
     }
 }
@@ -49,5 +49,39 @@ impl TryFrom<&str> for Rank {
 impl PartialOrd for Rank {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.value().cmp(&other.value()))
+    }
+}
+
+#[cfg(tests)]
+mod tests {
+    use super::Rank;
+    use maplit::hashmap;
+    use std::collections::HashMap;
+
+    fn rank_map<'a>() -> HashMap<&'a str, Rank> {
+        hashmap!(
+            "A" => Ace,
+            "K" => King,
+            "Q" => Queen,
+            "J" => Jack,
+            "10" => Num(10),
+            "9" => Num(9),
+            "8" => Num(8),
+            "7" => Num(7),
+            "6" => Num(6),
+            "5" => Num(5),
+            "4" => Num(4),
+            "3" => Num(3),
+            "2" => Num(2),
+        )
+    }
+
+    #[test]
+    fn test_parse_rank() {
+        rank_map()
+            .iter()
+            .for_each(|(&k, v)| assert_eq!(Rank::try_from(k).as_ref(), Ok(v)));
+
+        assert_eq!(Rank::try_from("1"), Err(Error::InvalidRank));
     }
 }

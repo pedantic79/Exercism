@@ -7,14 +7,14 @@ use std::{cmp::Ordering, collections::HashMap, convert::TryFrom};
 
 /// FiveCards represents plain playing cards.
 /// It has methods for evaluating the five cards, to determine the best PokerHand
-pub struct FiveCards([Card; 5]);
+pub(crate) struct FiveCards([Card; 5]);
 
 impl TryFrom<&[Card]> for FiveCards {
     type Error = super::Error;
 
     fn try_from(cards: &[Card]) -> Result<Self, Self::Error> {
         if cards.len() != 5 {
-            return Err(Error::InvalidCardCount);
+            return Err(Error::CardCount);
         }
 
         let mut c = cards.to_owned();
