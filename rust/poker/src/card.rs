@@ -4,11 +4,11 @@ mod suit;
 use crate::Error;
 use std::{cmp::Ordering, convert::TryFrom};
 
-pub use rank::Rank;
-pub use suit::Suit;
+pub(crate) use rank::Rank;
+pub(crate) use suit::Suit;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd)]
-pub struct Card {
+pub(crate) struct Card {
     pub rank: Rank,
     pub suit: Suit,
 }
@@ -32,7 +32,7 @@ impl TryFrom<&str> for Card {
 
             Ok(Self::new(r, t))
         } else {
-            Err(Error::InvalidCard)
+            Err(Error::Card)
         }
     }
 }
@@ -40,5 +40,33 @@ impl TryFrom<&str> for Card {
 impl Ord for Card {
     fn cmp(&self, other: &Self) -> Ordering {
         self.partial_cmp(other).unwrap_or(Ordering::Less)
+    }
+}
+
+#[cfg(tests)]
+mod tests {
+    fn suit_map<'a>() -> HashMap<&'a str, Suit> {
+        use Suit::*;
+
+        hashmap!(
+            "D" => Diamonds,
+            "C" => Clubs,
+            "H" => Hearts,
+            "S" => Spades,
+        )
+    }
+
+    #[test]
+    fn test_parse_card() {
+        rank_map().iter().for_each(|(r, rank_exp)| {
+            suit_map().iter().for_each(|(s, suit_exp)| {
+                let card = format!("{}{}", r, s);
+                let exp = poker::card::Card::new(*rank_exp, *suit_exp);
+                assert_eq!(Card::try_from(&card[..]), Ok(exp));
+            })
+        });
+
+        assert_eq!(Card::try_from("1S"), Err(Error::InvalidRank));
+        assert_eq!(Card::try_from("AE"), Err(Error::InvalidSuit));
     }
 }

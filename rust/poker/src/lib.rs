@@ -6,11 +6,11 @@ use hand::Hand;
 use std::convert::TryFrom;
 
 #[derive(Debug, PartialEq)]
-pub enum Error {
-    InvalidCard,
-    InvalidCardCount,
-    InvalidRank,
-    InvalidSuit,
+pub(crate) enum Error {
+    Card,
+    CardCount,
+    Rank,
+    Suit,
 }
 
 pub fn winning_hands<'a>(hands: &[&'a str]) -> Option<Vec<&'a str>> {
@@ -19,12 +19,12 @@ pub fn winning_hands<'a>(hands: &[&'a str]) -> Option<Vec<&'a str>> {
         .map(|h| Hand::try_from(*h))
         .collect::<Result<Vec<Hand>, Error>>()
         .ok()?;
-    h.sort();
 
-    let winner = h.last()?;
+    h.sort_by(|a, b| b.cmp(&a));
+    let winner = h.first()?;
     let f = h
         .iter()
-        .filter(|x| x.pokerhand == winner.pokerhand)
+        .take_while(|x| x.pokerhand == winner.pokerhand)
         .map(|x| x.source)
         .collect();
 

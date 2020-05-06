@@ -1,7 +1,7 @@
 use super::FiveCards;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-pub enum PokerHand {
+pub(crate) enum PokerHand {
     HighCard([u8; 5]),
     Pair(u8, [u8; 3]),
     TwoPair([u8; 2], u8),
