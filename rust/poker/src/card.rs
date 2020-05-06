@@ -2,12 +2,12 @@ mod rank;
 mod suit;
 
 use crate::Error;
-use std::{cmp::Ordering, convert::TryFrom};
+use std::convert::TryFrom;
 
 pub(crate) use rank::Rank;
 pub(crate) use suit::Suit;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct Card {
     pub rank: Rank,
     pub suit: Suit,
@@ -34,12 +34,6 @@ impl TryFrom<&str> for Card {
         } else {
             Err(Error::Card)
         }
-    }
-}
-
-impl Ord for Card {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap_or(Ordering::Less)
     }
 }
 

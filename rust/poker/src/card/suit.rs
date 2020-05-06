@@ -1,7 +1,7 @@
 use crate::Error;
 use std::convert::TryFrom;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum Suit {
     Clubs,
     Diamonds,

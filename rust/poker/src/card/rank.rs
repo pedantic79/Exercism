@@ -1,7 +1,7 @@
 use crate::Error;
-use std::{cmp::Ordering, convert::TryFrom};
+use std::convert::TryFrom;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum Rank {
     Num(u8),
     Jack,
@@ -43,12 +43,6 @@ impl TryFrom<&str> for Rank {
             "2" => Ok(Num(2)),
             _ => Err(Error::Rank),
         }
-    }
-}
-
-impl PartialOrd for Rank {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.value().cmp(&other.value()))
     }
 }
 
