@@ -28,9 +28,8 @@ export default class Rational {
     );
   }
 
-  sub(rhs: Rational): Rational {
-    rhs.numerator *= -1;
-    return this.add(rhs);
+  sub({ numerator, denominator }: Rational): Rational {
+    return this.add(new Rational(numerator * -1, denominator));
   }
 
   mul({ numerator, denominator }: Rational): Rational {
@@ -62,6 +61,9 @@ export default class Rational {
   }
 
   private greatestCommonDivisor(a: number, b: number): number {
+    // Non-recursive version of Euclid's algorithm for finding greatest common divisor
+    // gcd(a, 0) = a
+    // gcd(a, b) = gcd(b, a mod b)
     while (b !== 0) {
       [a, b] = [b, a % b];
     }
