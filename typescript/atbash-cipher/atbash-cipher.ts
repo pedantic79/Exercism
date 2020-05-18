@@ -2,37 +2,44 @@
  * @prettier
  */
 export default class AtbashCipher {
-  private alphabet = "abcdefghijklmnopqrstuvwxyz";
-  private numbers = "0123456789";
+  private readonly ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+  private readonly NUMERIC = /[0-9]/;
+  private readonly NOT_LOWERCASE_ALPHANUMERIC = /[^a-z0-9]/g;
+  private readonly EVERY_CHARACTER = /./g;
+  private readonly ENCODING_CADENCE = 5;
 
   encode(plainText: string): string {
-    return this.atbash(plainText)
-      .map((character, index) =>
-        index > 0 && index % 5 == 0 ? ` ${character}` : character
-      )
-      .join("");
+    return this.intersperseSpaces(
+      this.atbash(plainText),
+      this.ENCODING_CADENCE
+    ).join(" ");
   }
 
   decode(cipherText: string): string {
-    return this.atbash(cipherText).join("");
+    return this.atbash(cipherText);
+  }
+
+  private intersperseSpaces(input: string, cadence: number): string[] {
+    const everyNthCharacter = new RegExp(`.{1,${cadence}}`, "g");
+    return input.match(everyNthCharacter) || [];
   }
 
   private atbashCodecCharacter(chararacter: string): string {
-    return this.numbers.includes(chararacter)
-      ? chararacter
-      : this.alphabet[
-          this.alphabet.length - (this.alphabet.indexOf(chararacter) + 1)
-        ];
+    if (chararacter.match(this.NUMERIC)) {
+      return chararacter;
+    }
+
+    return this.ALPHABET[
+      this.ALPHABET.length - (this.ALPHABET.indexOf(chararacter) + 1)
+    ];
   }
 
-  private atbash(input: string): string[] {
+  private atbash(input: string): string {
     return input
       .toLowerCase()
-      .split("")
-      .filter(
-        (character) =>
-          this.alphabet.includes(character) || this.numbers.includes(character)
-      )
-      .map((character) => this.atbashCodecCharacter(character));
+      .replace(this.NOT_LOWERCASE_ALPHANUMERIC, "")
+      .replace(this.EVERY_CHARACTER, (character) =>
+        this.atbashCodecCharacter(character)
+      );
   }
 }
