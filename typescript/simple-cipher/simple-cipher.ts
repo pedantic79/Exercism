@@ -1,6 +1,11 @@
 /*
  * @prettier
  */
+enum SimpleSipherMode {
+  ENCODE,
+  DECODE,
+}
+
 export default class SimpleCipher {
   public readonly keyArray: number[];
   readonly A_VALUE = "a".charCodeAt(0);
@@ -20,11 +25,11 @@ export default class SimpleCipher {
   }
 
   encode(plainText: string): string {
-    return this.codec(plainText, false);
+    return this.codec(plainText, SimpleSipherMode.ENCODE);
   }
 
   decode(cipherText: string): string {
-    return this.codec(cipherText, true);
+    return this.codec(cipherText, SimpleSipherMode.DECODE);
   }
 
   private character2Value(character: string): number {
@@ -42,14 +47,15 @@ export default class SimpleCipher {
     );
   }
 
-  private codec(msg: string, decode: boolean): string {
+  private codec(msg: string, mode: SimpleSipherMode): string {
     return msg.replace(/./g, (character, idx) => {
-      let shiftedLetter = this.character2Value(character);
-      if (decode) {
-        shiftedLetter -= this.keyArray[idx % this.keyArray.length];
-      } else {
-        shiftedLetter += this.keyArray[idx % this.keyArray.length];
+      let offset = this.keyArray[idx % this.keyArray.length];
+
+      if (mode == SimpleSipherMode.DECODE) {
+        offset *= -1;
       }
+
+      const shiftedLetter = this.character2Value(character) + offset;
 
       return this.value2Character(shiftedLetter);
     });
