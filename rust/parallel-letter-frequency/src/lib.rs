@@ -9,18 +9,32 @@ pub use crate::crossbeam::frequency;
 #[cfg(feature = "default")]
 pub use crate::stdthread::frequency;
 
+const MIN_CHUNK_SIZE: Option<usize> = Some(9);
+
 fn count<S: AsRef<str>>(texts: &[S]) -> HashMap<char, usize> {
     let mut map = HashMap::new();
 
     for line in texts.iter() {
         for chr in line.as_ref().chars().filter(|c| c.is_alphabetic()) {
-            if let Some(c) = chr.to_lowercase().next() {
-                (*map.entry(c).or_insert(0)) += 1;
+            let lowercase = if chr.is_lowercase() {
+                Some(chr)
+            } else {
+                chr.to_lowercase().next()
+            };
+
+            if let Some(c) = lowercase {
+                *map.entry(c).or_insert(0) += 1;
             }
         }
     }
 
     map
+}
+
+fn merge(acc: &mut HashMap<char, usize>, value: HashMap<char, usize>) {
+    for (ch, count) in value {
+        acc.entry(ch).and_modify(|n| *n += count).or_insert(count);
+    }
 }
 
 fn calc_size(len: usize, worker_count: usize) -> usize {
@@ -29,7 +43,7 @@ fn calc_size(len: usize, worker_count: usize) -> usize {
 
 #[cfg(feature = "pariter")]
 mod rayon {
-    use super::{calc_size, count};
+    use super::{calc_size, count, merge, MIN_CHUNK_SIZE};
     use rayon::iter::ParallelIterator;
     use rayon::slice::ParallelSlice;
     use std::collections::HashMap;
@@ -41,7 +55,7 @@ mod rayon {
         }
 
         let size = calc_size(input.len(), worker_count);
-        if size < 5 {
+        if Some(size) < MIN_CHUNK_SIZE {
             return count(input);
         }
 
@@ -57,9 +71,7 @@ mod rayon {
                 .par_chunks(size)
                 .map(count)
                 .reduce(HashMap::new, |mut acc, value| {
-                    for (ch, count) in value {
-                        acc.entry(ch).and_modify(|n| *n += count).or_insert(count);
-                    }
+                    merge(&mut acc, value);
                     acc
                 })
         })
@@ -68,7 +80,7 @@ mod rayon {
 
 #[cfg(feature = "crossbeam")]
 mod crossbeam {
-    use super::{calc_size, count};
+    use super::{calc_size, count, merge, MIN_CHUNK_SIZE};
     use crossbeam_utils::thread;
     use std::collections::HashMap;
 
@@ -79,7 +91,7 @@ mod crossbeam {
         }
 
         let size = calc_size(input.len(), worker_count);
-        if size < 5 {
+        if Some(size) < MIN_CHUNK_SIZE {
             return count(input);
         }
 
@@ -93,9 +105,7 @@ mod crossbeam {
                 .into_iter()
                 .fold(HashMap::new(), |mut acc, handle| {
                     let hm = handle.join().unwrap();
-                    for (ch, count) in hm {
-                        acc.entry(ch).and_modify(|n| *n += count).or_insert(count);
-                    }
+                    merge(&mut acc, hm);
                     acc
                 })
         })
@@ -105,7 +115,7 @@ mod crossbeam {
 
 #[cfg(feature = "default")]
 mod stdthread {
-    use super::{calc_size, count};
+    use super::{calc_size, count, merge, MIN_CHUNK_SIZE};
     use std::collections::HashMap;
     use std::thread;
 
@@ -116,7 +126,7 @@ mod stdthread {
         }
 
         let size = calc_size(input.len(), worker_count);
-        if size < 5 {
+        if Some(size) < MIN_CHUNK_SIZE {
             return count(input);
         }
 
@@ -137,9 +147,7 @@ mod stdthread {
             .into_iter()
             .fold(HashMap::new(), |mut acc, handle| {
                 let hm = handle.join().unwrap();
-                for (ch, count) in hm {
-                    acc.entry(ch).and_modify(|n| *n += count).or_insert(count);
-                }
+                merge(&mut acc, hm);
                 acc
             })
     }
