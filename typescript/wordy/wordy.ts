@@ -28,7 +28,12 @@ export class WordProblem {
   private tokens: Tokenizer;
 
   constructor(private readonly input: string) {
-    this.tokens = new Tokenizer(input.replace(/\?$/, ""));
+    this.tokens = new Tokenizer(WordProblem.trimEnd(input, "?"));
+  }
+
+  private static trimEnd(input: string, pattern: string): string {
+    const last = input.length - 1;
+    return input[last] == pattern ? input.substring(0, last) : input;
   }
 
   parseOp(): OperationFn {
@@ -74,7 +79,7 @@ class Tokenizer {
   private tokens: string[];
 
   constructor(input: string) {
-    this.tokens = input.split(/\s+/);
+    this.tokens = input.split(" ");
   }
 
   shift(): string {
@@ -134,10 +139,10 @@ class Tokenizer {
   parseNum(): number {
     const token = this.shift();
 
-    const number = token.match(/^(-?\d+)$/);
-    if (!number) {
+    const number = parseInt(token);
+    if (isNaN(number)) {
       throw new ArgumentError(`parse error: invalid number ${token}`);
     }
-    return Number(number[1]);
+    return number;
   }
 }
