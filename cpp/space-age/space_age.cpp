@@ -3,17 +3,17 @@
 namespace space_age {
 
 namespace {
-constexpr double earthYearsPerSecond = 1.0 / 31557600.0;
-const double mercuryFactor = 0.2408467;
-const double venusFactor = 0.61519726;
-const double marsFactor = 1.8808158;
-const double jupiterFactor = 11.862615;
-const double saturnFactor = 29.447498;
-const double uranusFactor = 84.016846;
-const double neptuneFactor = 164.79132;
+constexpr double earthYearsPerSecond = 1.0 / 31'557'600.0;
+constexpr double mercuryFactor = 0.240'846'7;
+constexpr double venusFactor = 0.615'197'26;
+constexpr double marsFactor = 1.880'815'8;
+constexpr double jupiterFactor = 11.862'615;
+constexpr double saturnFactor = 29.447'498;
+constexpr double uranusFactor = 84.016'846;
+constexpr double neptuneFactor = 164.791'32;
 } // namespace
 
-space_age::space_age(unsigned long long secs) : mSeconds(secs) {}
+space_age::space_age(unsigned long long secs) : mSeconds{secs} {}
 
 unsigned long long space_age::seconds() const { return mSeconds; }
 
