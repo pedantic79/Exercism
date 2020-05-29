@@ -11,12 +11,12 @@ export default class List<T> {
   }
 
   private clone(): List<T> {
-    return new List(this.values);
+    return new List(this.list);
   }
 
   append(input: List<T>): List<T> {
     const newList = this.clone();
-    newList.list.push(...input.values);
+    newList.list.push(...input.list);
     return newList;
   }
 
