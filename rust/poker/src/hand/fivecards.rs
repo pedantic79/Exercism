@@ -3,7 +3,7 @@ use crate::{
     hand::pokerhand::PokerHand,
     Error,
 };
-use std::{cmp::Ordering, collections::HashMap, convert::TryFrom};
+use std::{collections::HashMap, convert::TryFrom};
 
 /// FiveCards represents plain playing cards.
 /// It has methods for evaluating the five cards, to determine the best PokerHand
@@ -63,10 +63,7 @@ impl FiveCards {
             });
 
         let mut v = hm.into_iter().collect::<Vec<_>>();
-        v.sort_by(|a, b| match b.1.cmp(&a.1) {
-            Ordering::Equal => a.0.cmp(&b.0),
-            unequal => unequal,
-        });
+        v.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
         v
     }
 
