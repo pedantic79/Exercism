@@ -5,7 +5,7 @@ class Luhn:
     def valid(self) -> bool:
         try:
             total = sum(
-                double_if_second(index, character)
+                Luhn.double_if_second(index, character)
                 for (index, character) in enumerate(self._card_num)
             )
         except ValueError:
@@ -13,14 +13,12 @@ class Luhn:
 
         return len(self._card_num) > 1 and total % 10 == 0
 
+    def double_if_second(index: int, character: str) -> int:
+        number = int(character)
 
-def double_if_second(index: int, character: str) -> int:
-    number = int(character)
-
-    if index % 2 == 1:
-        if number < 5:
+        if index % 2 == 1:
             number *= 2
-        else:
-            number = number * 2 - 9
+            if number > 9:
+                number -= 9
 
-    return number
+        return number
