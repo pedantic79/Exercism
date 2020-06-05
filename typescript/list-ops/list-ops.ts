@@ -17,18 +17,17 @@ export default class List<T> {
   }
 
   get values(): T[] {
-    // return this.foldl(
-    //   (accumulator: T[], value: T) => accumulator.concat(value),
-    //   []
-    // );
-    const output = new Array(this.length());
-    let index = 0;
-    this.foldl((_: void, value: T) => {
-      output[index] = value;
-      index += 1;
-    }, undefined);
+    type IndexableArray = [T[], number];
 
-    return output;
+    const [outputArray, _] = this.foldl(
+      ([output, index]: IndexableArray, value: T): IndexableArray => {
+        output[index] = value;
+        return [output, index + 1];
+      },
+      [new Array(this.length()), 0]
+    );
+
+    return outputArray;
   }
 
   append(input: List<T>): List<T> {
