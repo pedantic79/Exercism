@@ -1,77 +1,150 @@
 /*
  * @prettier
  */
-type Functor<T, U> = (accumulator: U, value: T) => U;
-
+/* eslint @typescript-eslint/no-use-before-define: "off" */
 export default class List<T> {
-  constructor(private list: T[] = []) {}
+  private head: NullableLinkedList<T>;
 
-  get values(): T[] {
-    return this.list;
+  constructor(list: T[] = []) {
+    this.head = list.reduceRight<NullableLinkedList<T>>(LinkedList.cons, null);
   }
 
-  private clone(): List<T> {
-    return new List(this.list);
+  // Turns a NullableLinkedList to a List
+  private static wrap<T>(linkedList: NullableLinkedList<T>): List<T> {
+    const list = new List<T>();
+    list.head = linkedList;
+    return list;
+  }
+
+  get values(): T[] {
+    // return this.foldl(
+    //   (accumulator: T[], value: T) => accumulator.concat(value),
+    //   []
+    // );
+    const output = new Array(this.length());
+    let index = 0;
+    this.foldl((_: void, value: T) => {
+      output[index] = value;
+      index += 1;
+    }, undefined);
+
+    return output;
   }
 
   append(input: List<T>): List<T> {
-    const newList = this.clone();
-    newList.list.push(...input.list);
-    return newList;
+    const nullableLinkedList = LinkedList.append(this.head, input.head);
+
+    return List.wrap(nullableLinkedList);
   }
 
-  foldl<U>(operation: Functor<T, U>, initial: U): U {
-    let accumulator = initial;
-
-    for (const item of this.list) {
-      accumulator = operation(accumulator, item);
-    }
-
-    return accumulator;
-  }
-
-  concat(listOfLists: List<List<T>>): List<T> {
-    return listOfLists.foldl(
-      (accumulator: List<T>, value: List<T>): List<T> =>
-        accumulator.append(value),
-      this.clone()
+  concat(list: List<List<T>>): List<T> {
+    const nullableLinkedList = LinkedList.append(
+      this.head,
+      list.foldr(
+        (accumulator: NullableLinkedList<T>, value: List<T>) =>
+          LinkedList.append(value.head, accumulator),
+        null
+      )
     );
+
+    return List.wrap(nullableLinkedList);
   }
 
   filter(predicate: (argument: T) => boolean): List<T> {
-    return new List(
-      this.foldl((accumulator: T[], value: T): T[] => {
-        if (predicate(value)) {
-          accumulator.push(value);
-        }
-        return accumulator;
-      }, [])
+    const nullableLinkedList = this.foldr(
+      (accumulator: NullableLinkedList<T>, value: T) =>
+        predicate(value) ? LinkedList.cons(accumulator, value) : accumulator,
+      null
     );
+
+    return List.wrap(nullableLinkedList);
   }
 
   map<U>(operation: (argument: T) => U): List<U> {
-    return new List(
-      this.foldl((accumulator: U[], value: T): U[] => {
-        accumulator.push(operation(value));
-        return accumulator;
-      }, [])
+    const nullableLinkedList = this.foldr(
+      (accumulator: NullableLinkedList<U>, value: T) =>
+        LinkedList.cons(accumulator, operation(value)),
+      null
     );
+
+    return List.wrap(nullableLinkedList);
   }
 
   length(): number {
-    return this.foldl((total: number, _: T): number => total + 1, 0);
+    return this.foldr((accumulator: number) => accumulator + 1, 0);
+  }
+
+  foldl<U>(operation: Functor<T, U>, initial: U): U {
+    return LinkedList.foldl(operation, initial, this.head);
   }
 
   foldr<U>(operation: Functor<T, U>, initial: U): U {
-    return this.reverse().foldl(operation, initial);
+    return LinkedList.foldr(operation, initial, this.head);
   }
 
   reverse(): List<T> {
-    return new List(
-      this.foldl((accumulator: T[], value: T): T[] => {
-        accumulator.unshift(value);
-        return accumulator;
-      }, [])
+    const nullableLinkedList = this.foldl<NullableLinkedList<T>>(
+      LinkedList.cons,
+      null
     );
+
+    return List.wrap(nullableLinkedList);
+  }
+}
+
+type Functor<T, U> = (accumulator: U, value: T) => U;
+type NullableLinkedList<T> = LinkedList<T> | null;
+
+// Simple Functional style linked list
+class LinkedList<T> {
+  private value: T;
+  private next: NullableLinkedList<T>;
+
+  constructor({ value, next }: { value: T; next: NullableLinkedList<T> }) {
+    this.value = value;
+    this.next = next;
+  }
+
+  // https://en.wikipedia.org/wiki/Cons
+  static cons<T>(list: NullableLinkedList<T>, value: T): NullableLinkedList<T> {
+    return new LinkedList({ value: value, next: list });
+  }
+
+  static foldr<T, U>(
+    operation: Functor<T, U>,
+    initial: U,
+    list: NullableLinkedList<T>
+  ): U {
+    if (!list) {
+      return initial;
+    }
+
+    return operation(
+      LinkedList.foldr(operation, initial, list.next),
+      list.value
+    );
+  }
+
+  static foldl<T, U>(
+    operation: Functor<T, U>,
+    initial: U,
+    list: NullableLinkedList<T>
+  ): U {
+    if (!list) {
+      return initial;
+    }
+
+    return LinkedList.foldl(
+      operation,
+      operation(initial, list.value),
+      list.next
+    );
+  }
+
+  static append<T>(
+    base: NullableLinkedList<T>,
+    list: NullableLinkedList<T>
+  ): NullableLinkedList<T> {
+    return LinkedList.foldr(LinkedList.cons, list, base);
   }
 }
