@@ -12,15 +12,18 @@ class robot {
   public:
     robot();
 
-    // Rule of 5
+    // Don't allow the robot to be copied
     robot(const robot &) = delete;
-    robot(robot &&) = delete;
-    void operator=(const robot &) = delete;
-    void operator=(robot &&) = delete;
+    robot &operator=(const robot &) = delete;
+
+    // Rule of 5, allow the robot to be moved and deleted
+    robot(robot &&) = default;
+    robot &operator=(robot &&) = default;
     ~robot() = default;
 
     void reset();
     const std::string name() const;
+    void generateRandomName();
 };
 } // namespace robot_name
 
