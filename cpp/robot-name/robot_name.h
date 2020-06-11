@@ -7,7 +7,7 @@ namespace robot_name {
 class robot {
     std::string name_;
     static std::unordered_set<std::string> namelist_;
-    void generateName();
+    void generateRandomName();
 
   public:
     robot();
@@ -23,7 +23,6 @@ class robot {
 
     void reset();
     const std::string name() const;
-    void generateRandomName();
 };
 } // namespace robot_name
 
