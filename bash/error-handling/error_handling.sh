@@ -5,7 +5,7 @@ set -o nounset
 
 main() {
     if [ $# -eq 0 ] || [ $# -gt 1 ]; then
-        echo "Usage: ./error_handling <greetee>"
+        echo "Usage: $0 <person>"
         exit 1
     else
         echo "Hello, $1"

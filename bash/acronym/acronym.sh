@@ -5,7 +5,7 @@ set -o nounset
 
 main() {
     local line="$1"
-    IFS=' -' read -r -a words <<< "$line"
+    IFS=' -_*' read -r -a words <<< "$line"
 
     local output=""
     local word

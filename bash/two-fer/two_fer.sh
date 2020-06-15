@@ -1,11 +1,12 @@
 #!/bin/bash
 
 set -o errexit
+set -o nounset
 
 main() {
-    local input=$1
+    local -r input=${1:-you}
 
-    echo "One for ${input:-you}, one for me."
+    echo "One for ${input}, one for me."
 }
 
 main "$@"

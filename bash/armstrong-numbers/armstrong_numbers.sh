@@ -4,21 +4,19 @@ set -o errexit
 set -o nounset
 
 main() {
-    local number="$1"
-    local power=${#number}
+    local -i number="$1"
+    local -i power=${#number}
 
-    local sum=0
-    local idx=0
+    local -i sum=0
+    local -i idx=0
     for ((idx = 0; idx < power; idx++)) do
-        ((sum += ${number:$idx:1} ** power))
+        ((sum += ${number:$idx:1} ** power)) || true
     done
 
     if [ "$number" -eq "$sum" ]; then
         echo "true"
-        exit 0
     else
         echo "false"
-        exit 1
     fi
 }
 

@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 
 main() {
-    local num="$1"
+    local -i -r num="$1"
     local output
 
     if ! (( num % 3 )); then

@@ -17,7 +17,7 @@ is_yell() {
 
 main() {
     remark="${1-}"                   #Handle no params
-    remark="$(echo -e "$remark")"     #Is there a non-$() way to do this?
+    remark=$(echo -e "$remark")      #Is there a non-$() way to do this?
     remark="${remark//[[:space:]]/}" #Remove all whitespace
     if [ "$remark" = "" ]; then
         echo "Fine. Be that way!"

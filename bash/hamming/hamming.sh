@@ -12,8 +12,8 @@ main() {
         exit 1
     fi
 
-    local diffs=0
-    local idx
+    local -i diffs=0
+    local -i idx
     for ((idx = 0; idx < ${#dna1}; idx++)) do
         if [ "${dna1:$idx:1}" != "${dna2:$idx:1}" ]; then
             # (( math )) operations returns the value of the expr as $?.
@@ -28,7 +28,7 @@ main() {
 
 check_arg_count() {
     if [ $# -ne 2 ]; then
-        echo "Usage: hamming.sh <strand1> <strand2>"
+        echo "Usage: hamming.sh <string1> <string2>"
         exit 1
     fi
 }
