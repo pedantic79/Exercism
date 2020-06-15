@@ -1,113 +1,93 @@
-#!/usr/bin/env bats
+#!/usr/bin/env bash
 
-@test "empty strands" {
-  #skip
-  run bash hamming.sh "" ""
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 0 ]
+# local version: 2.3.0.3
+# 
+# bash-specific test: Input validation, proper quoting
+
+@test 'empty strands' {
+  #[[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh '' ''
+  (( status == 0 ))
+  [[ $output == "0" ]]
 }
 
-@test "identical strands" {
-  # skip
-  run bash hamming.sh "A" "A"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 0 ]
+@test 'single letter identical strands' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'A' 'A'
+  (( status == 0 ))
+  [[ $output == "0" ]]
 }
 
-@test "long identical strands" {
-  # skip
-  run bash hamming.sh "GGACTGA" "GGACTGA"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 0 ]
+@test 'single letter different strands' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'G' 'T'
+  (( status == 0 ))
+  [[ $output == "1" ]]
 }
 
-@test "complete distance in single nucleotide strands" {
-  # skip
-  run bash hamming.sh "A" "G"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 1 ]
+@test 'long identical strands' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'GGACTGAAATCTG' 'GGACTGAAATCTG'
+  (( status == 0 ))
+  [[ $output == "0" ]]
 }
 
-@test "complete distance in small strands" {
-  # skip
-  run bash hamming.sh "AG" "CT"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 2 ]
+@test 'long different strands' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'GGACGGATTCTG' 'AGGACGGATTCT'
+  (( status == 0 ))
+  [[ $output == "9" ]]
 }
 
-@test "small distance in small strands" {
-  # skip
-  run bash hamming.sh "AT" "CT"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 1 ]
+@test 'disallow first strand longer' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'AATG' 'AAA'
+  (( status == 1 ))
+  [[ $output == "left and right strands must be of equal length" ]]
 }
 
-@test "small distance" {
-  # skip
-  run bash hamming.sh "GGACG" "GGTCG"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 1 ]
+@test 'disallow second strand longer' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'ATA' 'AGTG'
+  (( status == 1 ))
+  [[ $output == "left and right strands must be of equal length" ]]
 }
 
-@test "small distance in long strands" {
-  # skip
-  run bash hamming.sh "ACCAGGG" "ACTATGG"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 2 ]
+@test 'disallow left empty strand' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh '' 'G'
+  (( status == 1 ))
+  [[ $output == "left and right strands must be of equal length" ]]
 }
 
-@test "non-unique character in first strand" {
-  # skip
-  run bash hamming.sh "AAG" "AAA"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 1 ]
-}
-
-@test "non-unique character in second strand" {
-  # skip
-  run bash hamming.sh "AAA" "AAG"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 1 ]
-}
-
-@test "same nucleotides in different positions" {
-  # skip
-  run bash hamming.sh "TAG" "GAT"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 2 ]
-}
-
-@test "large distance" {
-  # skip
-  run bash hamming.sh "GATACA" "GCATAA"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 4 ]
-}
-
-@test "large distance in off-by-one strand" {
-  # skip
-  run bash hamming.sh "GGACGGATTCTG" "AGGACGGATTCT"
-  [ "$status" -eq 0 ]
-  [ "$output" -eq 9 ]
-}
-
-@test "disallow first strand longer" {
-  # skip
-  run bash hamming.sh "AATG" "AAA"
-  [ "$status" -eq 1 ]
-  [ "$output" == "left and right strands must be of equal length" ]
-}
-
-@test "disallow second strand longer" {
-  # skip
-  run bash hamming.sh "ATA" "AGTG"
-  [ "$status" -eq 1 ]
-  [ "$output" == "left and right strands must be of equal length" ]
+@test 'disallow right empty strand' {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'G' ''
+  (( status == 1 ))
+  [[ $output == "left and right strands must be of equal length" ]]
 }
 
 @test "no input" {
-  # skip
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
   run bash hamming.sh
-  [ "$status" -eq 1 ]
-  [ "$output" == "Usage: hamming.sh <strand1> <strand2>" ]
+  (( status == 1 ))
+  [[ $output == "Usage: hamming.sh <string1> <string2>" ]]
+}
+
+@test "invalid input" {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'A'
+  (( status == 1 ))
+  [[ $output == "Usage: hamming.sh <string1> <string2>" ]]
+}
+
+# Within [[...]] the == operator is a _pattern matching_ operator.
+# To test for string equality, the right-hand side must be
+# quoted to prevent interpretation as a glob-style pattern.
+
+@test "expose subtle '[[ \$x == \$y ]]' bug" {
+  [[ $BATS_RUN_SKIPPED == "true" ]] || skip
+  run bash hamming.sh 'AAA' 'A?A'
+  (( status == 0 ))
+  [[ $output == "1" ]]
 }

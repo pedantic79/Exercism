@@ -6,8 +6,8 @@ set -o nounset
 main() {
     local str="${1//[[:space:]]/}"
 
-    local sum=0
-    local pos=0
+    local -i sum=0
+    local -i pos=0
 
     if [[ "$str" =~ [^[:digit:]] ]]; then
         echo false
@@ -15,10 +15,10 @@ main() {
     fi
 
     for ((i=${#str} - 1; i >= 0; i--)); do
-        local digit="${str:$i:1}"
+        local -i digit="${str:$i:1}"
 
         if [ $((pos % 2)) -ne 0 ]; then
-            local double=$((digit * 2))
+            local -i double=$((digit * 2))
             if [ "$double" -gt 9 ]; then
                 ((double-=9)) || true
             fi

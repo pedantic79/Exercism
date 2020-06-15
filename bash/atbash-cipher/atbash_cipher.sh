@@ -8,8 +8,8 @@ main() {
     output=$(codec "$2")
 
     if [ "$1" = "encode" ]; then
-        local i
-        local groups=()
+        local -i i
+        local -a groups=()
         for ((i = 0; i < ${#output}; i+=5)); do
             groups+=("${output:$i:5}")
         done
@@ -25,7 +25,7 @@ codec() {
     input=${input//[^[:alnum:]]/}
 
     local output
-    local i
+    local -i i
     for (( i = 0; i < ${#input}; i++)) ; do
         output+=$(at_bash "${input:$i:1}")
     done
@@ -41,6 +41,9 @@ at_bash() {
         ascii=$(printf %d "'$1")
         ((ascii=219-ascii)) || true
         printf -v ascii "\\%o" "$ascii"
+        # this only works with printf "$ascii" because ascii now contains
+        # "\141" if ascii is 97 or 'a'
+        # shellcheck disable=SC2059
         printf "$ascii"
     fi
 }
