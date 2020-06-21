@@ -1,44 +1,55 @@
 #include "atbash_cipher.h"
-#include <algorithm>
+#include <iterator>
+#include <locale>
+#include <string>
+#include <string_view>
 
-char tolower(char ch) {
-    return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+namespace {
+template <class InputIt, class OutputIt, class Pred, class Fct>
+void transform_if(InputIt first, InputIt last, OutputIt dest, Pred predicate,
+                  Fct transform) {
+    while (first != last) {
+        if (predicate(*first))
+            *dest++ = transform(*first);
+
+        ++first;
+    }
 }
 
-char transform(char c) {
-    if (std::isalpha(c)) {
-        return static_cast<char>('a' + 'z' - tolower(c));
+char atbash_codec(char c) {
+    if (std::isalpha(c, std::locale::classic())) {
+        return static_cast<char>('a' + 'z' -
+                                 tolower(c, std::locale::classic()));
     } else {
         return c;
     }
 }
+} // namespace
 
 std::string atbash_cipher::encode(std::string_view s) {
     int count = 0;
     std::string output;
 
-    std::for_each(s.begin(), s.end(), [&](char c) {
-        if (std::isalnum(c)) {
+    for (auto c : s) {
+        if (std::isalnum(c, std::locale::classic())) {
             if (count != 0 && count % 5 == 0) {
                 output.push_back(' ');
             }
 
             count++;
-            output.push_back(transform(c));
+            output.push_back(atbash_codec(c));
         }
-    });
+    }
 
     return output;
 }
 
 std::string atbash_cipher::decode(std::string_view s) {
     std::string output;
-
-    std::for_each(s.begin(), s.end(), [&](char c) {
-        if (c != ' ') {
-            output.push_back(transform(c));
-        }
-    });
+    transform_if(
+        s.begin(), s.end(), std::back_inserter(output),
+        [](auto c) { return !std::isspace(c, std::locale::classic()); },
+        atbash_codec);
 
     return output;
 }
