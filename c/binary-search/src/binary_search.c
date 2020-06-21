@@ -7,7 +7,7 @@ int *binary_search(int value, const int *arr, size_t length) {
     }
 
     size_t left = 0;
-    size_t right = length;
+    size_t right = length - 1;
 
     while (left <= right) {
         size_t midpoint = (left + right) / 2;
@@ -16,12 +16,15 @@ int *binary_search(int value, const int *arr, size_t length) {
             return (int *)(arr + midpoint);
         }
 
-        if (midpoint == 0 || midpoint >= length) {
-            break;
-        } else if (value > arr[midpoint]) {
-            left = midpoint + 1;
-        } else {
+        if (value < arr[midpoint]) {
+            /* this is required because we're using size_t, and this would
+             * underflow. So check the range to avoid it.
+             */
+            if (midpoint == 0)
+                break;
             right = midpoint - 1;
+        } else {
+            left = midpoint + 1;
         }
     }
 
