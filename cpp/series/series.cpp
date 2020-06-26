@@ -2,8 +2,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-// This requires C++17
-std::vector<int> series::digits(std::string_view s) {
+std::vector<int> series::digits(const std::string &s) {
     std::vector<int> v;
 
     std::transform(s.begin(), s.end(), std::back_inserter(v),
@@ -12,7 +11,11 @@ std::vector<int> series::digits(std::string_view s) {
     return v;
 }
 
-std::vector<std::vector<int>> series::slice(std::string_view s, size_t len) {
+// This would be greatly improved by using a string_view which is available in
+// C++17. Using a string_view allow us to avoid extra allocations which aren't
+// necessary, and quite a bit more efficient. Change everywhere that is a
+// const std::string & to string_view
+std::vector<std::vector<int>> series::slice(const std::string &s, size_t len) {
     if (len > s.length()) {
         throw std::domain_error("invalid input");
     }
@@ -20,8 +23,8 @@ std::vector<std::vector<int>> series::slice(std::string_view s, size_t len) {
     std::vector<std::vector<int>> v;
 
     for (size_t i = 0; i <= s.length() - len; i++) {
-        std::string_view sv = s.substr(i, len);
-        v.push_back(digits(sv));
+        auto str = s.substr(i, len);
+        v.push_back(digits(str));
     }
 
     return v;
