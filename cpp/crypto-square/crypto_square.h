@@ -5,11 +5,11 @@
 
 namespace crypto_square {
 class cipher {
-    std::string plain;
+    std::string plain_;
 
   public:
     explicit cipher(const std::string &);
-    const std::string &normalize_plain_text() const { return plain; }
+    const std::string &normalize_plain_text() const { return plain_; }
     std::vector<std::string> plain_text_segments() const;
     std::string normalized_cipher_text(bool normalize = true) const;
     std::string cipher_text() const;
