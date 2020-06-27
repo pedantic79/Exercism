@@ -94,22 +94,18 @@ export default class List<T> {
 type Functor<T, U> = (accumulator: U, value: T) => U;
 type NullableLinkedList<T> = LinkedList<T> | null;
 
-// Simple Functional style linked list
-class LinkedList<T> {
-  private value: T;
-  private next: NullableLinkedList<T>;
+interface LinkedList<T> {
+  readonly value: T;
+  readonly next: NullableLinkedList<T>;
+}
 
-  constructor({ value, next }: { value: T; next: NullableLinkedList<T> }) {
-    this.value = value;
-    this.next = next;
-  }
-
+const LinkedList = {
   // https://en.wikipedia.org/wiki/Cons
-  static cons<T>(list: NullableLinkedList<T>, value: T): NullableLinkedList<T> {
-    return new LinkedList({ value: value, next: list });
-  }
+  cons<T>(list: NullableLinkedList<T>, value: T): LinkedList<T> {
+    return { value: value, next: list };
+  },
 
-  static foldr<T, U>(
+  foldr<T, U>(
     operation: Functor<T, U>,
     initial: U,
     list: NullableLinkedList<T>
@@ -122,9 +118,9 @@ class LinkedList<T> {
       LinkedList.foldr(operation, initial, list.next),
       list.value
     );
-  }
+  },
 
-  static foldl<T, U>(
+  foldl<T, U>(
     operation: Functor<T, U>,
     initial: U,
     list: NullableLinkedList<T>
@@ -138,12 +134,12 @@ class LinkedList<T> {
       operation(initial, list.value),
       list.next
     );
-  }
+  },
 
-  static append<T>(
+  append<T>(
     base: NullableLinkedList<T>,
     list: NullableLinkedList<T>
   ): NullableLinkedList<T> {
     return LinkedList.foldr(LinkedList.cons, list, base);
-  }
-}
+  },
+};
