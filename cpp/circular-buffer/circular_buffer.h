@@ -10,32 +10,32 @@ template <class T> class circular_buffer {
     size_t capacity_;
     size_t read_;
     size_t write_;
-    size_t count_;
+    size_t size_;
 
   public:
     explicit circular_buffer(int capacity)
-        : capacity_(capacity), read_(0), write_(0), count_(0) {
+        : capacity_(capacity), read_(0), write_(0), size_(0) {
         buf_ = std::make_unique<T[]>(capacity);
     }
 
     void clear() {
         read_ = 0;
         write_ = 0;
-        count_ = 0;
+        size_ = 0;
     }
 
     void write(T item) {
-        if (count_ == capacity_) {
+        if (size_ == capacity_) {
             throw std::domain_error("buffer full");
         }
 
         buf_[write_] = item;
         ++write_ %= capacity_;
-        ++count_;
+        ++size_;
     }
 
     void overwrite(T item) {
-        if (count_ >= capacity_) {
+        if (size_ >= capacity_) {
             read();
         }
 
@@ -43,13 +43,13 @@ template <class T> class circular_buffer {
     }
 
     T read() {
-        if (count_ == 0) {
+        if (size_ == 0) {
             throw std::domain_error("buffer empty");
         }
 
         T item = buf_[read_];
         ++read_ %= capacity_;
-        --count_;
+        --size_;
 
         return item;
     }
