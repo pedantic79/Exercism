@@ -1,6 +1,8 @@
 #include "crypto_square.h"
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <iterator>
 #include <locale>
 #include <sstream>
 #include <vector>
@@ -24,42 +26,46 @@ void transform_if(InputIt first, InputIt last, OutputIt dest, Predicate pred,
 
 namespace crypto_square {
 cipher::cipher(const std::string &s) {
+    std::string plain;
+
     transform_if(
-        s.begin(), s.end(), std::back_inserter(plain_),
+        s.begin(), s.end(), std::back_inserter(plain),
         [](char c) { return std::isalnum(c, std::locale::classic()); },
         [](char c) { return std::tolower(c, std::locale::classic()); });
-}
 
-std::vector<std::string> cipher::plain_text_segments() const {
-    auto width = static_cast<ptrdiff_t>(
-        std::ceil(std::sqrt(static_cast<double>(plain_.length()))));
-    std::vector<std::string> result;
+    auto width = static_cast<size_t>(
+        std::ceil(std::sqrt(static_cast<double>(plain.length()))));
 
-    for (auto itr = plain_.begin(); std::distance(itr, plain_.end()) > 0;
-         itr += width) {
-        auto dist = std::min(width, std::distance(itr, plain_.end()));
-        result.emplace_back(itr, itr + dist);
+    for (size_t i = 0; i < plain.length(); i += width) {
+        auto dist = std::min(width, plain.length() - i);
+        square_.push_back(plain.substr(i, dist));
     }
-
-    return result;
 }
+
+std::string cipher::normalize_plain_text() const {
+    std::stringstream oss;
+    std::copy(square_.begin(), square_.end(),
+              std::ostream_iterator<std::string>(oss));
+
+    return oss.str();
+}
+
+std::vector<std::string> cipher::plain_text_segments() const { return square_; }
 
 std::string cipher::normalized_cipher_text(bool normalize) const {
-    if (plain_.empty()) {
+    if (square_.empty()) {
         return {};
     }
 
-    auto block = plain_text_segments();
-
     std::stringstream oss;
-    for (size_t col = 0; col < block[0].length(); col++) {
+    for (size_t col = 0; col < square_[0].length(); col++) {
         if (normalize && col != 0) {
             oss << ' ';
         }
 
-        for (size_t row = 0; row < block.size(); row++) {
-            if (col < block[row].length()) {
-                oss << block[row][col];
+        for (auto row : square_) {
+            if (col < row.length()) {
+                oss << row[col];
             } else if (normalize) {
                 oss << ' ';
             }
