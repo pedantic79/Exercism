@@ -4,12 +4,12 @@ pub struct CodonsInfo<'a> {
     codons: HashMap<&'a str, &'a str>,
 }
 
-impl<'a> CodonsInfo<'a> {
-    pub fn name_for(&self, codon: &str) -> Option<&'a str> {
+impl CodonsInfo<'_> {
+    pub fn name_for(&self, codon: &str) -> Option<&str> {
         self.codons.get(codon).copied()
     }
 
-    pub fn of_rna(&self, rna: &str) -> Option<Vec<&'a str>> {
+    pub fn of_rna(&self, rna: &str) -> Option<Vec<&str>> {
         splitn(rna, 3)
             .map(|codon| self.name_for(codon))
             .take_while(|&x| Some("stop codon") != x)

@@ -18,7 +18,7 @@ impl<'a> From<&'a str> for Brackets<'a> {
     }
 }
 
-impl<'a> Brackets<'a> {
+impl Brackets<'_> {
     pub fn are_balanced(&self) -> bool {
         const VALID: [char; 6] = ['(', ')', '[', ']', '{', '}'];
         let mut stack: Vec<char> = Vec::new();

@@ -52,7 +52,7 @@ mod tests {
     use maplit::hashmap;
     use std::collections::HashMap;
 
-    fn rank_map<'a>() -> HashMap<&'a str, Rank> {
+    fn rank_map() -> HashMap<&str, Rank> {
         hashmap!(
             "A" => Ace,
             "K" => King,

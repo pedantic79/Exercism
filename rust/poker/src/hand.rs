@@ -40,13 +40,13 @@ impl<'a> TryFrom<&'a str> for Hand<'a> {
     }
 }
 
-impl<'a> Ord for Hand<'a> {
+impl Ord for Hand<'_> {
     fn cmp(&self, other: &Self) -> Ordering {
         self.pokerhand.cmp(&other.pokerhand)
     }
 }
 
-impl<'a> PartialOrd for Hand<'a> {
+impl PartialOrd for Hand<'_> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.pokerhand.partial_cmp(&other.pokerhand)
     }

@@ -10,7 +10,7 @@ impl<'a> From<&'a [&'a str]> for Board<'a> {
     }
 }
 
-impl<'a> Board<'a> {
+impl Board<'_> {
     fn annotate(self) -> Vec<String> {
         self.places
             .iter()

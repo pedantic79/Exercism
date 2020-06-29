@@ -17,7 +17,7 @@ impl From<f64> for Duration {
     }
 }
 
-impl<'a> Div<Duration> for &'a Duration {
+impl Div<Duration> for &Duration {
     type Output = f64;
 
     fn div(self, rhs: Duration) -> Self::Output {

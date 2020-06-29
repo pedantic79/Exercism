@@ -39,7 +39,7 @@ impl TryFrom<&str> for Card {
 
 #[cfg(tests)]
 mod tests {
-    fn suit_map<'a>() -> HashMap<&'a str, Suit> {
+    fn suit_map() -> HashMap<&str, Suit> {
         use Suit::*;
 
         hashmap!(
