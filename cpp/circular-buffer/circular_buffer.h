@@ -5,17 +5,10 @@
 namespace circular_buffer {
 
 template <class T> class circular_buffer {
-  private:
-    std::unique_ptr<T[]> buf_;
-    size_t capacity_;
-    size_t read_;
-    size_t write_;
-    size_t size_;
-
   public:
-    explicit circular_buffer(int capacity)
-        : capacity_(capacity), read_(0), write_(0), size_(0) {
+    explicit circular_buffer(int capacity) : capacity_(capacity) {
         buf_ = std::make_unique<T[]>(capacity);
+        clear();
     }
 
     void clear() {
@@ -30,13 +23,12 @@ template <class T> class circular_buffer {
         }
 
         buf_[write_] = item;
-        ++write_ %= capacity_;
-        ++size_;
+        advance_write();
     }
 
     void overwrite(T item) {
         if (size_ >= capacity_) {
-            read();
+            advance_read();
         }
 
         write(item);
@@ -48,10 +40,25 @@ template <class T> class circular_buffer {
         }
 
         T item = buf_[read_];
+        advance_read();
+        return item;
+    }
+
+  private:
+    std::unique_ptr<T[]> buf_;
+    size_t capacity_;
+    size_t read_;
+    size_t write_;
+    size_t size_;
+
+    void advance_read() {
         ++read_ %= capacity_;
         --size_;
+    }
 
-        return item;
+    void advance_write() {
+        ++write_ %= capacity_;
+        ++size_;
     }
 };
 

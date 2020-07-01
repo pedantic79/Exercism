@@ -1,5 +1,6 @@
 #include "anagram.h"
 #include <algorithm>
+#include <initializer_list>
 #include <locale>
 #include <string>
 
@@ -13,21 +14,22 @@ std::string anagram::lowercase(const std::string &s) const {
     return v;
 }
 
-std::string anagram::sort(const std::string &input) const {
-    std::string v{input};
-    std::sort(v.begin(), v.end());
-    return v;
+std::string anagram::sort(std::string &&input) const {
+    std::string s{input};
+    std::sort(s.begin(), s.end());
+    return s;
 }
 
 anagram::anagram(const std::string &s)
-    : lowercase_{lowercase(s)}, fingerprint_{sort(lowercase_)} {}
+    : lowercase_{lowercase(s)}, freq_{sort(std::string{lowercase_})} {}
 
-std::vector<std::string> anagram::matches(const std::vector<std::string> &v) {
+std::vector<std::string>
+anagram::matches(std::initializer_list<std::string> v) {
     std::vector<std::string> result;
     std::copy_if(v.begin(), v.end(), std::back_inserter(result),
                  [&](const std::string &s) {
                      auto lc = lowercase(s);
-                     return lc != lowercase_ && sort(lc) == fingerprint_;
+                     return lc != lowercase_ && sort(std::move(lc)) == freq_;
                  });
 
     return result;
