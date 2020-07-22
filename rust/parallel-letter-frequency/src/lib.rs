@@ -148,3 +148,25 @@ mod stdthread {
             })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::frequency;
+    use std::collections::HashMap;
+
+    #[test]
+    fn test_string() {
+        let strings = ["aaaaa", "bbbbb", "aaaaa", "bbbbb"]
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>();
+
+        let str_ref = strings.iter().map(|s| s.as_ref()).collect::<Vec<_>>();
+
+        let mut hm = HashMap::new();
+        hm.insert('a', 10);
+        hm.insert('b', 10);
+
+        assert_eq!(frequency(&str_ref, 4), hm);
+    }
+}
