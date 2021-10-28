@@ -120,9 +120,11 @@ fn mult_inverse(a: i32) -> Result<i32, AffineCipherError> {
 /// Calculate the additive inverse
 /// https://en.wikipedia.org/wiki/Additive_inverse
 fn add_inverse(b: i32) -> Result<i32, AffineCipherError> {
-    let m = ALPHABET_LENGTH.into();
+    let m: i32 = ALPHABET_LENGTH.into();
 
-    (1..m)
-        .find(|n| (b + n) % m == 0)
-        .ok_or(AffineCipherError::NotCoprime(b))
+    Ok(m - b)
+
+    //    (1..m)
+    //        .find(|n| (b + n) % m == 0)
+    //        .ok_or(AffineCipherError::NotCoprime(b))
 }
