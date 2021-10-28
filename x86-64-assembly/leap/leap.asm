@@ -7,6 +7,7 @@ leap_year:
 
     ; Used https://www.hackersdelight.org/magic.htm to determine magic number
     ; and shift amount to divide by 100 using multiplication and shifting
+    ; https://web.archive.org/web/20190703172151/https://www.hackersdelight.org/magic.htm
     imul rcx, rdi, 0x51EB851F
     shr rcx, 37
 
