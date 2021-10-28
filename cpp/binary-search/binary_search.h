@@ -10,21 +10,16 @@ size_t find(const std::vector<T> &haystack, const T &needle) {
         throw std::domain_error("empty container");
 
     size_t left = 0;
-    size_t right = haystack.size() - 1;
+    size_t right = haystack.size();
 
-    while (left <= right) {
-        const size_t mid = (left + right) / 2;
+    while (left < right) {
+        const size_t mid = left + (right - left) / 2;
 
         if (needle == haystack[mid])
             return mid;
 
         if (needle < haystack[mid]) {
-            // required to avoid underflow since we're using size_t
-            // if we used something signed, then we could avoid it, as
-            // right would be -1, and left would be 0.
-            if (mid == 0)
-                break;
-            right = mid - 1;
+            right = mid;
         } else {
             left = mid + 1;
         }
