@@ -133,9 +133,9 @@ mod stdthread {
         let thread_handles = input
             .chunks(size)
             .map(|chunk| {
-                let v = chunk.join("");
+                let v = chunk.iter().map(|&s| s.to_string()).collect::<Vec<_>>();
 
-                thread::spawn(move || count(&[v]))
+                thread::spawn(move || count(&v))
             })
             .collect::<Vec<_>>();
 
