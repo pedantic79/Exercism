@@ -1,28 +1,27 @@
 #if !defined(BINARY_SEARCH_TREE_H)
 #define BINARY_SEARCH_TREE_H
-#include <iostream>
 #include <memory>
+#include <stack>
 
 namespace binary_search_tree {
 template <typename T> class binary_tree {
   public:
-    explicit binary_tree(T item) : value_(item), size_(1) {}
+    explicit binary_tree(T item) : value_(item) {}
 
     void insert(T item) {
         if (item <= value_) {
             if (left_) {
-                left_->insert(item);
+                return left_->insert(item);
             } else {
                 left_ = std::make_unique<binary_tree<T>>(item);
             }
         } else {
             if (right_) {
-                right_->insert(item);
+                return right_->insert(item);
             } else {
                 right_ = std::make_unique<binary_tree<T>>(item);
             }
         }
-        size_++;
     }
 
     const std::unique_ptr<binary_tree<T>> &left() const { return left_; }
@@ -36,44 +35,40 @@ template <typename T> class binary_tree {
         using pointer = binary_tree<T> *;
         using value_type = binary_tree<T>;
 
-        const T &operator*() const { return tree_->at(pos_); }
+        const_ref operator*() const { return stack_.top()->value_; }
+
         bool operator!=(const iterator &other) const {
-            return pos_ != other.pos_;
+            return stack_ != other.stack_;
         };
+
         iterator &operator++() {
-            pos_++;
+            auto node = stack_.top()->right_.get();
+            stack_.pop();
+            while (node) {
+                stack_.push(node);
+                node = node->left_.get();
+            }
             return *this;
         }
 
       private:
-        explicit iterator(const binary_tree *t, size_t pos)
-            : tree_(t), pos_(pos){};
-        const binary_tree *tree_;
-        size_t pos_;
+        iterator() = default;
+        explicit iterator(const pointer t) {
+            for (auto node = t; node; node = node->left_.get())
+                stack_.push(node);
+        }
+
+        std::stack<pointer> stack_;
         friend class binary_tree;
     };
 
-    const iterator begin() { return iterator(this, 0); }
-    const iterator end() { return iterator(this, size_); }
+    const iterator begin() { return iterator(this); }
+    const iterator end() { return {}; }
 
   private:
     T value_;
     std::unique_ptr<binary_tree<T>> left_;
     std::unique_ptr<binary_tree<T>> right_;
-    size_t size_;
-
-    const T &at(size_t pos) const {
-        size_t size = left_ ? left_->size_ : 0;
-        if (pos < size) {
-            return left_->at(pos);
-        }
-
-        if (pos == size) {
-            return value_;
-        }
-
-        return right_->at(pos - size - 1);
-    }
 }; // namespace binary_search_tree
 
 } // namespace binary_search_tree
