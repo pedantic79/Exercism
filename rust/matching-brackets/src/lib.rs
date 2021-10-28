@@ -8,7 +8,7 @@ pub fn brackets_are_balanced(s: &str) -> bool {
     Brackets::from(s).are_balanced()
 }
 
-pub struct Brackets<'a> {
+struct Brackets<'a> {
     data: &'a str,
 }
 
@@ -19,7 +19,7 @@ impl<'a> From<&'a str> for Brackets<'a> {
 }
 
 impl Brackets<'_> {
-    pub fn are_balanced(&self) -> bool {
+    fn are_balanced(&self) -> bool {
         const VALID: [char; 6] = ['(', ')', '[', ']', '{', '}'];
         let mut stack: Vec<char> = Vec::new();
 
