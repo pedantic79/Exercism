@@ -3,7 +3,7 @@ mod pitch;
 
 use note::Note;
 use pitch::Pitch;
-use std::{convert::TryFrom, str};
+use std::str;
 
 #[derive(Debug, PartialEq)]
 pub enum Error {
@@ -19,10 +19,11 @@ pub struct Scale {
 
 impl Scale {
     pub fn new(tonic: &str, intervals: &str) -> Result<Self, Error> {
+        let len = intervals.len() + 1;
         let mut start = Note::try_from(tonic)?;
-        let mut notes = Vec::with_capacity(intervals.len());
+        let mut notes = Vec::with_capacity(len);
 
-        for step in intervals.chars() {
+        for step in intervals.chars().chain(intervals.chars()).take(len) {
             notes.push(start);
 
             start += match step {

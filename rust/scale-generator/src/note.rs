@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, fmt, ops::AddAssign};
+use std::{fmt, ops::AddAssign};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Note(u8);
