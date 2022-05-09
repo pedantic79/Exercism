@@ -3,7 +3,6 @@ package tree
 import (
 	"fmt"
 	"math/rand"
-	"reflect"
 	"testing"
 )
 
@@ -57,6 +56,31 @@ var successTestCases = []struct {
 			Children: []*Node{
 				{ID: 1},
 				{ID: 2},
+			},
+		},
+	},
+	{
+		name: "three levels of nesting",
+		input: []Record{
+			{ID: 2, Parent: 1},
+			{ID: 1, Parent: 0},
+			{ID: 3, Parent: 2},
+			{ID: 0},
+		},
+		expected: &Node{
+			ID: 0,
+			Children: []*Node{
+				{
+					ID: 1,
+					Children: []*Node{
+						{
+							ID: 2,
+							Children: []*Node{
+								{ID: 3},
+							},
+						},
+					},
+				},
 			},
 		},
 	},
@@ -222,33 +246,37 @@ func (n Node) String() string {
 
 func TestMakeTreeSuccess(t *testing.T) {
 	for _, tt := range successTestCases {
-		actual, err := Build(tt.input)
-		if err != nil {
-			var _ error = err
-			t.Fatalf("Build for test case %q returned error %q. Error not expected.",
-				tt.name, err)
-		}
-		if !reflect.DeepEqual(actual, tt.expected) {
-			t.Fatalf("Build for test case %q returned %s but was expected to return %s.",
-				tt.name, actual, tt.expected)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			actual, err := Build(tt.input)
+			if err != nil {
+				var _ error = err
+				t.Fatalf("Build for test case %q returned error %q. Error not expected.",
+					tt.name, err)
+			}
+			if !nodeEqual(actual, tt.expected) {
+				t.Fatalf("Build for test case %q returned %s but was expected to return %s.",
+					tt.name, actual, tt.expected)
+			}
+		})
 	}
 }
 
 func TestMakeTreeFailure(t *testing.T) {
 	for _, tt := range failureTestCases {
-		actual, err := Build(tt.input)
-		if err == nil {
-			t.Fatalf("Build for test case %q returned %s but was expected to fail.",
-				tt.name, actual)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			actual, err := Build(tt.input)
+			if err == nil {
+				t.Fatalf("Build for test case %q returned %s but was expected to fail.",
+					tt.name, actual)
+			}
+		})
 	}
 }
 
 func shuffleRecords(records []Record) []Record {
-	rand := rand.New(rand.NewSource(42))
+	gen := rand.New(rand.NewSource(42))
 	newRecords := make([]Record, len(records))
-	for i, idx := range rand.Perm(len(records)) {
+	for i, idx := range gen.Perm(len(records)) {
 		newRecords[i] = records[idx]
 	}
 	return newRecords
@@ -270,6 +298,9 @@ func makeTwoTreeRecords() []Record {
 var twoTreeRecords = makeTwoTreeRecords()
 
 func BenchmarkTwoTree(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
 	for i := 0; i < b.N; i++ {
 		Build(twoTreeRecords)
 	}
@@ -291,6 +322,9 @@ func makeTenTreeRecords() []Record {
 var tenTreeRecords = makeTenTreeRecords()
 
 func BenchmarkTenTree(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
 	for i := 0; i < b.N; i++ {
 		Build(tenTreeRecords)
 	}
@@ -307,7 +341,38 @@ func makeShallowRecords() []Record {
 var shallowRecords = makeShallowRecords()
 
 func BenchmarkShallowTree(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
 	for i := 0; i < b.N; i++ {
 		Build(shallowRecords)
 	}
+}
+
+func nodeEqual(node1, node2 *Node) bool {
+	switch {
+	case node1 == nil && node2 == nil:
+		return true
+	case node1 == nil && node2 != nil:
+		return false
+	case node1 != nil && node2 == nil:
+		return false
+	default:
+		return node1.ID == node2.ID && nodeSliceEqual(node1.Children, node2.Children)
+	}
+}
+
+func nodeSliceEqual(nodes1, nodes2 []*Node) bool {
+	if len(nodes1) == 0 && len(nodes2) == 0 {
+		return true
+	}
+	if len(nodes1) != len(nodes2) {
+		return false
+	}
+	for i := range nodes1 {
+		if !nodeEqual(nodes1[i], nodes2[i]) {
+			return false
+		}
+	}
+	return true
 }
