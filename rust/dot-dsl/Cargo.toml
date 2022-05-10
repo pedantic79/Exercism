@@ -1,0 +1,13 @@
+[package]
+edition = "2021"
+name = "dot-dsl"
+version = "0.1.0"
+
+[dependencies]
+attrs = { path = "attrs" }
+
+[dev-dependencies]
+maplit = "1.0.1"
+
+[workspace]
+members = ["attrs"]
