@@ -1,15 +1,15 @@
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse::Parser, parse_macro_input};
+use syn::{parse::Parser, parse_macro_input, spanned::Spanned};
 
 #[proc_macro_attribute]
 pub fn attrs(args: TokenStream, input: TokenStream) -> TokenStream {
     let mut out = input.clone();
 
-    let ty = parse_macro_input!(input as syn::Item);
+    let item = parse_macro_input!(input as syn::Item);
     assert!(args.is_empty());
 
-    if let Err(e) = check_struct(ty) {
+    if let Err(e) = check_struct(item) {
         out.extend(TokenStream::from(e.to_compile_error()));
         out
     } else {
@@ -21,7 +21,7 @@ fn add_attrs(input: TokenStream) -> TokenStream {
     let mut item_struct = parse_macro_input!(input as syn::ItemStruct);
 
     // Add attrs attribute to struct
-    if let syn::Fields::Named(ref mut fields) = item_struct.fields {
+    if let syn::Fields::Named(fields) = &mut item_struct.fields {
         fields.named.push(
             syn::Field::parse_named
                 .parse2(quote! { pub attrs: ::std::collections::HashMap<String, String> })
@@ -47,10 +47,10 @@ fn add_attrs(input: TokenStream) -> TokenStream {
 }
 
 fn check_struct(input: syn::Item) -> Result<(), syn::Error> {
-    if let syn::Item::Struct(s) = input {
+    if let syn::Item::Struct(s) = &input {
         // Check that there is no attrs field
-        for field in s.fields {
-            if let Some(ident) = field.ident {
+        for field in &s.fields {
+            if let Some(ident) = &field.ident {
                 if ident.to_string().as_str() == "attrs" {
                     return Err(syn::Error::new(
                         ident.span(),
@@ -62,9 +62,6 @@ fn check_struct(input: syn::Item) -> Result<(), syn::Error> {
 
         Ok(())
     } else {
-        Err(syn::Error::new(
-            proc_macro2::Span::call_site(),
-            "expected struct",
-        ))
+        Err(syn::Error::new(input.span(), "expected struct"))
     }
 }
