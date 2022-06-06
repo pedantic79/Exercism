@@ -10,4 +10,4 @@ crossbeam = ["crossbeam-utils"]
 
 [dependencies]
 rayon = { version = "1.0.3", optional = true }
-crossbeam-utils = { version = "0.7.2", optional = true }
+crossbeam-utils = { version = "0.8.8", optional = true }
