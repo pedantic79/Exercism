@@ -1,25 +1,45 @@
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse::Parser, parse_macro_input, spanned::Spanned};
+use syn::{parse::Parser, parse_macro_input};
 
 #[proc_macro_attribute]
 pub fn attrs(args: TokenStream, input: TokenStream) -> TokenStream {
-    let mut out = input.clone();
+    if !args.is_empty() {
+        return syn::Error::new_spanned(
+            proc_macro2::token_stream::TokenStream::from(args),
+            "unexpected argument",
+        )
+        .to_compile_error()
+        .into();
+    }
 
-    let item = parse_macro_input!(input as syn::Item);
-    assert!(args.is_empty());
-
-    if let Err(e) = check_struct(item) {
-        out.extend(TokenStream::from(e.to_compile_error()));
-        out
+    let item_struct = parse_macro_input!(input as syn::ItemStruct);
+    if let Err(e) = check_struct(&item_struct) {
+        let mut out = item_struct.to_token_stream();
+        out.extend(e.to_compile_error());
+        out.into()
     } else {
-        add_attrs(out)
+        add_attrs(item_struct)
     }
 }
 
-fn add_attrs(input: TokenStream) -> TokenStream {
-    let mut item_struct = parse_macro_input!(input as syn::ItemStruct);
+fn check_struct(item_struct: &syn::ItemStruct) -> Result<(), syn::Error> {
+    // Check that there is no attrs field
+    for field in &item_struct.fields {
+        if let Some(ident) = &field.ident {
+            if ident.to_string().as_str() == "attrs" {
+                return Err(syn::Error::new(
+                    ident.span(),
+                    "struct must not have `attrs` field",
+                ));
+            }
+        }
+    }
 
+    Ok(())
+}
+
+fn add_attrs(mut item_struct: syn::ItemStruct) -> TokenStream {
     // Add attrs attribute to struct
     if let syn::Fields::Named(fields) = &mut item_struct.fields {
         fields.named.push(
@@ -44,24 +64,4 @@ fn add_attrs(input: TokenStream) -> TokenStream {
     });
 
     out.into()
-}
-
-fn check_struct(input: syn::Item) -> Result<(), syn::Error> {
-    if let syn::Item::Struct(s) = &input {
-        // Check that there is no attrs field
-        for field in &s.fields {
-            if let Some(ident) = &field.ident {
-                if ident.to_string().as_str() == "attrs" {
-                    return Err(syn::Error::new(
-                        ident.span(),
-                        "struct must not have `attrs` field",
-                    ));
-                }
-            }
-        }
-
-        Ok(())
-    } else {
-        Err(syn::Error::new(input.span(), "expected struct"))
-    }
 }
