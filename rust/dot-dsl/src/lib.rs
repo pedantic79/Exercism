@@ -3,10 +3,8 @@ pub mod graph {
 
     pub mod graph_items {
         pub mod edge {
-            use std::collections::HashMap;
-
             #[attrs::attrs]
-            #[derive(Debug, Clone, PartialEq, Eq)]
+            #[derive(Debug, Clone, PartialEq, Eq, Default)]
             pub struct Edge {
                 from: String,
                 to: String,
@@ -17,17 +15,15 @@ pub mod graph {
                     Self {
                         from: from.to_string(),
                         to: to.to_string(),
-                        attrs: HashMap::new(),
+                        ..Self::default()
                     }
                 }
             }
         }
 
         pub mod node {
-            use std::collections::HashMap;
-
             #[attrs::attrs]
-            #[derive(Debug, Clone, PartialEq, Eq)]
+            #[derive(Debug, Clone, PartialEq, Eq, Default)]
             pub struct Node {
                 pub name: String,
             }
@@ -36,7 +32,7 @@ pub mod graph {
                 pub fn new(name: &str) -> Self {
                     Self {
                         name: name.to_string(),
-                        attrs: HashMap::new(),
+                        ..Self::default()
                     }
                 }
 
@@ -56,7 +52,7 @@ pub mod graph {
 
     impl Graph {
         pub fn new() -> Self {
-            Default::default()
+            Self::default()
         }
 
         pub fn with_nodes(mut self, nodes: &[Node]) -> Self {

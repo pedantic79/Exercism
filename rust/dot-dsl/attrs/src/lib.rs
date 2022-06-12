@@ -1,16 +1,15 @@
 use proc_macro::TokenStream;
+use proc_macro2::TokenStream as TokenStream2;
 use quote::{quote, ToTokens};
 use syn::{parse::Parser, parse_macro_input};
 
 #[proc_macro_attribute]
 pub fn attrs(args: TokenStream, input: TokenStream) -> TokenStream {
+    // error if there are arguments
     if !args.is_empty() {
-        return syn::Error::new_spanned(
-            proc_macro2::token_stream::TokenStream::from(args),
-            "unexpected argument",
-        )
-        .to_compile_error()
-        .into();
+        return syn::Error::new_spanned(TokenStream2::from(args), "unexpected argument")
+            .into_compile_error()
+            .into();
     }
 
     let item_struct = parse_macro_input!(input as syn::ItemStruct);
