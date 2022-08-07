@@ -37,7 +37,7 @@ pub fn nth(n: u32) -> u32 {
     }
 
     unsafe {
-        append(&mut primes, &spoke);
+        insert(&mut primes, &spoke);
     }
 
     // if n < spoke.len() {
@@ -48,8 +48,8 @@ pub fn nth(n: u32) -> u32 {
     primes[n]
 }
 
-// This appends `slice` to `v`, this works the same way that `String::push_str`
-unsafe fn append<T>(v: &mut Vec<T>, slice: &[T]) {
+// This inserts `slice` before `v`, this works the same way that `String::insert_str` works with an index of 0
+unsafe fn insert<T>(v: &mut Vec<T>, slice: &[T]) {
     let len = v.len();
     let amt = slice.len();
     v.reserve(amt);
