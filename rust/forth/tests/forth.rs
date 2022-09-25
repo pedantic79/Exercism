@@ -343,3 +343,31 @@ fn calling_non_existing_word() {
     let mut f = Forth::new();
     assert_eq!(Err(Error::UnknownWord), f.eval("1 foo"));
 }
+
+#[test]
+#[ignore]
+fn multiple_definitions() {
+    let mut f = Forth::new();
+    assert!(f.eval(": one 1 ; : two 2 ; one two +").is_ok());
+    assert_eq!(vec![3], f.stack());
+}
+
+#[test]
+#[ignore]
+fn definitions_after_ops() {
+    let mut f = Forth::new();
+    assert!(f.eval("1 2 + : addone 1 + ; addone").is_ok());
+    assert_eq!(vec![4], f.stack());
+}
+
+#[test]
+#[ignore]
+fn redefine_an_existing_word_with_another_existing_word() {
+    let mut f = Forth::new();
+    assert!(f.eval(": foo 5 ;").is_ok());
+    assert!(f.eval(": bar foo ;").is_ok());
+    assert!(f.eval(": foo 6 ;").is_ok());
+    assert!(f.eval(": bar foo ;").is_ok());
+    assert!(f.eval("bar foo").is_ok());
+    assert_eq!(vec![6, 6], f.stack());
+}
