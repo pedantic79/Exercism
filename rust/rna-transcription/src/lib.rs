@@ -53,7 +53,7 @@ impl DNA {
     pub fn new(dna: &str) -> Result<Self, usize> {
         dna.chars()
             .enumerate()
-            .map(|(i, c)| Nucleotide::try_new_dna(c).ok_or_else(|| i))
+            .map(|(i, c)| Nucleotide::try_new_dna(c).ok_or(i))
             .collect::<Result<_, _>>()
             .map(|sequence| Self { sequence })
     }
@@ -68,7 +68,7 @@ impl RNA {
     pub fn new(rna: &str) -> Result<Self, usize> {
         rna.chars()
             .enumerate()
-            .map(|(i, c)| Nucleotide::try_new_rna(c).ok_or_else(|| i))
+            .map(|(i, c)| Nucleotide::try_new_rna(c).ok_or(i))
             .collect::<Result<_, _>>()
             .map(|sequence| Self { sequence })
     }

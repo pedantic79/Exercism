@@ -27,11 +27,12 @@ pub fn palindrome_products(min: u64, max: u64) -> Option<(Palindrome, Palindrome
 
     for i in min..=max {
         for j in i..=max {
-            let mult = Some(i * j);
+            let mult = i * j;
+            let mult_s = Some(mult);
 
-            if mult < mn || mult > mx && is_palindrome(mult.unwrap()) {
-                mn = mn.min(mult).or(mult);
-                mx = mx.max(mult).or(mult);
+            if mult_s < mn || mult_s > mx && is_palindrome(mult) {
+                mn = mn.min(mult_s).or(mult_s);
+                mx = mx.max(mult_s).or(mult_s);
             }
         }
     }

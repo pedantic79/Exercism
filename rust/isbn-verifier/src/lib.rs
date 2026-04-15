@@ -1,6 +1,6 @@
 /// Determines whether the supplied string is a valid ISBN number
 pub fn is_valid_isbn(isbn: &str) -> bool {
-    isbn_checksum(isbn).map_or(false, |n| n % 11 == 0)
+    isbn_checksum(isbn).is_some_and(|n| n.is_multiple_of(11))
 }
 
 fn isbn_checksum(isbn: &str) -> Option<u32> {
@@ -23,7 +23,7 @@ fn isbn_checksum(isbn: &str) -> Option<u32> {
 fn char_to_digit(ch: char) -> Option<u32> {
     match ch {
         'X' => Some(10),
-        _ if ch.is_digit(10) => ch.to_digit(10),
+        _ if ch.is_ascii_digit() => ch.to_digit(10),
         _ => None,
     }
 }

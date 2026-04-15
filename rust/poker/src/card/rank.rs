@@ -46,13 +46,17 @@ impl TryFrom<&str> for Rank {
     }
 }
 
-#[cfg(tests)]
-mod tests {
+#[cfg(test)]
+pub(crate) mod test {
+    use crate::Error;
+
     use super::Rank;
     use maplit::hashmap;
     use std::collections::HashMap;
+    use std::convert::TryFrom;
 
-    fn rank_map() -> HashMap<&str, Rank> {
+    pub(crate) fn rank_map() -> HashMap<&'static str, Rank> {
+        use Rank::*;
         hashmap!(
             "A" => Ace,
             "K" => King,
@@ -76,6 +80,6 @@ mod tests {
             .iter()
             .for_each(|(&k, v)| assert_eq!(Rank::try_from(k).as_ref(), Ok(v)));
 
-        assert_eq!(Rank::try_from("1"), Err(Error::InvalidRank));
+        assert_eq!(Rank::try_from("1"), Err(Error::Rank));
     }
 }

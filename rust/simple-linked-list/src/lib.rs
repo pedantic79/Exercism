@@ -80,11 +80,11 @@ impl<T> std::iter::FromIterator<T> for SimpleLinkedList<T> {
     }
 }
 
-impl<T> Into<Vec<T>> for SimpleLinkedList<T> {
-    fn into(mut self) -> Vec<T> {
+impl<T> From<SimpleLinkedList<T>> for Vec<T> {
+    fn from(mut val: SimpleLinkedList<T>) -> Self {
         let mut v = Vec::new();
 
-        while let Some(data) = self.pop() {
+        while let Some(data) = val.pop() {
             v.push(data);
         }
 

@@ -50,6 +50,6 @@ impl Scale {
             Pitch::Flat => Box::new(|note: &Note| note.to_string()),
         };
 
-        self.notes.iter().map(|n| format(n)).collect()
+        self.notes.iter().map(format).collect()
     }
 }

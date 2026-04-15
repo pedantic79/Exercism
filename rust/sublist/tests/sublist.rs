@@ -4,7 +4,7 @@ use sublist::{sublist, Comparison};
 fn empty_equals_empty() {
     let v: &[u32] = &[];
 
-    assert_eq!(Comparison::Equal, sublist(&v, &v));
+    assert_eq!(Comparison::Equal, sublist(v, v));
 }
 
 #[test]
@@ -28,9 +28,7 @@ fn test_1_is_not_2() {
 #[test]
 #[ignore]
 fn test_compare_larger_equal_lists() {
-    use std::iter::repeat;
-
-    let v: Vec<char> = repeat('x').take(1000).collect();
+    let v: Vec<char> = std::iter::repeat_n('x', 1000).collect();
 
     assert_eq!(Comparison::Equal, sublist(&v, &v));
 }

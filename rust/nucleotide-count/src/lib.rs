@@ -1,25 +1,21 @@
-use std::collections::HashMap;
+use std::collections::{hash_map::Entry, HashMap};
 
 const VALID: [char; 4] = ['A', 'C', 'G', 'T'];
 
 pub fn count(nucleotide: char, dna: &str) -> Result<usize, char> {
-    let mut count = 0;
-
-    for c in dna.chars() {
-        valid_nucleotide(c)?;
-        if c == nucleotide {
-            count += 1;
-        }
-    }
-    Ok(count)
+    valid_nucleotide(nucleotide)?;
+    let hm = nucleotide_counts(dna)?;
+    Ok(*hm.get(&nucleotide).unwrap_or(&0))
 }
 
 pub fn nucleotide_counts(dna: &str) -> Result<HashMap<char, usize>, char> {
     let mut map: HashMap<char, usize> = VALID.iter().map(|&x| (x, 0)).collect();
 
     for c in dna.chars() {
-        valid_nucleotide(c)?;
-        *map.entry(c).or_insert(0) += 1;
+        match map.entry(c) {
+            Entry::Occupied(mut x) => *x.get_mut() += 1,
+            Entry::Vacant(_) => return Err(c),
+        }
     }
     Ok(map)
 }

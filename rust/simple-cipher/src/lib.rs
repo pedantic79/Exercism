@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::RngExt;
 
 pub fn encode(key: &str, s: &str) -> Option<String> {
     encode_decode(|a, b| a + b, key, s)
@@ -20,9 +20,9 @@ where
 }
 
 pub fn encode_random(s: &str) -> (String, String) {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let key: String = (0..=100)
-        .map(|_| (rng.gen_range::<u8>(0, 26) + b'a') as char)
+        .map(|_| (rng.random_range::<u8, _>(0..26) + b'a') as char)
         .collect();
     let encrypted = encode(&key, s);
     (key, encrypted.unwrap())

@@ -44,15 +44,16 @@ impl Record {
 
 impl Ord for Record {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.points
-            .cmp(&other.points)
-            .then_with(|| other.name.cmp(&self.name))
+        other
+            .points
+            .cmp(&self.points)
+            .then_with(|| self.name.cmp(&other.name))
     }
 }
 
 impl PartialOrd for Record {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(other.cmp(&self))
+        Some(self.cmp(other))
     }
 }
 

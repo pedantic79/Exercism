@@ -136,8 +136,15 @@ impl FiveCards {
     }
 }
 
-#[cfg(tests)]
-mod tests {
+#[cfg(test)]
+mod test {
+    use std::convert::TryFrom;
+
+    use crate::{
+        card::Card,
+        hand::{fivecards::FiveCards, pokerhand::PokerHand},
+    };
+
     #[test]
     fn test_is_straight() {
         use PokerHand::*;

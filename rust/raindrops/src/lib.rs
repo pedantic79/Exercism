@@ -3,7 +3,7 @@ pub fn raindrops(n: usize) -> String {
 
     let v: String = divisible
         .iter()
-        .filter(|&(d, _)| n % d == 0)
+        .filter(|&(d, _)| n.is_multiple_of(*d))
         .map(|&(_, value)| value)
         .collect();
 

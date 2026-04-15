@@ -111,7 +111,7 @@ impl PartialEq for Decimal {
 
 impl PartialOrd for Decimal {
     fn partial_cmp(&self, other: &Decimal) -> Option<Ordering> {
-        let (a, b, _) = normalize_offsets(&self, &other);
+        let (a, b, _) = normalize_offsets(self, other);
         Some(a.cmp(&b))
     }
 }

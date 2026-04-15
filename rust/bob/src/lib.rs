@@ -1,7 +1,7 @@
 pub fn reply(message: &str) -> &str {
     let message = message.trim();
 
-    if message == "" {
+    if message.is_empty() {
         "Fine. Be that way!"
     } else {
         let yell = is_yell(message);

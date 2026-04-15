@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use rand::Rng;
+use rand::RngExt;
 use std::collections::HashSet;
 use std::sync::Mutex;
 
@@ -27,11 +27,11 @@ impl Robot {
     }
 
     fn gen_name() -> String {
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
 
-        let n: u32 = rng.gen_range(0, 1000);
-        let a1: char = rng.gen_range(b'A', b'Z') as char;
-        let a2: char = rng.gen_range(b'A', b'Z') as char;
+        let n: u32 = rng.random_range(0..1000);
+        let a1: char = rng.random_range(b'A'..=b'Z') as char;
+        let a2: char = rng.random_range(b'A'..=b'Z') as char;
         format!("{}{}{:03}", a1, a2, n)
     }
 

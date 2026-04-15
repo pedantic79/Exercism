@@ -8,7 +8,7 @@ impl Player {
     pub fn revive(&self) -> Option<Player> {
         Some(Self {
             health: 100,
-            mana: self.mana,
+            mana: Some(100),
             level: self.level,
         })
         .filter(|_| self.health == 0)
@@ -18,10 +18,11 @@ impl Player {
         match self.mana {
             Some(amount) if amount >= mana_cost => {
                 self.mana = Some(amount - mana_cost);
-                self.mana.unwrap()
+                mana_cost * 2
             }
-            _ => {
-                self.health -= mana_cost;
+            Some(_) => 0,
+            None => {
+                self.health = self.health.saturating_sub(mana_cost);
                 0
             }
         }

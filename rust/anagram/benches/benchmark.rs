@@ -101,7 +101,7 @@ fn common(c: &mut Criterion, word: &str, inputs: &[&str], group_name: &str) {
         group.bench_with_input(
             BenchmarkId::new(*name, len.to_string()),
             &inputs,
-            |b, &input_ptr| b.iter(|| func(word, &input_ptr)),
+            |b, &input_ptr| b.iter(|| func(word, input_ptr)),
         );
     }
 }

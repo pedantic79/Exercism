@@ -11,7 +11,7 @@ pub fn classify(num: u64) -> Option<Classification> {
     if num < 1 {
         None
     } else {
-        let s: u64 = (1..num).filter(|i| num % i == 0).sum();
+        let s: u64 = (1..num).filter(|i| num.is_multiple_of(*i)).sum();
 
         Some(match s.cmp(&num) {
             Ordering::Equal => Classification::Perfect,

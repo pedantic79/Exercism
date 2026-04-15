@@ -1,5 +1,3 @@
-use leap;
-
 fn process_leapyear_case(year: u64, expected: bool) {
     assert_eq!(leap::is_leap_year(year), expected);
 }
@@ -60,33 +58,33 @@ fn test_year_divisible_by_200_not_divisible_by_400_common_year() {
 #[test]
 #[ignore]
 fn test_any_old_year() {
-    assert_eq!(leap::is_leap_year(1997), false);
+    assert!(!leap::is_leap_year(1997));
 }
 
 #[test]
 #[ignore]
 fn test_early_years() {
-    assert_eq!(leap::is_leap_year(1), false);
-    assert_eq!(leap::is_leap_year(4), true);
-    assert_eq!(leap::is_leap_year(100), false);
-    assert_eq!(leap::is_leap_year(400), true);
-    assert_eq!(leap::is_leap_year(900), false);
+    assert!(!leap::is_leap_year(1));
+    assert!(leap::is_leap_year(4));
+    assert!(!leap::is_leap_year(100));
+    assert!(leap::is_leap_year(400));
+    assert!(!leap::is_leap_year(900));
 }
 
 #[test]
 #[ignore]
 fn test_century() {
-    assert_eq!(leap::is_leap_year(1700), false);
-    assert_eq!(leap::is_leap_year(1800), false);
-    assert_eq!(leap::is_leap_year(1900), false);
+    assert!(!leap::is_leap_year(1700));
+    assert!(!leap::is_leap_year(1800));
+    assert!(!leap::is_leap_year(1900));
 }
 
 #[test]
 #[ignore]
 fn test_exceptional_centuries() {
-    assert_eq!(leap::is_leap_year(1600), true);
-    assert_eq!(leap::is_leap_year(2000), true);
-    assert_eq!(leap::is_leap_year(2400), true);
+    assert!(leap::is_leap_year(1600));
+    assert!(leap::is_leap_year(2000));
+    assert!(leap::is_leap_year(2400));
 }
 
 #[test]

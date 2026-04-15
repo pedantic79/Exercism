@@ -48,15 +48,19 @@ impl Ord for Hand<'_> {
 
 impl PartialOrd for Hand<'_> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.pokerhand.partial_cmp(&other.pokerhand)
+        Some(self.cmp(other))
     }
 }
 
-#[cfg(tests)]
-mod tests {
+#[cfg(test)]
+mod test {
+    use std::convert::TryFrom;
+
+    use crate::{card::Card, hand::Hand, Error};
+
     #[test]
     fn test_parse_hand() {
-        let v = vec![
+        let v = [
             Card::try_from("3S"),
             Card::try_from("3D"),
             Card::try_from("3C"),
@@ -71,11 +75,8 @@ mod tests {
         let h = Hand::try_new("3S 3D 3C 3H 4H", &v);
 
         assert_eq!(Hand::try_from("3S 3D 3C 3H 4H"), h);
-        assert_eq!(Hand::try_from("3S 3D 3C 3H"), Err(Error::InvalidCardCount));
-        assert_eq!(
-            Hand::try_from("3S 3D 3C 3H 4H 5H"),
-            Err(Error::InvalidCardCount)
-        );
-        assert_eq!(Hand::try_from("3S 3D 3C 3H 5Z"), Err(Error::InvalidSuit));
+        assert_eq!(Hand::try_from("3S 3D 3C 3H"), Err(Error::CardCount));
+        assert_eq!(Hand::try_from("3S 3D 3C 3H 4H 5H"), Err(Error::CardCount));
+        assert_eq!(Hand::try_from("3S 3D 3C 3H 5Z"), Err(Error::Suit));
     }
 }

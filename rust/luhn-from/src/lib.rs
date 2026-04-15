@@ -11,7 +11,7 @@ impl Luhn {
 
                 Some((s + dgt, idx + 1))
             })
-            .map_or(false, |(s, length)| length > 1 && s % 10 == 0)
+            .is_some_and(|(s, length)| length > 1 && s % 10 == 0)
     }
 }
 

@@ -7,5 +7,5 @@ pub fn square(s: u32) -> u64 {
 
 pub fn total() -> u64 {
     // 2u64.pow(63) - 1 + 2u64.pow(63)
-    std::u64::MAX
+    u64::MAX
 }

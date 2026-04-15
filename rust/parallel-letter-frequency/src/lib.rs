@@ -38,7 +38,7 @@ fn merge(acc: &mut HashMap<char, usize>, value: HashMap<char, usize>) {
 }
 
 fn calc_size(len: usize, worker_count: usize) -> usize {
-    (len + worker_count - 1) / worker_count
+    len.div_ceil(worker_count)
 }
 
 #[cfg(feature = "pariter")]

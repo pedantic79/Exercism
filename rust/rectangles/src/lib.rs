@@ -1,6 +1,6 @@
 pub fn count(input: &[&str]) -> usize {
     let rows = input.len();
-    let cols = input.get(0).map(|line| line.len()).unwrap_or(0);
+    let cols = input.first().map(|line| line.len()).unwrap_or(0);
 
     input
         .iter()
@@ -39,15 +39,14 @@ fn has_edges(input: &[&str], corners: [(usize, usize); 4]) -> bool {
     let hori = [(corners[0], corners[1]), (corners[2], corners[3])];
     let vert = [(corners[0], corners[2]), (corners[1], corners[3])];
 
-    hori.iter()
-        .all(|&((row, col_left), (_, col_right))| {
-            input[row]
-                .bytes()
-                .skip(col_left)
-                .take((col_right - col_left) + 1)
-                .all(|c| c == b'+' || c == b'-')
-        })
-        .then(|| {
+    if hori.iter().all(|&((row, col_left), (_, col_right))| {
+        input[row]
+            .bytes()
+            .skip(col_left)
+            .take((col_right - col_left) + 1)
+            .all(|c| c == b'+' || c == b'-')
+    }) {
+        {
             vert.iter().all(|&((row_top, col), (row_bottom, _))| {
                 input
                     .iter()
@@ -56,6 +55,8 @@ fn has_edges(input: &[&str], corners: [(usize, usize); 4]) -> bool {
                     .take((row_bottom - row_top) + 1)
                     .all(|&c| c == b'+' || c == b'|')
             })
-        })
-        .unwrap_or(false)
+        }
+    } else {
+        false
+    }
 }

@@ -26,7 +26,7 @@ impl TryFrom<&str> for Card {
         let l = s.len();
 
         if l == 2 || l == 3 {
-            let split = (l + 1) / 2;
+            let split = l.div_ceil(2);
             let r = Rank::try_from(&s[..split])?;
             let t = Suit::try_from(&s[split..])?;
 
@@ -37,10 +37,19 @@ impl TryFrom<&str> for Card {
     }
 }
 
-#[cfg(tests)]
-mod tests {
-    fn suit_map() -> HashMap<&str, Suit> {
-        use Suit::*;
+#[cfg(test)]
+pub(crate) mod test {
+    use std::{collections::HashMap, convert::TryFrom};
+
+    use maplit::hashmap;
+
+    use crate::{
+        card::{Card, Suit},
+        Error,
+    };
+
+    pub(crate) fn suit_map() -> HashMap<&'static str, Suit> {
+        use super::Suit::*;
 
         hashmap!(
             "D" => Diamonds,
@@ -52,15 +61,17 @@ mod tests {
 
     #[test]
     fn test_parse_card() {
+        use crate::card::rank::test::rank_map;
+
         rank_map().iter().for_each(|(r, rank_exp)| {
             suit_map().iter().for_each(|(s, suit_exp)| {
                 let card = format!("{}{}", r, s);
-                let exp = poker::card::Card::new(*rank_exp, *suit_exp);
+                let exp = Card::new(*rank_exp, *suit_exp);
                 assert_eq!(Card::try_from(&card[..]), Ok(exp));
             })
         });
 
-        assert_eq!(Card::try_from("1S"), Err(Error::InvalidRank));
-        assert_eq!(Card::try_from("AE"), Err(Error::InvalidSuit));
+        assert_eq!(Card::try_from("1S"), Err(Error::Rank));
+        assert_eq!(Card::try_from("AE"), Err(Error::Suit));
     }
 }

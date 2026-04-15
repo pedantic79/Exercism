@@ -10,11 +10,7 @@ pub fn lsp(string_digits: &str, span: usize) -> Result<u64, Error> {
     } else {
         string_digits
             .chars()
-            .map(|c| {
-                c.to_digit(10)
-                    .map(u64::from)
-                    .ok_or_else(|| Error::InvalidDigit(c))
-            })
+            .map(|c| c.to_digit(10).map(u64::from).ok_or(Error::InvalidDigit(c)))
             .collect::<Result<Vec<_>, _>>()?
             .windows(span)
             .map(|w| w.iter().product())

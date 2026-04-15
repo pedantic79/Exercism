@@ -34,7 +34,7 @@ pub enum Error {
 /// Notes:
 ///  * The empty slice ( "[]" ) is equal to the number 0.
 ///  * Never output leading 0 digits. However, your function must be able to
-///     process input with leading 0 digits.
+///    process input with leading 0 digits.
 ///
 pub fn convert(number: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>, Error> {
     to_u32(number, from_base).and_then(|n| from_u32(n, to_base))

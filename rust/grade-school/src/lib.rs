@@ -11,7 +11,7 @@ impl School {
     }
 
     pub fn add(&mut self, grade: u32, student: &str) {
-        let entry = self.roster.entry(grade).or_insert_with(Vec::new);
+        let entry = self.roster.entry(grade).or_default();
         entry.push(student.to_string());
         entry.sort()
     }

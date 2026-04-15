@@ -23,14 +23,20 @@ impl TryFrom<&str> for Suit {
     }
 }
 
-#[cfg(tests)]
-mod tests {
+#[cfg(test)]
+mod test {
+    use std::convert::TryFrom;
+
+    use crate::{card::Suit, Error};
+
     #[test]
     fn test_parse_suit() {
+        use crate::card::test::suit_map;
+
         suit_map()
             .iter()
             .for_each(|(&k, v)| assert_eq!(Suit::try_from(k).as_ref(), Ok(v)));
 
-        assert_eq!(Suit::try_from("A"), Err(Error::InvalidSuit));
+        assert_eq!(Suit::try_from("A"), Err(Error::Suit));
     }
 }

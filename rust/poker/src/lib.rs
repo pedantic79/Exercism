@@ -20,7 +20,7 @@ pub fn winning_hands<'a>(hands: &[&'a str]) -> Option<Vec<&'a str>> {
         .collect::<Result<Vec<Hand>, Error>>()
         .ok()?;
 
-    h.sort_by(|a, b| b.cmp(&a));
+    h.sort_by(|a, b| b.cmp(a));
     let winner = h.first()?;
     let f = h
         .iter()
